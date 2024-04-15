@@ -3,3 +3,5 @@ plugins {
 }
 rootProject.name = "simbot-component-onebot"
 
+include(":internal-processors:include-component-message-elements-processor")
+include(":simbot-component-onebot11-core")

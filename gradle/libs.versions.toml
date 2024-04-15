@@ -10,7 +10,7 @@ openjdk-jmh = "1.35"
 log4j = "2.20.0"
 reactor = "3.6.2"
 # simbot
-simbot = "4.0.0-beta1"
+simbot = "4.0.0-beta3"
 suspendTransform = "0.6.0"
 gradleCommon = "0.2.0"
 # ksp
@@ -19,6 +19,8 @@ ksp = "1.9.22-1.0.17"
 kotlinPoet = "1.16.0"
 # https://mockk.io/
 mockk = "1.13.10"
+# https://detekt.dev/docs/intro
+detekt = "1.23.3"
 
 [libraries]
 # simbot
@@ -33,6 +35,7 @@ simbot-common-core = { group = "love.forte.simbot.common", name = "simbot-common
 simbot-common-suspend = { group = "love.forte.simbot.common", name = "simbot-common-suspend-runner", version.ref = "simbot" }
 simbot-common-annotations = { group = "love.forte.simbot.common", name = "simbot-common-annotations", version.ref = "simbot" }
 simbot-common-loop = { group = "love.forte.simbot.common", name = "simbot-common-stage-loop", version.ref = "simbot" }
+simbot-common-ktor-inputfile = { group = "love.forte.simbot.common", name = "simbot-common-ktor-inputfile", version.ref = "simbot" }
 simbot-gradle = { group = "love.forte.simbot.gradle", name = "simbot-gradle-suspendtransforms", version.ref = "simbot" }
 
 # jetbrains-annotation
@@ -124,6 +127,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

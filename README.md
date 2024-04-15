@@ -21,3 +21,12 @@
    <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/simple-robot/simbot-component-onebot" /></a>
 
 </div>
+
+Simple Robot OneBot 组件是一个将
+[OneBot11](https://github.com/botuniverse/onebot-11)
+协议在
+[Simple Robot](http://github.com/simple-robot/simpler-robot) 标准API下实现的组件库，
+并由此提供simbot中的各项能力。
+
+> [!caution]
+> WIP now.
