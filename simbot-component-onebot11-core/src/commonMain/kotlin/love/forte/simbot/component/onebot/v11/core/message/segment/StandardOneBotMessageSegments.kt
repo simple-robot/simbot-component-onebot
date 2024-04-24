@@ -715,8 +715,125 @@ public class OneBotPoke private constructor(override val data: Data) : OneBotMes
 }
 
 
-// TODO [匿名发消息](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E5%8C%BF%E5%90%8D%E5%8F%91%E6%B6%88%E6%81%AF-)
-// TODO [链接分享](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E9%93%BE%E6%8E%A5%E5%88%86%E4%BA%AB)
+/**
+ * [匿名发消息](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E5%8C%BF%E5%90%8D%E5%8F%91%E6%B6%88%E6%81%AF-)
+ */
+@Serializable
+@SerialName(OneBotAnonymous.TYPE)
+public class OneBotAnonymous private constructor(
+    override val data: Data
+) : OneBotMessageSegment<OneBotAnonymous.Data> {
+    /**
+     * Data of [OneBotAnonymous].
+     *
+     * @property ignore 可选，表示无法匿名时是否继续发送
+     */
+    @Serializable
+    public data class Data(val ignore: Boolean?)
+
+    public companion object {
+        public const val TYPE: String = "anonymous"
+
+        private val NULL = OneBotAnonymous(Data(null))
+        private val TRUE = OneBotAnonymous(Data(true))
+        private val FALSE = OneBotAnonymous(Data(false))
+
+        /**
+         * 构建一个 [OneBotAnonymous].
+         * @param ignore 可选，表示无法匿名时是否继续发送
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun create(ignore: Boolean? = null): OneBotAnonymous =
+            when (ignore) {
+                null -> NULL
+                true -> TRUE
+                false -> FALSE
+            }
+    }
+
+
+
+    override fun toString(): String {
+        return "OneBotAnonymous(ignore=${data.ignore})"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OneBotAnonymous) return false
+
+        if (data != other.data) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return data.hashCode()
+    }
+}
+
+/**
+ * [链接分享](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E9%93%BE%E6%8E%A5%E5%88%86%E4%BA%AB)
+ */
+@Serializable
+@SerialName(OneBotShare.TYPE)
+public class OneBotShare private constructor(
+    override val data: Data
+) : OneBotMessageSegment<OneBotShare.Data> {
+
+    /**
+     * Data of [OneBotShare].
+     */
+    @Serializable
+    public data class Data(
+        val url: String,
+        val title: String,
+        val content: String?,
+        val image: String?
+    )
+
+    public companion object {
+        public const val TYPE: String = "share"
+
+        /**
+         * 构建一个 [OneBotShare].
+         */
+        @JvmStatic
+        public fun create(data: Data): OneBotShare =
+            OneBotShare(data)
+
+        /**
+         * 构建一个 [OneBotShare].
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun create(
+            url: String,
+            title: String,
+            content: String? = null,
+            image: String? = null
+        ): OneBotShare = create(Data(url, title, content, image))
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OneBotShare) return false
+
+        if (data != other.data) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return data.hashCode()
+    }
+
+    override fun toString(): String {
+        return "OneBotShare(data=$data)"
+    }
+
+}
+
 // TODO [推荐好友](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E6%8E%A8%E8%8D%90%E5%A5%BD%E5%8F%8B)
 // TODO [推荐群](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E6%8E%A8%E8%8D%90%E7%BE%A4)
 // TODO [位置](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E4%BD%8D%E7%BD%AE)
@@ -728,7 +845,6 @@ public class OneBotPoke private constructor(override val data: Data) : OneBotMes
 // TODO [合并转发自定义节点](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91%E8%87%AA%E5%AE%9A%E4%B9%89%E8%8A%82%E7%82%B9)
 // TODO [XML 消息](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#xml-%E6%B6%88%E6%81%AF)
 // TODO [JSON 消息](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#json-%E6%B6%88%E6%81%AF)
-
 
 
 internal fun resolveUrlOrFileToResource(url: String?, file: String): Resource {
