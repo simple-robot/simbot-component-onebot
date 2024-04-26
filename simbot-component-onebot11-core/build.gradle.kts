@@ -36,6 +36,7 @@ kotlin {
             compileOnly(libs.simbot.common.annotations)
 
             api(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.serialization.json)
             api(libs.ktor.client.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
@@ -45,6 +46,7 @@ kotlin {
 
         commonTest.dependencies {
             api(libs.simbot.core)
+            api(kotlin("test"))
         }
 
         jvmMain {

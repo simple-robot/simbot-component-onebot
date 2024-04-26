@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.message.segment
 
+import kotlinx.serialization.Serializable
 import love.forte.simbot.component.onebot.v11.core.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElement
 import love.forte.simbot.message.Message
