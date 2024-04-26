@@ -26,6 +26,7 @@ import love.forte.simbot.component.ComponentConfigureContext
 import love.forte.simbot.component.ComponentFactory
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElement
 import love.forte.simbot.component.onebot.v11.core.message.includeAllComponentMessageElementImpls
+import love.forte.simbot.component.onebot.v11.core.message.segment.OneBotMessageSegment
 import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.jvm.JvmField
 
@@ -54,6 +55,9 @@ public class OneBot11Component : Component {
                 polymorphic(OneBotMessageElement::class) {
                     includeAllComponentMessageElementImpls()
                 }
+                // polymorphic(OneBotMessageSegment::class) {
+                //     includeAllComponentMessageElementImpls()
+                // }
             }
 
         override val key: ComponentFactory.Key = object : ComponentFactory.Key {}

@@ -51,8 +51,15 @@ private val PolymorphicModuleBuilderClassName =
 // 此组件下，实现 Message.Element 的顶级类型
 private const val BASE_MESSAGE_ELEMENT_CLASS_NAME =
     "love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElement"
+
+private const val ONE_BOT_MESSAGE_SEGMENT_CLASS_NAME =
+    "love.forte.simbot.component.onebot.v11.core.message.segment.OneBotMessageSegment"
+
 private val BaseMessageElementClassName =
     ClassName("love.forte.simbot.component.onebot.v11.core.message", "OneBotMessageElement")
+
+private val OneBotMessageSegmentClassName =
+    ClassName("love.forte.simbot.component.onebot.v11.core.message.segment", "OneBotMessageSegment")
 
 // 生成的函数会在此包下
 private const val COMPONENT_PACKAGE = "love.forte.simbot.component.onebot.v11.core.message"
@@ -61,6 +68,7 @@ private const val COMPONENT_PACKAGE = "love.forte.simbot.component.onebot.v11.co
 private const val SERIALIZABLE_ANNOTATION = "kotlinx.serialization.Serializable"
 
 private const val FUNCTION_NAME = "includeAllComponentMessageElementImpls"
+private const val SEGMENT_FUNCTION_NAME = "includeAllOneBotSegmentImpls"
 
 private const val FILE_NAME = "OneBotMessageElements.generated"
 
@@ -76,9 +84,13 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
         val baseDeclaration = resolver.getClassDeclarationByName(BASE_MESSAGE_ELEMENT_CLASS_NAME)
             ?: throw NoSuchElementException("Class: $BASE_MESSAGE_ELEMENT_CLASS_NAME")
 
-        val baseDeclarationType = baseDeclaration.asStarProjectedType()
+        val segmentDeclaration = resolver.getClassDeclarationByName(ONE_BOT_MESSAGE_SEGMENT_CLASS_NAME)
+            ?: throw NoSuchElementException("Class: $ONE_BOT_MESSAGE_SEGMENT_CLASS_NAME")
 
-        val allKritorMessageElementImpls = resolver.getSymbolsWithAnnotation(SERIALIZABLE_ANNOTATION)
+        val baseDeclarationType = baseDeclaration.asStarProjectedType()
+        val segmentDeclarationType = segmentDeclaration.asStarProjectedType()
+
+        val allOBMessageElementImpls = resolver.getSymbolsWithAnnotation(SERIALIZABLE_ANNOTATION)
             .filterIsInstance<KSClassDeclaration>()
             // 是一个可序列化的具体的类
             .filter { !it.isAbstract() }
@@ -89,8 +101,20 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
             }
             .toList()
 
+        val allSegmentImpls = resolver.getSymbolsWithAnnotation(SERIALIZABLE_ANNOTATION)
+            .filterIsInstance<KSClassDeclaration>()
+            // 是一个可序列化的具体的类
+            .filter { !it.isAbstract() }
+            // 是 BaseMessageElement 的子类
+            .filter { segmentDeclarationType.isAssignableFrom(it.asStarProjectedType()) }
+            .onEach {
+                environment.logger.info("resolved segment element impl: $it", it)
+            }
+            .toList()
 
-        val function = generateIncludeFunction(allKritorMessageElementImpls)
+
+        val elementFunctions = generateIncludeFunction(allOBMessageElementImpls, BaseMessageElementClassName)
+        val segmentFunctions = generateIncludeFunction(allSegmentImpls, OneBotMessageSegmentClassName)
 
         val generatedFile = FileSpec.builder(COMPONENT_PACKAGE, FILE_NAME).apply {
             addFileComment(
@@ -105,7 +129,8 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
                     .addMember("%S, %S", "ALL", "unused")
                     .build()
             )
-            addFunction(function)
+            addFunction(elementFunctions)
+            addFunction(segmentFunctions)
             indent("    ")
         }.build()
 
@@ -113,7 +138,11 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
             codeGenerator = environment.codeGenerator,
             aggregating = true,
             originatingKSFiles = buildList {
-                for (impl in allKritorMessageElementImpls) {
+                for (impl in allOBMessageElementImpls) {
+                    baseDeclaration.containingFile?.also { add(it) }
+                    impl.containingFile?.also { add(it) }
+                }
+                for (impl in allSegmentImpls) {
                     baseDeclaration.containingFile?.also { add(it) }
                     impl.containingFile?.also { add(it) }
                 }
@@ -134,13 +163,13 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
      * }
      *```
      */
-    private fun generateIncludeFunction(impls: List<KSClassDeclaration>): FunSpec {
+    private fun generateIncludeFunction(impls: List<KSClassDeclaration>, baseType: ClassName): FunSpec {
         // kotlinx.serialization.modules.subclass
         val memberName = MemberName("kotlinx.serialization.modules", "subclass")
 
         return FunSpec.builder(FUNCTION_NAME).apply {
             addModifiers(KModifier.INTERNAL)
-            receiver(PolymorphicModuleBuilderClassName.parameterizedBy(BaseMessageElementClassName))
+            receiver(PolymorphicModuleBuilderClassName.parameterizedBy(baseType))
             for (impl in impls) {
                 addCode("%M(%T.serializer())\n", memberName, impl.toClassName())
             }

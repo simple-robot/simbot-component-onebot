@@ -17,24 +17,18 @@
 
 package love.forte.simbot.component.onebot.v11.core.message.segment
 
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
-import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElement
-import love.forte.simbot.message.Message
-
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
- * OneBot11的 [消息段](https://github.com/botuniverse/onebot-11/blob/master/message/array.md)
- * 类型定义。
- * 其中，消息段的类型 `type` 由多态序列化类型名决定，而 `data` 的类型则由实现者的 [D] 具体类型决定。
+ * [掷骰子魔法表情](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E6%8E%B7%E9%AA%B0%E5%AD%90%E9%AD%94%E6%B3%95%E8%A1%A8%E6%83%85)
  *
- * 定义的可序列化子类型会被统一以 [Message.Element] 的多态类型被添加到 [OneBot11Component.serializersModule] 中。
- *
- * @author ForteScarlet
  */
-public interface OneBotMessageSegment : OneBotMessageElement {
-    /**
-     * 消息段的内容。
-     */
-    public val data: Any?
-}
+@Serializable
+@SerialName(OneBotDice.TYPE)
+public object OneBotDice : OneBotMessageSegment {
+    public const val TYPE: String = "dice"
 
+    override val data: Unit
+        get() = Unit
+}
