@@ -113,8 +113,16 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
             .toList()
 
 
-        val elementFunctions = generateIncludeFunction(FUNCTION_NAME, allOBMessageElementImpls, BaseMessageElementClassName)
-        val segmentFunctions = generateIncludeFunction(SEGMENT_FUNCTION_NAME, allSegmentImpls, OneBotMessageSegmentClassName)
+        val elementFunctions = generateIncludeFunction(
+            FUNCTION_NAME,
+            allOBMessageElementImpls,
+            BaseMessageElementClassName
+        )
+        val segmentFunctions = generateIncludeFunction(
+            SEGMENT_FUNCTION_NAME,
+            allSegmentImpls,
+            OneBotMessageSegmentClassName
+        )
 
         val generatedFile = FileSpec.builder(COMPONENT_PACKAGE, FILE_NAME).apply {
             addFileComment(
@@ -163,7 +171,11 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
      * }
      *```
      */
-    private fun generateIncludeFunction(functionName: String, impls: List<KSClassDeclaration>, baseType: ClassName): FunSpec {
+    private fun generateIncludeFunction(
+        functionName: String,
+        impls: List<KSClassDeclaration>,
+        baseType: ClassName
+    ): FunSpec {
         // kotlinx.serialization.modules.subclass
         val memberName = MemberName("kotlinx.serialization.modules", "subclass")
 
