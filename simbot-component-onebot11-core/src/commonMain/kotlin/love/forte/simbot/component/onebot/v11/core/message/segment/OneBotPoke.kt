@@ -76,7 +76,7 @@ public class OneBotPoke private constructor(override val data: Data) : OneBotMes
     public data class Data internal constructor(
         val type: String,
         val id: String,
-        val name: String?
+        val name: String? = null
     )
 
     override fun equals(other: Any?): Boolean {

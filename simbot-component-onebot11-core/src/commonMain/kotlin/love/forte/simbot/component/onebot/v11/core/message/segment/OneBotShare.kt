@@ -38,8 +38,8 @@ public class OneBotShare private constructor(
     public data class Data(
         val url: String,
         val title: String,
-        val content: String?,
-        val image: String?
+        val content: String? = null,
+        val image: String? = null
     )
 
     public companion object Factory {

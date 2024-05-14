@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.message.segment
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import love.forte.simbot.message.Image
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
@@ -36,7 +37,8 @@ import kotlin.jvm.JvmStatic
 @SerialName(OneBotImage.TYPE)
 public class OneBotImage private constructor(
     override val data: Data,
-    private val resource0: Resource?,
+    @Transient
+    private val resource0: Resource? = null,
 ) : OneBotMessageSegment, Image {
     /**
      * 当前 [OneBotImage] 中的资源信息。

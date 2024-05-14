@@ -36,7 +36,7 @@ public class OneBotAnonymous private constructor(
      * @property ignore 可选，表示无法匿名时是否继续发送
      */
     @Serializable
-    public data class Data(val ignore: Boolean?)
+    public data class Data(val ignore: Boolean? = null)
 
     public companion object Factory {
         public const val TYPE: String = "anonymous"
