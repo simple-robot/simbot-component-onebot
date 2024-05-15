@@ -40,6 +40,7 @@ kotlin {
             api(libs.ktor.client.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
+            api(libs.ktor.client.contentNegotiation)
             // api(libs.simbot.common.atomic)
             // api(libs.simbot.common.core)
         }
@@ -51,6 +52,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.ktor.client.contentNegotiation)
             }
         }
 

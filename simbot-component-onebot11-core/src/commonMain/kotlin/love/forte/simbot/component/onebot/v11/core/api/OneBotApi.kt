@@ -53,7 +53,7 @@ public interface OneBotApi<T : Any> {
     /**
      * 预期结果 [OneBotApi] 类型的反序列化器。
      */
-    public val apiResultDeserializer: DeserializationStrategy<T>
+    public val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<T>>
 
     /**
      * 与 `action` 相关的公共、常量信息。

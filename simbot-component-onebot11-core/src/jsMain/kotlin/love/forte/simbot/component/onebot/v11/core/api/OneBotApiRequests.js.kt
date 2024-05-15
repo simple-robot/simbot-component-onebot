@@ -15,27 +15,10 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
-
-import kotlinx.serialization.json.Json
-import kotlin.jvm.JvmField
+package love.forte.simbot.component.onebot.v11.core.api
 
 /**
- * Some OneBot11 constants.
- *
- * @author ForteScarlet
+ * 始终得到 `true`。
  */
-public object OneBot11 {
-    /**
-     * 一个默认的 [Json] 序列化器。
-     * 会在部分内部API中使用。
-     */
-    @JvmField
-    public val DefaultJson: Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        allowSpecialFloatingPointValues = true
-        prettyPrint = false
-    }
-
-}
+@Suppress("TopLevelPropertyNaming")
+internal actual const val isContentNegotiationRuntimeAvailable: Boolean = true

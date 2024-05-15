@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
  * 对消息段的序列化测试
  * @author ForteScarlet
  */
-@Suppress("UNUSED_VARIABLE", "MaxLineLength")
+@Suppress("UNUSED_VARIABLE", "MaxLineLength", "HttpUrlsUsage")
 class MessageSegmentSerializationTests {
     private val defaultJson: Json = Json {
         ignoreUnknownKeys = true

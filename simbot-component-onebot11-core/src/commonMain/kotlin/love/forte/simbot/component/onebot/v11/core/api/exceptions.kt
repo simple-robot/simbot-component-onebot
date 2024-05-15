@@ -15,27 +15,25 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
+package love.forte.simbot.component.onebot.v11.core.api
 
-import kotlinx.serialization.json.Json
-import kotlin.jvm.JvmField
+import io.ktor.http.*
 
 /**
- * Some OneBot11 constants.
- *
- * @author ForteScarlet
+ * 与 OneBot 的 Api 相关的异常。
  */
-public object OneBot11 {
-    /**
-     * 一个默认的 [Json] 序列化器。
-     * 会在部分内部API中使用。
-     */
-    @JvmField
-    public val DefaultJson: Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        allowSpecialFloatingPointValues = true
-        prettyPrint = false
-    }
-
+public open class OneBotApiException : RuntimeException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
 }
+
+/**
+ * OneBotApi 请求的响应结果状态码不是成功状态 (即不是2xx)
+ */
+@Suppress("MemberVisibilityCanBePrivate")
+public open class OneBotApiResponseNotSuccessException(
+    public val status: HttpStatusCode,
+    message: String? = "status: $status", cause: Throwable? = null,
+) : OneBotApiException(message, cause)

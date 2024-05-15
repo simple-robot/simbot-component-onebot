@@ -15,27 +15,18 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
-
-import kotlinx.serialization.json.Json
-import kotlin.jvm.JvmField
+package love.forte.simbot.component.onebot.v11.core.api
 
 /**
- * Some OneBot11 constants.
- *
- * @author ForteScarlet
+ * 校验当前运行时是否存在
+ * [ContentNegotiation][io.ktor.client.plugins.contentnegotiation.ContentNegotiation]。
  */
-public object OneBot11 {
-    /**
-     * 一个默认的 [Json] 序列化器。
-     * 会在部分内部API中使用。
-     */
-    @JvmField
-    public val DefaultJson: Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        allowSpecialFloatingPointValues = true
-        prettyPrint = false
-    }
-
+internal actual val isContentNegotiationRuntimeAvailable: Boolean by lazy {
+    runCatching {
+        Class.forName(CONTENT_NEGOTIATION_CLASS)
+        true
+    }.getOrDefault(false)
 }
+
+
+private const val CONTENT_NEGOTIATION_CLASS = "io.ktor.client.plugins.contentnegotiation.ContentNegotiation"
