@@ -1,13 +1,10 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.core.repository.Repositories
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.include
 import util.isCi
 
 plugins {
     idea
-    //kotlin("jvm") version "1.9.22"
     alias(libs.plugins.detekt)
 }
 
@@ -57,7 +54,7 @@ dependencies {
 }
 
 detekt {
-    source.setFrom(subprojects.map { it.projectDir.absoluteFile })
+    source.setFrom(subprojects.map { it.projectDir.absoluteFile.resolve("src") })
     config.setFrom(rootDir.resolve("config/detekt/detekt.yml"))
     baseline = rootDir.resolve("config/detekt/baseline.xml")
     // buildUponDefaultConfig = true

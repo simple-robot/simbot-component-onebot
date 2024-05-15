@@ -17,6 +17,10 @@
 
 package love.forte.simbot.component.onebot.v11.core.message
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.builtins.ListSerializer
+import love.forte.simbot.component.onebot.v11.core.OneBot11Component
 import love.forte.simbot.message.Message
 
 
@@ -26,3 +30,12 @@ import love.forte.simbot.message.Message
  */
 public interface OneBotMessageElement : Message.Element
 
+/**
+ * 基于 [OneBot11Component.SerializersModule] 可用于便捷地直接对一个
+ * [OneBotMessageElement] 列表进行序列化地序列化器。
+ *
+ * 注意：序列化/反序列化时需要确保模型内添加了 [OneBot11Component.SerializersModule]，
+ * 因为这本质上是一个列表中的**多态**序列化器。
+ */
+public object OneBotMessageElementSerializer : KSerializer<List<OneBotMessageElement>> by
+ListSerializer(PolymorphicSerializer(OneBotMessageElement::class))

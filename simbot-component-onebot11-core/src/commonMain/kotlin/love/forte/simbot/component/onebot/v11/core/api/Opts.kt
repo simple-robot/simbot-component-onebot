@@ -15,28 +15,20 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
-
-import kotlinx.serialization.json.Json
-import kotlin.jvm.JvmField
+package love.forte.simbot.component.onebot.v11.core.api
 
 /**
- * Some OneBot11 constants.
- *
- * @author ForteScarlet
+ * 标记在作为 [OneBotApi] 的响应体数据类的构造上，
+ * 并做出如下警告：
+ * 这是用作 [OneBotApi] 返回值的类型，它应当仅通过序列化器构造。
+ * 作为数据类，它可能无法保证兼容性，请避免直接构造它。
  */
-public object OneBot11 {
-    /**
-     * 一个默认的 [Json] 序列化器。
-     * 会在部分内部API中使用。
-     */
-    @JvmField
-    public val DefaultJson: Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        allowSpecialFloatingPointValues = true
-        prettyPrint = false
-        serializersModule = OneBot11Component.SerializersModule
-    }
-
-}
+@Target(AnnotationTarget.CONSTRUCTOR)
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "这是用作OneBotApi返回值的类型，" +
+        "它应当仅通过序列化器构造。" +
+        "作为数据类，它可能无法保证兼容性，请避免直接构造它。",
+    level = RequiresOptIn.Level.WARNING
+)
+public annotation class ApiResultType

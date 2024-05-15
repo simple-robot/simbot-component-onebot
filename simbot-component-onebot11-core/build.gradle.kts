@@ -48,12 +48,21 @@ kotlin {
         commonTest.dependencies {
             api(libs.simbot.core)
             api(kotlin("test"))
+            api(libs.ktor.client.mock)
+            api(libs.kotlinx.coroutines.test)
         }
 
         jvmMain {
             dependencies {
                 compileOnly(libs.ktor.client.contentNegotiation)
             }
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.log4j.api)
+            implementation(libs.log4j.core)
+            implementation(libs.log4j.slf4j2)
+            implementation(libs.kotlinPoet)
         }
 
         jsMain.dependencies {
