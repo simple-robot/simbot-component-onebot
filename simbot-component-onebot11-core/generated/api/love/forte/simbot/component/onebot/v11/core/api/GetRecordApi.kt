@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * [`get_record`-获取语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_record-获取语音)
+ * [`get_record`-获取语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_record-获取语音)
  *
  * @author ForteScarlet
  */
@@ -29,7 +29,7 @@ public class GetRecordApi private constructor(
         private const val ACTION: String = "get_record"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetRecordResult>> =
-            OneBotApiResult.serializer(GetRecordResult.serializer())
+                OneBotApiResult.serializer(GetRecordResult.serializer())
 
         /**
          * 构建一个 [GetRecordApi].
@@ -38,12 +38,8 @@ public class GetRecordApi private constructor(
          * @param outFormat 要转换到的格式，目前支持 `mp3`、`amr`、`wma`、`m4a`、`spx`、`ogg`、`wav`、`flac`
          */
         @JvmStatic
-        public fun create(`file`: String, outFormat: String): GetRecordApi = GetRecordApi(
-            Body(
-                file,
-                outFormat
-            )
-        )
+        public fun create(`file`: String, outFormat: String): GetRecordApi = GetRecordApi(Body(file,
+                outFormat))
     }
 
     /**

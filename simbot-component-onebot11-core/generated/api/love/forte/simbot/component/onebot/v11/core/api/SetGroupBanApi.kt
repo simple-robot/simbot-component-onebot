@@ -13,7 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_ban`-群组单人禁言](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_ban-群组单人禁言)
+ * [`set_group_ban`-群组单人禁言](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_ban-群组单人禁言)
  *
  * @author ForteScarlet
  */

@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 
 /**
- * [`set_group_add_request`-处理加群请求／邀请](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_add_request-处理加群请求邀请)
+ * [`set_group_add_request`-处理加群请求／邀请](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_add_request-处理加群请求邀请)
  *
  * @author ForteScarlet
  */

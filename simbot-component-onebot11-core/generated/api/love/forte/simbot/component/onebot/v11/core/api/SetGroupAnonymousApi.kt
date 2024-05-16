@@ -13,7 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_anonymous`-群组匿名](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_anonymous-群组匿名)
+ * [`set_group_anonymous`-群组匿名](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_anonymous-群组匿名)
  *
  * @author ForteScarlet
  */
@@ -41,7 +41,7 @@ public class SetGroupAnonymousApi private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(groupId: ID, enable: Boolean? = null): SetGroupAnonymousApi =
-            SetGroupAnonymousApi(Body(groupId, enable))
+                SetGroupAnonymousApi(Body(groupId, enable))
     }
 
     /**

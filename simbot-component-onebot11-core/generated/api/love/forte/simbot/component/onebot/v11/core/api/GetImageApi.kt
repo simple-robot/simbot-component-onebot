@@ -8,7 +8,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 /**
- * [`get_image`-获取图片](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_image-获取图片)
+ * [`get_image`-获取图片](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_image-获取图片)
  *
  * @author ForteScarlet
  */
@@ -28,7 +28,7 @@ public class GetImageApi private constructor(
         private const val ACTION: String = "get_image"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetImageResult>> =
-            OneBotApiResult.serializer(GetImageResult.serializer())
+                OneBotApiResult.serializer(GetImageResult.serializer())
 
         /**
          * 构建一个 [GetImageApi].

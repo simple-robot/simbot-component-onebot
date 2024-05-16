@@ -13,7 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_leave`-退出群组](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_leave-退出群组)
+ * [`set_group_leave`-退出群组](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_leave-退出群组)
  *
  * @author ForteScarlet
  */
@@ -41,7 +41,7 @@ public class SetGroupLeaveApi private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(groupId: ID, isDismiss: Boolean? = null): SetGroupLeaveApi =
-            SetGroupLeaveApi(Body(groupId, isDismiss))
+                SetGroupLeaveApi(Body(groupId, isDismiss))
     }
 
     /**

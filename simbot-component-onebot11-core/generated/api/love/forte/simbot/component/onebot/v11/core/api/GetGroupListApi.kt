@@ -8,7 +8,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.serializer
 
 /**
- * [`get_group_list`-获取群列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_group_list-获取群列表)
+ * [`get_group_list`-获取群列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_list-获取群列表)
  *
  * @author ForteScarlet
  */

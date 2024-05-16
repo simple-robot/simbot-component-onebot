@@ -13,7 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_anonymous_ban`-群组匿名用户禁言](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_anonymous_ban-群组匿名用户禁言)
+ * [`set_group_anonymous_ban`-群组匿名用户禁言](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_anonymous_ban-群组匿名用户禁言)
  *
  * @author ForteScarlet
  */
@@ -47,14 +47,8 @@ public class SetGroupAnonymousBanApi private constructor(
             anonymous: Any = TODO("anonymous?"),
             anonymousFlag: String,
             duration: Long? = null,
-        ): SetGroupAnonymousBanApi = SetGroupAnonymousBanApi(
-            Body(
-                groupId,
-                anonymous,
-                anonymousFlag,
-                duration
-            )
-        )
+        ): SetGroupAnonymousBanApi = SetGroupAnonymousBanApi(Body(groupId, anonymous, anonymousFlag,
+                duration))
     }
 
     /**

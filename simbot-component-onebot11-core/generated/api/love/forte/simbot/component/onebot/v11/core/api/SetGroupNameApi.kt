@@ -11,7 +11,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_name`-设置群名](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_name-设置群名)
+ * [`set_group_name`-设置群名](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_name-设置群名)
  *
  * @author ForteScarlet
  */
@@ -38,7 +38,7 @@ public class SetGroupNameApi private constructor(
          */
         @JvmStatic
         public fun create(groupId: ID, groupName: String): SetGroupNameApi =
-            SetGroupNameApi(Body(groupId, groupName))
+                SetGroupNameApi(Body(groupId, groupName))
     }
 
     /**

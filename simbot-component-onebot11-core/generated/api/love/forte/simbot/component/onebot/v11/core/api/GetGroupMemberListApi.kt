@@ -11,7 +11,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`get_group_member_list`-获取群成员列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_group_member_list-获取群成员列表)
+ * [`get_group_member_list`-获取群成员列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_member_list-获取群成员列表)
  *
  * @author ForteScarlet
  */

@@ -12,7 +12,7 @@ import kotlinx.serialization.builtins.serializer
 
 /**
  * [`set_restart`-重启 OneBot
- * 实现](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_restart-重启-onebot-实现)
+ * 实现](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_restart-重启-onebot-实现)
  *
  * @author ForteScarlet
  */

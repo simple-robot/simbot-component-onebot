@@ -9,9 +9,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.IntID
 
 /**
- * [`get_msg`-获取消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_msg-获取消息)
+ * [`get_msg`-获取消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_msg-获取消息)
  *
  * @author ForteScarlet
  */
@@ -31,7 +32,7 @@ public class GetMsgApi private constructor(
         private const val ACTION: String = "get_msg"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetMsgResult>> =
-            OneBotApiResult.serializer(GetMsgResult.serializer())
+                OneBotApiResult.serializer(GetMsgResult.serializer())
 
         /**
          * 构建一个 [GetMsgApi].
@@ -68,9 +69,9 @@ public data class GetMsgResult @ApiResultType internal constructor(
     @SerialName("message_type")
     public val messageType: String,
     @SerialName("message_id")
-    public val messageId: ID,
+    public val messageId: IntID,
     @SerialName("real_id")
-    public val realId: ID,
+    public val realId: IntID,
     public val sender: Any = TODO("sender?"),
     public val message: Any = TODO("message?"),
 )

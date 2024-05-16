@@ -9,8 +9,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 /**
- * [`get_cookies`-获取
- * Cookies](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_cookies-获取-cookies)
+ * [`get_cookies`-获取 Cookies](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_cookies-获取-cookies)
  *
  * @author ForteScarlet
  */
@@ -30,7 +29,7 @@ public class GetCookiesApi private constructor(
         private const val ACTION: String = "get_cookies"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetCookiesResult>> =
-                OneBotApiResult.serializer(GetCookiesResult.serializer())
+            OneBotApiResult.serializer(GetCookiesResult.serializer())
 
         /**
          * 构建一个 [GetCookiesApi].

@@ -9,7 +9,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 /**
- * [`can_send_record`-检查是否可以发送语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##can_send_record-检查是否可以发送语音)
+ * [`can_send_record`-检查是否可以发送语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#can_send_record-检查是否可以发送语音)
  *
  * @author ForteScarlet
  */
@@ -21,7 +21,7 @@ public class CanSendRecordApi private constructor() : OneBotApi<CanSendRecordRes
         get() = CanSendRecordResult.serializer()
 
     override val apiResultDeserializer:
-        DeserializationStrategy<OneBotApiResult<CanSendRecordResult>>
+            DeserializationStrategy<OneBotApiResult<CanSendRecordResult>>
         get() = RES_SER
 
     override val body: Any?
@@ -31,7 +31,7 @@ public class CanSendRecordApi private constructor() : OneBotApi<CanSendRecordRes
         private const val ACTION: String = "can_send_record"
 
         private val RES_SER: KSerializer<OneBotApiResult<CanSendRecordResult>> =
-            OneBotApiResult.serializer(CanSendRecordResult.serializer())
+                OneBotApiResult.serializer(CanSendRecordResult.serializer())
 
         private val INSTANCE: CanSendRecordApi = CanSendRecordApi()
 

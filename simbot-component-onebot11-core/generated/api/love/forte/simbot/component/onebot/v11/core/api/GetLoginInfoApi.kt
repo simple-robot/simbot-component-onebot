@@ -7,10 +7,10 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 
 /**
- * [`get_login_info`-获取登录号信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_login_info-获取登录号信息)
+ * [`get_login_info`-获取登录号信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_login_info-获取登录号信息)
  *
  * @author ForteScarlet
  */
@@ -31,7 +31,7 @@ public class GetLoginInfoApi private constructor() : OneBotApi<GetLoginInfoResul
         private const val ACTION: String = "get_login_info"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetLoginInfoResult>> =
-            OneBotApiResult.serializer(GetLoginInfoResult.serializer())
+                OneBotApiResult.serializer(GetLoginInfoResult.serializer())
 
         private val INSTANCE: GetLoginInfoApi = GetLoginInfoApi()
 
@@ -52,6 +52,6 @@ public class GetLoginInfoApi private constructor() : OneBotApi<GetLoginInfoResul
 @Serializable
 public data class GetLoginInfoResult @ApiResultType internal constructor(
     @SerialName("user_id")
-    public val userId: ID,
+    public val userId: LongID,
     public val nickname: String,
 )

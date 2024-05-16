@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 
 /**
- * [`set_friend_add_request`-处理加好友请求](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_friend_add_request-处理加好友请求)
+ * [`set_friend_add_request`-处理加好友请求](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_friend_add_request-处理加好友请求)
  *
  * @author ForteScarlet
  */

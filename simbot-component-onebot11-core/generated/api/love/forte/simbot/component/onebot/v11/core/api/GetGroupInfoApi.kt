@@ -11,9 +11,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 
 /**
- * [`get_group_info`-获取群信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_group_info-获取群信息)
+ * [`get_group_info`-获取群信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_info-获取群信息)
  *
  * @author ForteScarlet
  */
@@ -33,7 +34,7 @@ public class GetGroupInfoApi private constructor(
         private const val ACTION: String = "get_group_info"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetGroupInfoResult>> =
-            OneBotApiResult.serializer(GetGroupInfoResult.serializer())
+                OneBotApiResult.serializer(GetGroupInfoResult.serializer())
 
         /**
          * 构建一个 [GetGroupInfoApi].
@@ -44,7 +45,7 @@ public class GetGroupInfoApi private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(groupId: ID, noCache: Boolean? = null): GetGroupInfoApi =
-            GetGroupInfoApi(Body(groupId, noCache))
+                GetGroupInfoApi(Body(groupId, noCache))
     }
 
     /**
@@ -71,7 +72,7 @@ public class GetGroupInfoApi private constructor(
 @Serializable
 public data class GetGroupInfoResult @ApiResultType internal constructor(
     @SerialName("group_id")
-    public val groupId: ID,
+    public val groupId: LongID,
     @SerialName("group_name")
     public val groupName: String,
     @SerialName("member_count")

@@ -11,7 +11,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`delete_msg`-撤回消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##delete_msg-撤回消息)
+ * [`delete_msg`-撤回消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#delete_msg-撤回消息)
  *
  * @author ForteScarlet
  */

@@ -10,9 +10,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.IntID
 
 /**
- * [`send_msg`-发送消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##send_msg-发送消息)
+ * [`send_msg`-发送消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_msg-发送消息)
  *
  * @author ForteScarlet
  */
@@ -32,7 +33,7 @@ public class SendMsgApi private constructor(
         private const val ACTION: String = "send_msg"
 
         private val RES_SER: KSerializer<OneBotApiResult<SendMsgResult>> =
-            OneBotApiResult.serializer(SendMsgResult.serializer())
+                OneBotApiResult.serializer(SendMsgResult.serializer())
 
         /**
          * 构建一个 [SendMsgApi].
@@ -83,5 +84,5 @@ public class SendMsgApi private constructor(
 @Serializable
 public data class SendMsgResult @ApiResultType internal constructor(
     @SerialName("message_id")
-    public val messageId: ID,
+    public val messageId: IntID,
 )

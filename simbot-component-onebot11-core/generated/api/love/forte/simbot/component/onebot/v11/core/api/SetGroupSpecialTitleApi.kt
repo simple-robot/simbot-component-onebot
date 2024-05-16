@@ -13,7 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_special_title`-设置群组专属头衔](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_special_title-设置群组专属头衔)
+ * [`set_group_special_title`-设置群组专属头衔](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_special_title-设置群组专属头衔)
  *
  * @author ForteScarlet
  */
@@ -47,14 +47,8 @@ public class SetGroupSpecialTitleApi private constructor(
             userId: ID,
             specialTitle: String? = null,
             duration: Long? = null,
-        ): SetGroupSpecialTitleApi = SetGroupSpecialTitleApi(
-            Body(
-                groupId,
-                userId,
-                specialTitle,
-                duration
-            )
-        )
+        ): SetGroupSpecialTitleApi = SetGroupSpecialTitleApi(Body(groupId, userId, specialTitle,
+                duration))
     }
 
     /**

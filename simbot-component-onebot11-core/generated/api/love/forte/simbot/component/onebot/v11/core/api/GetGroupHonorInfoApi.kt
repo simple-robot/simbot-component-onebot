@@ -10,9 +10,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 
 /**
- * [`get_group_honor_info`-获取群荣誉信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_group_honor_info-获取群荣誉信息)
+ * [`get_group_honor_info`-获取群荣誉信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_honor_info-获取群荣誉信息)
  *
  * @author ForteScarlet
  */
@@ -26,14 +27,14 @@ public class GetGroupHonorInfoApi private constructor(
         get() = GetGroupHonorInfoResult.serializer()
 
     override val apiResultDeserializer:
-        DeserializationStrategy<OneBotApiResult<GetGroupHonorInfoResult>>
+            DeserializationStrategy<OneBotApiResult<GetGroupHonorInfoResult>>
         get() = RES_SER
 
     public companion object Factory {
         private const val ACTION: String = "get_group_honor_info"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetGroupHonorInfoResult>> =
-            OneBotApiResult.serializer(GetGroupHonorInfoResult.serializer())
+                OneBotApiResult.serializer(GetGroupHonorInfoResult.serializer())
 
         /**
          * 构建一个 [GetGroupHonorInfoApi].
@@ -44,7 +45,7 @@ public class GetGroupHonorInfoApi private constructor(
          */
         @JvmStatic
         public fun create(groupId: ID, type: String): GetGroupHonorInfoApi =
-            GetGroupHonorInfoApi(Body(groupId, type))
+                GetGroupHonorInfoApi(Body(groupId, type))
     }
 
     /**
@@ -84,7 +85,7 @@ public class GetGroupHonorInfoApi private constructor(
 @Serializable
 public data class GetGroupHonorInfoResult @ApiResultType internal constructor(
     @SerialName("group_id")
-    public val groupId: ID,
+    public val groupId: LongID,
     @SerialName("current_talkative")
     public val currentTalkative: Any = TODO("currentTalkative"),
     @SerialName("talkative_list")
@@ -99,14 +100,14 @@ public data class GetGroupHonorInfoResult @ApiResultType internal constructor(
     public val emotionList: Nothing = TODO("emotionList"),
     public val 字段名: Nothing = TODO("字段名?"),
     @SerialName("user_id")
-    public val userId: ID,
+    public val userId: LongID,
     public val nickname: String,
     public val avatar: String,
     @SerialName("day_count")
     public val dayCount: Int,
     public val 字段名: Nothing = TODO("字段名?"),
     @SerialName("user_id")
-    public val userId: ID,
+    public val userId: LongID,
     public val nickname: String,
     public val avatar: String,
     public val description: String,

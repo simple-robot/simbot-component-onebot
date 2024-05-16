@@ -11,8 +11,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * [`get_credentials`-获取 QQ
- * 相关接口凭证](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_credentials-获取-qq-相关接口凭证)
+ * [`get_credentials`-获取 QQ 相关接口凭证](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_credentials-获取-qq-相关接口凭证)
  *
  * @author ForteScarlet
  */
@@ -26,14 +25,14 @@ public class GetCredentialsApi private constructor(
         get() = GetCredentialsResult.serializer()
 
     override val apiResultDeserializer:
-            DeserializationStrategy<OneBotApiResult<GetCredentialsResult>>
+        DeserializationStrategy<OneBotApiResult<GetCredentialsResult>>
         get() = RES_SER
 
     public companion object Factory {
         private const val ACTION: String = "get_credentials"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetCredentialsResult>> =
-                OneBotApiResult.serializer(GetCredentialsResult.serializer())
+            OneBotApiResult.serializer(GetCredentialsResult.serializer())
 
         /**
          * 构建一个 [GetCredentialsApi].
@@ -43,7 +42,7 @@ public class GetCredentialsApi private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(domain: String? = null): GetCredentialsApi =
-                GetCredentialsApi(Body(domain))
+            GetCredentialsApi(Body(domain))
     }
 
     /**

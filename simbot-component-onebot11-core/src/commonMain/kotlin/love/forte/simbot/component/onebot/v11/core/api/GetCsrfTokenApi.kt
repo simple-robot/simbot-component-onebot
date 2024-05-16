@@ -9,8 +9,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 /**
- * [`get_csrf_token`-获取 CSRF
- * Token](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_csrf_token-获取-csrf-token)
+ * [`get_csrf_token`-获取 CSRF Token](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_csrf_token-获取-csrf-token)
  *
  * @author ForteScarlet
  */
@@ -31,7 +30,7 @@ public class GetCsrfTokenApi private constructor() : OneBotApi<GetCsrfTokenResul
         private const val ACTION: String = "get_csrf_token"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetCsrfTokenResult>> =
-                OneBotApiResult.serializer(GetCsrfTokenResult.serializer())
+            OneBotApiResult.serializer(GetCsrfTokenResult.serializer())
 
         private val INSTANCE: GetCsrfTokenApi = GetCsrfTokenApi()
 

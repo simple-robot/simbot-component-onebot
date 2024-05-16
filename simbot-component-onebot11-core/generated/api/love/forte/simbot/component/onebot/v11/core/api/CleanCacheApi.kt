@@ -8,7 +8,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.serializer
 
 /**
- * [`clean_cache`-清理缓存](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##clean_cache-清理缓存)
+ * [`clean_cache`-清理缓存](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#clean_cache-清理缓存)
  *
  * @author ForteScarlet
  */

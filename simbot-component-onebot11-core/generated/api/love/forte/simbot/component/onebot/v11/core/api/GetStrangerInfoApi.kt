@@ -11,9 +11,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 
 /**
- * [`get_stranger_info`-获取陌生人信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_stranger_info-获取陌生人信息)
+ * [`get_stranger_info`-获取陌生人信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_stranger_info-获取陌生人信息)
  *
  * @author ForteScarlet
  */
@@ -27,14 +28,14 @@ public class GetStrangerInfoApi private constructor(
         get() = GetStrangerInfoResult.serializer()
 
     override val apiResultDeserializer:
-        DeserializationStrategy<OneBotApiResult<GetStrangerInfoResult>>
+            DeserializationStrategy<OneBotApiResult<GetStrangerInfoResult>>
         get() = RES_SER
 
     public companion object Factory {
         private const val ACTION: String = "get_stranger_info"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetStrangerInfoResult>> =
-            OneBotApiResult.serializer(GetStrangerInfoResult.serializer())
+                OneBotApiResult.serializer(GetStrangerInfoResult.serializer())
 
         /**
          * 构建一个 [GetStrangerInfoApi].
@@ -45,7 +46,7 @@ public class GetStrangerInfoApi private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(userId: ID, noCache: Boolean? = null): GetStrangerInfoApi =
-            GetStrangerInfoApi(Body(userId, noCache))
+                GetStrangerInfoApi(Body(userId, noCache))
     }
 
     /**
@@ -72,7 +73,7 @@ public class GetStrangerInfoApi private constructor(
 @Serializable
 public data class GetStrangerInfoResult @ApiResultType internal constructor(
     @SerialName("user_id")
-    public val userId: ID,
+    public val userId: LongID,
     public val nickname: String,
     public val sex: String,
     public val age: Int,

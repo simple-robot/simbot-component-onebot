@@ -13,7 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_admin`-群组设置管理员](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_admin-群组设置管理员)
+ * [`set_group_admin`-群组设置管理员](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_admin-群组设置管理员)
  *
  * @author ForteScarlet
  */

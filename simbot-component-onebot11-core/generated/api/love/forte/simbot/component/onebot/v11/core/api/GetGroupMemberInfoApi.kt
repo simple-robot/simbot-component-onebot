@@ -11,9 +11,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 
 /**
- * [`get_group_member_info`-获取群成员信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_group_member_info-获取群成员信息)
+ * [`get_group_member_info`-获取群成员信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_member_info-获取群成员信息)
  *
  * @author ForteScarlet
  */
@@ -27,14 +28,14 @@ public class GetGroupMemberInfoApi private constructor(
         get() = GetGroupMemberInfoResult.serializer()
 
     override val apiResultDeserializer:
-        DeserializationStrategy<OneBotApiResult<GetGroupMemberInfoResult>>
+            DeserializationStrategy<OneBotApiResult<GetGroupMemberInfoResult>>
         get() = RES_SER
 
     public companion object Factory {
         private const val ACTION: String = "get_group_member_info"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetGroupMemberInfoResult>> =
-            OneBotApiResult.serializer(GetGroupMemberInfoResult.serializer())
+                OneBotApiResult.serializer(GetGroupMemberInfoResult.serializer())
 
         /**
          * 构建一个 [GetGroupMemberInfoApi].
@@ -90,9 +91,9 @@ public class GetGroupMemberInfoApi private constructor(
 @Serializable
 public data class GetGroupMemberInfoResult @ApiResultType internal constructor(
     @SerialName("group_id")
-    public val groupId: ID,
+    public val groupId: LongID,
     @SerialName("user_id")
-    public val userId: ID,
+    public val userId: LongID,
     public val nickname: String,
     public val card: String,
     public val sex: String,

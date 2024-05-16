@@ -9,7 +9,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 /**
- * [`can_send_record`-检查是否可以发送语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##can_send_record-检查是否可以发送语音)
+ * [`can_send_record`-检查是否可以发送语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#can_send_record-检查是否可以发送语音)
  *
  * @author ForteScarlet
  */

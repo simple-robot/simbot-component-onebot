@@ -10,7 +10,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * [`get_version_info`-获取版本信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_version_info-获取版本信息)
+ * [`get_version_info`-获取版本信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_version_info-获取版本信息)
  *
  * @author ForteScarlet
  */
@@ -22,7 +22,7 @@ public class GetVersionInfoApi private constructor() : OneBotApi<GetVersionInfoR
         get() = GetVersionInfoResult.serializer()
 
     override val apiResultDeserializer:
-        DeserializationStrategy<OneBotApiResult<GetVersionInfoResult>>
+            DeserializationStrategy<OneBotApiResult<GetVersionInfoResult>>
         get() = RES_SER
 
     override val body: Any?
@@ -32,7 +32,7 @@ public class GetVersionInfoApi private constructor() : OneBotApi<GetVersionInfoR
         private const val ACTION: String = "get_version_info"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetVersionInfoResult>> =
-            OneBotApiResult.serializer(GetVersionInfoResult.serializer())
+                OneBotApiResult.serializer(GetVersionInfoResult.serializer())
 
         private val INSTANCE: GetVersionInfoApi = GetVersionInfoApi()
 

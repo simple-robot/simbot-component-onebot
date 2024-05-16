@@ -9,7 +9,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 /**
- * [`can_send_image`-检查是否可以发送图片](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##can_send_image-检查是否可以发送图片)
+ * [`can_send_image`-检查是否可以发送图片](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#can_send_image-检查是否可以发送图片)
  *
  * @author ForteScarlet
  */
@@ -30,7 +30,7 @@ public class CanSendImageApi private constructor() : OneBotApi<CanSendImageResul
         private const val ACTION: String = "can_send_image"
 
         private val RES_SER: KSerializer<OneBotApiResult<CanSendImageResult>> =
-            OneBotApiResult.serializer(CanSendImageResult.serializer())
+                OneBotApiResult.serializer(CanSendImageResult.serializer())
 
         private val INSTANCE: CanSendImageApi = CanSendImageApi()
 

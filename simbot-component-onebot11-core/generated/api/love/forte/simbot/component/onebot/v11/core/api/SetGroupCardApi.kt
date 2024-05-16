@@ -12,7 +12,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_card`-设置群名片（群备注）](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##set_group_card-设置群名片群备注)
+ * [`set_group_card`-设置群名片（群备注）](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_card-设置群名片群备注)
  *
  * @author ForteScarlet
  */

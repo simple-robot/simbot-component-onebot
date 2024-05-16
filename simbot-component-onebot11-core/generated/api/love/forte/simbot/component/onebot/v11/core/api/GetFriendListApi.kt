@@ -7,10 +7,10 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 
 /**
- * [`get_friend_list`-获取好友列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md##get_friend_list-获取好友列表)
+ * [`get_friend_list`-获取好友列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_friend_list-获取好友列表)
  *
  * @author ForteScarlet
  */
@@ -22,7 +22,7 @@ public class GetFriendListApi private constructor() : OneBotApi<GetFriendListRes
         get() = GetFriendListResult.serializer()
 
     override val apiResultDeserializer:
-        DeserializationStrategy<OneBotApiResult<GetFriendListResult>>
+            DeserializationStrategy<OneBotApiResult<GetFriendListResult>>
         get() = RES_SER
 
     override val body: Any?
@@ -32,7 +32,7 @@ public class GetFriendListApi private constructor() : OneBotApi<GetFriendListRes
         private const val ACTION: String = "get_friend_list"
 
         private val RES_SER: KSerializer<OneBotApiResult<GetFriendListResult>> =
-            OneBotApiResult.serializer(GetFriendListResult.serializer())
+                OneBotApiResult.serializer(GetFriendListResult.serializer())
 
         private val INSTANCE: GetFriendListApi = GetFriendListApi()
 
@@ -54,7 +54,7 @@ public class GetFriendListApi private constructor() : OneBotApi<GetFriendListRes
 @Serializable
 public data class GetFriendListResult @ApiResultType internal constructor(
     @SerialName("user_id")
-    public val userId: ID,
+    public val userId: LongID,
     public val nickname: String,
     public val remark: String,
 )
