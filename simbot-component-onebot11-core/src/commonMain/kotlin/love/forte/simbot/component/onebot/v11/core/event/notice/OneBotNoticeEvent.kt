@@ -15,37 +15,15 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event
+package love.forte.simbot.component.onebot.v11.core.event.notice
 
-import love.forte.simbot.common.id.LongID
-import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.event.Event
+import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
 
-// public typealias OBSourceEvent // TODO
 
 /**
- * OneBot11的[事件](https://github.com/botuniverse/onebot-11/tree/master/event)。
  *
  * @author ForteScarlet
  */
-public interface OneBotEvent : Event {
+public interface OneBotNoticeEvent : OneBotEvent {
     // TODO
-    //  需要考虑一下到底是直接实现 Event，
-    //  还是拆开实现
-
-    /**
-     * 事件发生的时间戳
-     */
-    public val timestamp: Timestamp
-    // (既然是 `int64`, 那么原始数据应该是毫秒值)
-
-    /**
-     * 收到事件的机器人 QQ 号
-     */
-    public val selfId: LongID
-
-    /**
-     * 事件类型
-     */
-    public val postType: String
 }
