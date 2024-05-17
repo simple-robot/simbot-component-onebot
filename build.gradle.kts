@@ -5,6 +5,8 @@ import util.isCi
 
 plugins {
     idea
+    `simbot-onebot-dokka-multi-module`
+
     alias(libs.plugins.detekt)
 }
 

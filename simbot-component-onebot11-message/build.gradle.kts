@@ -7,6 +7,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    `simbot-onebot-dokka-partial-configure`
 
     alias(libs.plugins.ksp)
 }

@@ -28,7 +28,12 @@ plugins {
 tasks.withType<DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
         version = P.ComponentOneBot.version.toString()
-        documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
+        documentedVisibilities.set(
+            listOf(
+                DokkaConfiguration.Visibility.PUBLIC,
+                DokkaConfiguration.Visibility.PROTECTED
+            )
+        )
         fun checkModule(projectFileName: String): Boolean {
             val moduleMdFile = project.file(projectFileName)
             if (moduleMdFile.exists()) {

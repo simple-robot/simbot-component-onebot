@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.event
 
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.id.LongID
 
 
@@ -78,3 +79,24 @@ public interface Event {
      */
     public val postType: String
 }
+
+/**
+ * 标记在一个具体地可序列化事件类型上，
+ * 表示它的 [Event.postType] 的预期值。
+ *
+ * ### 二级分类
+ *
+ * 一个事件通常通过两个属性来确定最终的类型：
+ * 首先通过 [Event.postType] 确定大分类（比如 `message`、`notice` 等），
+ * 其次通过一个子类型来确定具体的类型(
+ * 比如 `message` 事件中的 `message_type`,
+ * `notice` 事件中的 `notice_type`
+ * )。
+ * 而子类型的字段名在不同的事件中是不一样的。这里的 [subType] 只关心值，不理会字段名。
+ *
+ * _主要用于代码生成器做解析用。_
+ *
+ */
+@Retention(AnnotationRetention.SOURCE)
+@InternalSimbotAPI
+public annotation class ExpectEventType(val postType: String, val subType: String)

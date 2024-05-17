@@ -22,6 +22,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.Event
+import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 import love.forte.simbot.component.onebot.v11.event.SourceEventConstructor
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 
@@ -124,6 +125,7 @@ public interface MessageEvent : Event {
  * @property sender 发送人信息
  */
 @Serializable
+@ExpectEventType(postType = "message", subType = "private")
 public data class PrivateMessageEvent @SourceEventConstructor constructor(
     override val time: Long,
     @SerialName("self_id")
@@ -178,6 +180,7 @@ public data class PrivateMessageEvent @SourceEventConstructor constructor(
  *
  */
 @Serializable
+@ExpectEventType(postType = "message", subType = "group")
 public data class GroupMessageEvent @SourceEventConstructor constructor(
     override val time: Long,
     @SerialName("self_id")
