@@ -50,19 +50,19 @@ private val PolymorphicModuleBuilderClassName =
 
 // 此组件下，实现 Message.Element 的顶级类型
 private const val BASE_MESSAGE_ELEMENT_CLASS_NAME =
-    "love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElement"
+    "love.forte.simbot.component.onebot.v11.message.OneBotMessageElement"
 
 private const val ONE_BOT_MESSAGE_SEGMENT_CLASS_NAME =
-    "love.forte.simbot.component.onebot.v11.core.message.segment.OneBotMessageSegment"
+    "love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment"
 
 private val BaseMessageElementClassName =
-    ClassName("love.forte.simbot.component.onebot.v11.core.message", "OneBotMessageElement")
+    ClassName("love.forte.simbot.component.onebot.v11.message", "OneBotMessageElement")
 
 private val OneBotMessageSegmentClassName =
-    ClassName("love.forte.simbot.component.onebot.v11.core.message.segment", "OneBotMessageSegment")
+    ClassName("love.forte.simbot.component.onebot.v11.message.segment", "OneBotMessageSegment")
 
 // 生成的函数会在此包下
-private const val COMPONENT_PACKAGE = "love.forte.simbot.component.onebot.v11.core.message"
+private const val COMPONENT_PACKAGE = "love.forte.simbot.component.onebot.v11.message"
 
 // ktx 可序列化标记
 private const val SERIALIZABLE_ANNOTATION = "kotlinx.serialization.Serializable"
