@@ -17,7 +17,6 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.message
 
-import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.event.ContactMessageEvent
 
 

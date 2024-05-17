@@ -72,6 +72,8 @@ private const val SEGMENT_FUNCTION_NAME = "includeAllOneBotSegmentImpls"
 
 private const val FILE_NAME = "OneBotMessageElements.generated"
 
+private val InternalSimbotAPIClassName = ClassName("love.forte.simbot.annotations", "InternalSimbotAPI")
+
 private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEnvironment) : SymbolProcessor {
     private val generated = AtomicBoolean(false)
 
@@ -180,7 +182,8 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
         val memberName = MemberName("kotlinx.serialization.modules", "subclass")
 
         return FunSpec.builder(functionName).apply {
-            addModifiers(KModifier.INTERNAL)
+            addModifiers(KModifier.PUBLIC)
+            addAnnotation(InternalSimbotAPIClassName)
             receiver(PolymorphicModuleBuilderClassName.parameterizedBy(baseType))
             for (impl in impls) {
                 addCode("%M(%T.serializer())\n", memberName, impl.toClassName())

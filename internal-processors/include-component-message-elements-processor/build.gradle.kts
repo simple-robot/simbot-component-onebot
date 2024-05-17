@@ -39,6 +39,7 @@ dependencies {
 //    implementation(project(":annotations"))
     api(libs.ksp)
     api(libs.kotlinPoet.ksp)
+    api(libs.simbot.common.annotations)
     testImplementation(kotlin("test-junit5"))
 }
 

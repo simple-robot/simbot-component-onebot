@@ -30,8 +30,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // compileOnly(libs.simbot.api)
-            api(libs.simbot.common.core)
+            compileOnly(libs.simbot.api)
             compileOnly(libs.simbot.common.annotations)
 
             api(libs.kotlinx.coroutines.core)
@@ -65,11 +64,11 @@ kotlin {
         }
 
         jsMain.dependencies {
-            // implementation(libs.simbot.api)
+            implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
         }
         nativeMain.dependencies {
-            // implementation(libs.simbot.api)
+            implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
         }
     }

@@ -22,8 +22,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElement
-import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageElementSerializer
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageElementSerializer
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 

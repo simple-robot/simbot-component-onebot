@@ -35,6 +35,7 @@ kotlin {
             compileOnly(libs.simbot.api)
             compileOnly(libs.simbot.common.annotations)
 
+            api(project(":simbot-component-onebot11-message"))
             api(project(":simbot-component-onebot11-event"))
 
             api(libs.kotlinx.coroutines.core)

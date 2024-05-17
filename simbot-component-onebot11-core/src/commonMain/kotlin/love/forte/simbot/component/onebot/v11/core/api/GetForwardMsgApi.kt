@@ -4,7 +4,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.component.onebot.v11.core.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import kotlin.jvm.JvmStatic
 
 /**
