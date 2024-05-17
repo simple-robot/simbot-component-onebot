@@ -1,9 +1,12 @@
-package love.forte.simbot.component.onebot.v11.core.message
+package love.forte.simbot.component.onebot.v11.message
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
-import love.forte.simbot.component.onebot.v11.core.message.segment.*
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.component.onebot.v11.message.segment.*
+import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -13,11 +16,22 @@ import kotlin.test.assertEquals
  */
 @Suppress("UNUSED_VARIABLE", "MaxLineLength", "HttpUrlsUsage")
 class MessageSegmentSerializationTests {
+    @OptIn(InternalSimbotAPI::class)
     private val defaultJson: Json = Json {
         ignoreUnknownKeys = true
         isLenient = true
         prettyPrint = false
-        serializersModule = OneBot11Component.SerializersModule
+        serializersModule = SerializersModule {
+            messageElementPolymorphic {
+                includeAllComponentMessageElementImpls()
+            }
+            polymorphic(OneBotMessageElement::class) {
+                includeAllComponentMessageElementImpls()
+            }
+            polymorphic(OneBotMessageSegment::class) {
+                includeAllOneBotSegmentImpls()
+            }
+        }
     }
 
     @Test

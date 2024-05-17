@@ -18,18 +18,11 @@
 package love.forte.simbot.component.onebot.v11.core
 
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.component.Component
 import love.forte.simbot.component.ComponentConfigureContext
 import love.forte.simbot.component.ComponentFactory
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
-import love.forte.simbot.component.onebot.v11.message.includeAllComponentMessageElementImpls
-import love.forte.simbot.component.onebot.v11.message.includeAllOneBotSegmentImpls
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.jvm.JvmField
 
 
@@ -48,20 +41,8 @@ public class OneBot11Component : Component {
     public companion object Factory : ComponentFactory<OneBot11Component, OneBot11ComponentConfiguration> {
         public const val ID_VALUE: String = "simbot.onebot11"
 
-        @OptIn(InternalSimbotAPI::class)
         @JvmField
-        public val SerializersModule: SerializersModule =
-            SerializersModule {
-                messageElementPolymorphic {
-                    includeAllComponentMessageElementImpls()
-                }
-                polymorphic(OneBotMessageElement::class) {
-                    includeAllComponentMessageElementImpls()
-                }
-                polymorphic(OneBotMessageSegment::class) {
-                    includeAllOneBotSegmentImpls()
-                }
-            }
+        public val SerializersModule: SerializersModule = OneBot11.DefaultJson.serializersModule
 
         override val key: ComponentFactory.Key = object : ComponentFactory.Key {}
 

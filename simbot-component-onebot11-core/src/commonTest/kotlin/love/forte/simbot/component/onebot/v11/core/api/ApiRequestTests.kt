@@ -7,8 +7,8 @@ import kotlinx.serialization.KSerializer
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.v11.core.OneBot11
-import love.forte.simbot.component.onebot.v11.core.message.segment.OneBotFace
-import love.forte.simbot.component.onebot.v11.core.message.segment.OneBotText
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotFace
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.test.Test
 import kotlin.test.assertEquals

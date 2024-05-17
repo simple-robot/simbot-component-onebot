@@ -18,6 +18,14 @@
 package love.forte.simbot.component.onebot.v11.core
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
+import love.forte.simbot.component.onebot.v11.message.includeAllComponentMessageElementImpls
+import love.forte.simbot.component.onebot.v11.message.includeAllOneBotSegmentImpls
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.jvm.JvmField
 
 /**
@@ -31,12 +39,23 @@ public object OneBot11 {
      * 会在部分内部API中使用。
      */
     @JvmField
+    @OptIn(InternalSimbotAPI::class)
     public val DefaultJson: Json = Json {
         isLenient = true
         ignoreUnknownKeys = true
         allowSpecialFloatingPointValues = true
         prettyPrint = false
-        serializersModule = OneBot11Component.SerializersModule
+        serializersModule = SerializersModule {
+            messageElementPolymorphic {
+                includeAllComponentMessageElementImpls()
+            }
+            polymorphic(OneBotMessageElement::class) {
+                includeAllComponentMessageElementImpls()
+            }
+            polymorphic(OneBotMessageSegment::class) {
+                includeAllOneBotSegmentImpls()
+            }
+        }
     }
 
 }

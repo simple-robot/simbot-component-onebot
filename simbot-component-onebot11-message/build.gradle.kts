@@ -50,6 +50,7 @@ kotlin {
             api(kotlin("test"))
             api(libs.ktor.client.mock)
             api(libs.kotlinx.coroutines.test)
+            api(libs.kotlinx.serialization.json)
         }
 
         jvmMain {
