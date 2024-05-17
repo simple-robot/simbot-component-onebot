@@ -33,6 +33,8 @@ kotlin {
             compileOnly(libs.simbot.api)
             compileOnly(libs.simbot.common.annotations)
 
+            api(project(":simbot-component-onebot11-message"))
+
             api(libs.kotlinx.coroutines.core)
             // api(libs.kotlinx.serialization.json)
             // api(libs.ktor.client.core)
