@@ -31,6 +31,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // compileOnly(libs.simbot.api)
+            api(libs.simbot.common.core)
             compileOnly(libs.simbot.common.annotations)
 
             api(libs.kotlinx.coroutines.core)
