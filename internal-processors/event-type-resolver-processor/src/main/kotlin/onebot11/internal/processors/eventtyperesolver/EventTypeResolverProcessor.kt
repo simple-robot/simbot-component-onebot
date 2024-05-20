@@ -341,10 +341,10 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
     private fun FunSpec.Builder.resolveKDoc(
         values: Map<String, Map<String, KSClassDeclaration>>
     ) {
+        addKdoc("根据事件的主类型 `postType` 和二级子类型获取到一个唯一的事件序列化器，如果找不到则得到 `null`。\n")
         resolveValueStatements(
             values,
             beginPostType = { postType, subMap ->
-                addKdoc("根据事件的主类型 `postType` 和二级子类型获取到一个唯一的事件序列化器，如果找不到则得到 `null`。\n")
                 addKdoc("- `%S` (total: %L) \n", postType, subMap.size)
             },
             onStatement = { _, subType, declaration ->
