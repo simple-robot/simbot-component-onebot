@@ -57,11 +57,15 @@ private val EventClassName =
 private val ExpectEventTypeAnnotationClassName =
     ClassName(EVENT_BASE_PACKAGE, "ExpectEventType")
 
+private val ExpectEventSubTypePropertyAnnotationClassName =
+    ClassName(EVENT_BASE_PACKAGE, "ExpectEventSubTypeProperty")
+
 // postType
 // subType
 
 private const val FUNCTION_POST_TYPE_PARAM_NAME = "postType"
 private const val FUNCTION_SUB_TYPE_PARAM_NAME = "subType"
+private const val FUNCTION_EVENT_PARAM_NAME = "event"
 
 private const val ANNOTATION_POST_TYPE_ARG_NAME = "postType"
 private const val ANNOTATION_SUB_TYPE_ARG_NAME = "subType"
@@ -69,8 +73,8 @@ private const val ANNOTATION_SUB_TYPE_ARG_NAME = "subType"
 // ktx 可序列化标记
 private const val SERIALIZABLE_ANNOTATION = "kotlinx.serialization.Serializable"
 
-private const val FUNCTION_RESOLVER_SERIALIZER_NAME = "resolverEventSerializer"
-private const val FUNCTION_RESOLVER_TYPE_NAME = "resolverEventType"
+private const val FUNCTION_RESOLVER_SERIALIZER_NAME = "resolveEventSerializer"
+private const val FUNCTION_RESOLVER_TYPE_NAME = "resolveEventType"
 
 private const val FILE_NAME = "EventResolver.generated"
 private const val FILE_JVM_NAME = "EventResolvers"
@@ -93,6 +97,11 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
             resolver.getClassDeclarationByName(ExpectEventTypeAnnotationClassName.canonicalName)
                 ?: throw NoSuchElementException("Class: $ExpectEventTypeAnnotationClassName")
 
+        // 标记在大分类类型上
+        val expectEventSubTypePropertyAnnotationDeclaration =
+            resolver.getClassDeclarationByName(ExpectEventSubTypePropertyAnnotationClassName.canonicalName)
+                ?: throw NoSuchElementException("Class: $ExpectEventSubTypePropertyAnnotationClassName")
+
         val eventType = eventDeclaration.asStarProjectedType()
         val expectEventTypeAnnotationType = expectEventTypeAnnotationDeclaration.asStarProjectedType()
 
@@ -111,10 +120,23 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
             }
             .toList()
 
+        val rootSubEventTypes =
+            resolver.getSymbolsWithAnnotation(ExpectEventSubTypePropertyAnnotationClassName.canonicalName)
+                .filterIsInstance<KSClassDeclaration>()
+                // 是 event 的子类
+                .filter { eventType.isAssignableFrom(it.asStarProjectedType()) }
+                .onEach {
+                    environment.logger.info("Resolved root sub event type: $it", it)
+                }
+                .toList()
+
         val values = resolveTypes(expectEventTypeAnnotationType, allEventImplWithAnnotation)
 
         val resolveSerializerFunction = resolveSerializerFunction(values)
         val resolveTypeFunction = resolveTypeFunction(values)
+
+        val resolveRootEventFunction =
+            resolveRootEventFunction(expectEventSubTypePropertyAnnotationDeclaration, rootSubEventTypes)
 
         val generatedFile = FileSpec.builder(EVENT_BASE_PACKAGE, FILE_NAME).apply {
             addFileComment(
@@ -135,6 +157,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
 
             addFunction(resolveSerializerFunction)
             addFunction(resolveTypeFunction)
+            addFunction(resolveRootEventFunction)
 
             indent("    ")
         }.build()
@@ -147,10 +170,82 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
                 for (declaration in allEventImplWithAnnotation) {
                     declaration.containingFile?.also(::add)
                 }
+                for (rootSubEventType in rootSubEventTypes) {
+                    rootSubEventType.containingFile?.also(::add)
+                }
             }
         )
 
         return emptyList()
+    }
+
+    /**
+     * 生成:
+     * ```kotlin
+     * fun resolveEventSerializer(event: Event): KSerializer<out Event>? =
+     * when (event) {
+     *     is MessageEvent -> resolveEventSerializer(event.postType, event.messageType)
+     *     is ... -> resolveEventSerializer(event.postType, ...)
+     *     else -> null
+     * }
+     * ```
+     *
+     */
+    private fun resolveRootEventFunction(
+        annotationDeclaration: KSClassDeclaration,
+        rootSubEventTypes: List<KSClassDeclaration>
+    ): FunSpec {
+        return FunSpec.builder(FUNCTION_RESOLVER_SERIALIZER_NAME).apply {
+            addParameter(FUNCTION_EVENT_PARAM_NAME, EventClassName)
+            returns(
+                KSerializerClassName.parameterizedBy(
+                    // out Event
+                    WildcardTypeName.producerOf(EventClassName)
+                ).copy(nullable = true)
+            )
+
+            addKdoc(
+                "根据事件 [%L] 的类型分析得到对应的序列化器，如果找不到则得到 `null`。\n",
+                FUNCTION_EVENT_PARAM_NAME
+            )
+            addKdoc("目前支持获取如下事件的子类型的序列化器：\n")
+
+            addCode(
+                buildCodeBlock {
+                    add("return ")
+                    beginControlFlow("when(%L)", FUNCTION_EVENT_PARAM_NAME)
+
+                    for (rootSubEventType in rootSubEventTypes) {
+                        val annotation = rootSubEventType.annotations
+                            .find {
+                                annotationDeclaration
+                                    .asStarProjectedType()
+                                    .isAssignableFrom(it.annotationType.resolve())
+                            }
+                            ?: continue
+
+                        // The subtype property name
+                        val value =
+                            annotation.arguments.find { it.name?.asString() == "value" }?.value as? String? ?: continue
+
+                        // %L.%L
+                        addStatement(
+                            "is %T -> %L(%L.postType, %L.%L)",
+                            rootSubEventType.toClassName(),
+                            FUNCTION_RESOLVER_SERIALIZER_NAME,
+                            FUNCTION_EVENT_PARAM_NAME,
+                            FUNCTION_EVENT_PARAM_NAME,
+                            value
+                        )
+
+                        addKdoc("- [%T] \n", rootSubEventType.toClassName())
+                    }
+
+                    addStatement("else -> null")
+                    endControlFlow()
+                }
+            )
+        }.build()
     }
 
 
@@ -249,6 +344,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         resolveValueStatements(
             values,
             beginPostType = { postType, subMap ->
+                addKdoc("根据事件的主类型 `postType` 和二级子类型获取到一个唯一的事件序列化器，如果找不到则得到 `null`。\n")
                 addKdoc("- `%S` (total: %L) \n", postType, subMap.size)
             },
             onStatement = { _, subType, declaration ->

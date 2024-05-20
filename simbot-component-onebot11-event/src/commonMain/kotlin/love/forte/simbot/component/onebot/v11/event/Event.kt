@@ -94,9 +94,20 @@ public interface Event {
  * )。
  * 而子类型的字段名在不同的事件中是不一样的。这里的 [subType] 只关心值，不理会字段名。
  *
- * _主要用于代码生成器做解析用。_
+ * @suppress _用于项目内部代码生成器
  *
  */
 @Retention(AnnotationRetention.SOURCE)
 @InternalSimbotAPI
 public annotation class ExpectEventType(val postType: String, val subType: String)
+
+/**
+ * 标记在作为大分类事件的类型上，用来描述它们对应的二级分类属性 (也就是[ExpectEventType.subType])
+ * 是什么。
+ * 属性的类型应当是一个不可空的字符串类型，例如 `val metaEventType: String`。
+ *
+ * @suppress _用于项目内部代码生成器
+ */
+@Retention(AnnotationRetention.SOURCE)
+@InternalSimbotAPI
+public annotation class ExpectEventSubTypeProperty(val value: String)
