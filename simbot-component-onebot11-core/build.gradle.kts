@@ -3,6 +3,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -19,6 +20,13 @@ configJavaCompileWithModule("simbot.component.onebot11.core")
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        optIn.addAll(
+            "love.forte.simbot.annotations.InternalSimbotAPI"
+        )
+    }
 
     configKotlinJvm {
         withJava()
@@ -83,7 +91,7 @@ kotlin {
 
 // https://github.com/google/ksp/issues/963#issuecomment-1894144639
 dependencies {
-    kspCommonMainMetadata(project(":internal-processors:include-component-message-elements-processor"))
+    // kspCommonMainMetadata(project(":internal-processors:include-component-message-elements-processor"))
 }
 kotlin.sourceSets.commonMain {
     // solves all implicit dependency trouble and IDEs source code detection

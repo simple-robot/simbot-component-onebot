@@ -17,8 +17,16 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.bot.*
 import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.common.function.invokeBy
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.NoSuchComponentException
+import love.forte.simbot.component.find
+import love.forte.simbot.component.onebot.v11.core.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotManagerImpl
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
 
@@ -28,34 +36,39 @@ import love.forte.simbot.plugin.PluginFactory
  *
  * @author ForteScarlet
  */
-public abstract class OneBotBotManager : BotManager {
+public abstract class OneBotBotManager : BotManager, JobBasedBotManager() {
+    abstract override fun all(): Sequence<OneBotBot>
+    abstract override fun get(id: ID): OneBotBot
+    abstract override fun find(id: ID): OneBotBot?
+
     /**
-     * 检测 [configuration] 的类型是否为 [OneBotBotConfiguration]。
+     * 检测 [configuration] 的类型是否为 [OneBotBotSerializableConfiguration]。
      */
     override fun configurable(configuration: SerializableBotConfiguration): Boolean =
-        configuration is OneBotBotConfiguration
+        configuration is OneBotBotSerializableConfiguration
 
     /**
      * 使用 [configuration] 构建一个 [OneBotBot]。
-     * @throws UnsupportedBotConfigurationException [configuration] 类型不符合预期 [OneBotBotConfiguration]
+     * @throws UnsupportedBotConfigurationException [configuration] 类型不符合预期 [OneBotBotSerializableConfiguration]
      * @throws BotRegisterFailureException 注册过程出现异常
      */
     override fun register(configuration: SerializableBotConfiguration): OneBotBot {
-        val obConfig = configuration as? OneBotBotConfiguration
+        val obConfig = configuration as? OneBotBotSerializableConfiguration
             ?: throw UnsupportedBotConfigurationException(
                 "`configuration` is expected to be an instance of `OneBotBotConfiguration`, " +
                     "but is $configuration (${configuration::class})"
             )
 
-        return register0(obConfig)
+        return register(obConfig.toConfiguration())
     }
 
     /**
      * 使用 [OneBotBotConfiguration] 构建 [OneBotBot]。
      *
-     * @throws BotRegisterFailureException 注册过程出现异常
+     * @throws BotRegisterFailureException 注册过程出现异常，
+     * 比如出现了冲突的 [OneBotBotConfiguration.botUniqueId]
      */
-    protected abstract fun register0(configuration: OneBotBotConfiguration): OneBotBot
+    public abstract fun register(configuration: OneBotBotConfiguration): OneBotBot
 
     public companion object Factory : BotManagerFactory<OneBotBotManager, OneBotBotManagerConfiguration> {
         override val key: PluginFactory.Key = object : PluginFactory.Key {}
@@ -64,7 +77,21 @@ public abstract class OneBotBotManager : BotManager {
             context: PluginConfigureContext,
             configurer: ConfigurerFunction<OneBotBotManagerConfiguration>
         ): OneBotBotManager {
-            TODO("Not yet implemented")
+            OneBotBotManagerConfiguration().invokeBy(configurer)
+
+            val component = context.components.find<OneBot11Component>()
+                ?: throw NoSuchComponentException("OneBot11Component(id=${OneBot11Component.ID_VALUE})")
+
+            val appContext = context.applicationConfiguration.coroutineContext
+            val job = appContext[Job]?.let { SupervisorJob(it) } ?: SupervisorJob()
+            val managerContext = appContext.minusKey(Job) + job
+
+            return OneBotBotManagerImpl(
+                job,
+                managerContext,
+                component,
+                context.eventDispatcher
+            )
         }
     }
 }

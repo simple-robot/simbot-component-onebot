@@ -35,27 +35,34 @@ import kotlin.jvm.JvmField
  */
 public object OneBot11 {
     /**
+     * 添加了 [messageElementPolymorphic]、[OneBotMessageElement]
+     * 和 [OneBotMessageSegment] 的多态序列化信息的
+     * [SerializersModule]。
+     */
+    @JvmField
+    @OptIn(InternalSimbotAPI::class)
+    public val serializersModule: SerializersModule = SerializersModule {
+        messageElementPolymorphic {
+            includeAllComponentMessageElementImpls()
+        }
+        polymorphic(OneBotMessageElement::class) {
+            includeAllComponentMessageElementImpls()
+        }
+        polymorphic(OneBotMessageSegment::class) {
+            includeAllOneBotSegmentImpls()
+        }
+    }
+
+    /**
      * 一个默认的 [Json] 序列化器。
      * 会在部分内部API中使用。
      */
     @JvmField
-    @OptIn(InternalSimbotAPI::class)
     public val DefaultJson: Json = Json {
         isLenient = true
         ignoreUnknownKeys = true
         allowSpecialFloatingPointValues = true
         prettyPrint = false
-        serializersModule = SerializersModule {
-            messageElementPolymorphic {
-                includeAllComponentMessageElementImpls()
-            }
-            polymorphic(OneBotMessageElement::class) {
-                includeAllComponentMessageElementImpls()
-            }
-            polymorphic(OneBotMessageSegment::class) {
-                includeAllOneBotSegmentImpls()
-            }
-        }
+        serializersModule = OneBot11.serializersModule
     }
-
 }

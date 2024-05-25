@@ -35,9 +35,7 @@ import kotlin.jvm.JvmStatic
 @SerialName(OneBotText.TYPE)
 public class OneBotText private constructor(override val data: Data) :
     OneBotMessageSegment,
-    PlainText {
-    override val text: String
-        get() = data.text
+    OneBotMessageSegmentElementResolver {
 
     public companion object Factory {
         public const val TYPE: String = "text"
@@ -49,6 +47,17 @@ public class OneBotText private constructor(override val data: Data) :
 
     @Serializable
     public data class Data internal constructor(val text: String)
+
+    override fun toElement(): OneBotMessageSegmentElement =
+        Element(this)
+
+    @Serializable
+    @SerialName("ob11.segment.text")
+    public data class Element(override val segment: OneBotText) :
+        OneBotMessageSegmentElement(), PlainText {
+        override val text: String
+            get() = segment.data.text
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -64,6 +73,6 @@ public class OneBotText private constructor(override val data: Data) :
     }
 
     override fun toString(): String {
-        return "OneBotText(text=$text)"
+        return "OneBotText(text=${data.text})"
     }
 }

@@ -37,7 +37,7 @@ import kotlin.jvm.JvmStatic
 @SerialName(OneBotAt.TYPE)
 public class OneBotAt private constructor(
     override val data: Data,
-) : OneBotMessageSegment, MentionMessage {
+) : OneBotMessageSegment, OneBotMessageSegmentElementResolver {
     /**
      * 判断是否为 at 全体
      */
@@ -72,6 +72,14 @@ public class OneBotAt private constructor(
 
     @Serializable
     public data class Data internal constructor(val qq: String)
+
+    override fun toElement(): OneBotMessageSegmentElement =
+        Element(this)
+
+    @Serializable
+    @SerialName("ob11.segment.at")
+    public data class Element(override val segment: OneBotMessageSegment) :
+        OneBotMessageSegmentElement(), MentionMessage
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

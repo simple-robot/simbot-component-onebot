@@ -7,6 +7,7 @@ import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotFace
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentSerializer
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
 import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.test.Test
@@ -40,13 +41,13 @@ class ListElementSerializationTests {
     }
 
     @Test
-    fun listElementTest() {
-        val elementList: List<OneBotMessageElement> = listOf(
+    fun listSegmentTest() {
+        val elementList: List<OneBotMessageSegment> = listOf(
             OneBotText.create("Text"),
             OneBotFace.create(123.ID),
         )
 
-        val jsonString = defaultJson.encodeToString(OneBotMessageElementSerializer, elementList)
+        val jsonString = defaultJson.encodeToString(OneBotMessageSegmentSerializer, elementList)
         assertEquals(
             """[{"type":"text","data":{"text":"Text"}},{"type":"face","data":{"id":"123"}}]""",
             jsonString

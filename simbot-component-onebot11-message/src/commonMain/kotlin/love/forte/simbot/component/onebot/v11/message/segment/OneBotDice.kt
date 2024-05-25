@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.message.segment
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.message.MentionMessage
 
 /**
  * [掷骰子魔法表情](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E6%8E%B7%E9%AA%B0%E5%AD%90%E9%AD%94%E6%B3%95%E8%A1%A8%E6%83%85)
@@ -26,9 +27,20 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName(OneBotDice.TYPE)
-public object OneBotDice : OneBotMessageSegment {
+public object OneBotDice :
+    OneBotMessageSegment,
+    OneBotMessageSegmentElementResolver {
     public const val TYPE: String = "dice"
 
     override val data: Unit
         get() = Unit
+
+    override fun toElement(): OneBotMessageSegmentElement = Element
+
+    @Serializable
+    @SerialName("ob11.segment.dice")
+    public data object Element : OneBotMessageSegmentElement(), MentionMessage {
+        override val segment: OneBotDice
+            get() = OneBotDice
+    }
 }

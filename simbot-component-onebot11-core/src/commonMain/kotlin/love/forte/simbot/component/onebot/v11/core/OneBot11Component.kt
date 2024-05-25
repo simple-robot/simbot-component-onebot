@@ -42,7 +42,7 @@ public class OneBot11Component : Component {
         public const val ID_VALUE: String = "simbot.onebot11"
 
         @JvmField
-        public val SerializersModule: SerializersModule = OneBot11.DefaultJson.serializersModule
+        public val SerializersModule: SerializersModule = OneBot11.serializersModule
 
         override val key: ComponentFactory.Key = object : ComponentFactory.Key {}
 

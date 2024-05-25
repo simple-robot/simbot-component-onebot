@@ -23,8 +23,6 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageElementSerializer
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -55,48 +53,24 @@ public class SendPrivateMsgApi private constructor(
          * 构建一个 [SendPrivateMsgApi].
          * @param userId 对方 QQ 号
          * @param message 要发送的内容
-         */
-        @JvmStatic
-        public fun create(
-            userId: ID,
-            message: List<OneBotMessageElement>,
-        ): SendPrivateMsgApi = SendPrivateMsgApi(
-            ListBody(userId.literal, message, false)
-        )
-
-        /**
-         * 构建一个 [SendPrivateMsgApi].
-         * @param userId 对方 QQ 号
-         * @param message 要发送的内容
          * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
          */
         @JvmStatic
         @JvmOverloads
         public fun create(
             userId: ID,
-            message: String,
+            message: OneBotMessageOutgoing,
             autoEscape: Boolean = false,
         ): SendPrivateMsgApi = SendPrivateMsgApi(
-            StringBody(userId.literal, message, autoEscape)
+            Body(userId.literal, message, autoEscape)
         )
     }
 
     @Serializable
-    internal data class ListBody(
+    internal data class Body(
         @SerialName("user_id")
         val userId: String,
-        @Serializable(OneBotMessageElementSerializer::class)
-        val message: List<OneBotMessageElement>,
-        @SerialName("auto_escape")
-        val autoEscape: Boolean = false,
-    )
-
-
-    @Serializable
-    internal data class StringBody(
-        @SerialName("user_id")
-        val userId: String,
-        val message: String,
+        val message: OneBotMessageOutgoing,
         @SerialName("auto_escape")
         val autoEscape: Boolean = false,
     )

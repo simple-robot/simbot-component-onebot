@@ -36,7 +36,7 @@ import kotlin.jvm.JvmStatic
 @SerialName(OneBotFace.TYPE)
 public class OneBotFace private constructor(override val data: Data) :
     OneBotMessageSegment,
-    EmoticonMessage {
+    OneBotMessageSegmentElementResolver {
     public val id: ID
         get() = data.id
 
@@ -50,6 +50,14 @@ public class OneBotFace private constructor(override val data: Data) :
 
     @Serializable
     public data class Data(val id: ID)
+
+    override fun toElement(): OneBotMessageSegmentElement =
+        Element(this)
+
+    @Serializable
+    @SerialName("ob11.segment.face")
+    public data class Element(override val segment: OneBotFace) :
+        OneBotMessageSegmentElement(), EmoticonMessage
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

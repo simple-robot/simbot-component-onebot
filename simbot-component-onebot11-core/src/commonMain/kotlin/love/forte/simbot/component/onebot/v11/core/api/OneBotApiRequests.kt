@@ -51,6 +51,9 @@ import kotlin.jvm.JvmSynthetic
  *
  * @param client 用于请求的 [HttpClient].
  * @param host 用于请求的路径前缀。最终发起请求的完整地址为 [host] + [OneBotApi.action] + [actionSuffixes].
+ * @param accessToken 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
+ * 中涉及到 `access token` 请求头的内容 (`Authorization`)。
+ * 如果不为 `null`，会追加前缀 `Bearer ` 并添加到请求头 `Authorization` 中。
  * @param actionSuffixes 会被拼接到 [OneBotApi.action] 的行为后缀，可参考 [OneBotApi.Actions].
  */
 @JvmSynthetic
@@ -58,7 +61,8 @@ import kotlin.jvm.JvmSynthetic
 public suspend fun OneBotApi<*>.request(
     client: HttpClient,
     host: Url,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
 ): HttpResponse {
     return client.post {
         url {
@@ -77,6 +81,7 @@ public suspend fun OneBotApi<*>.request(
 
         headers {
             contentType(ContentType.Application.Json)
+            accessToken?.also { bearerAuth(it) }
         }
 
         when (val b = this@request.body) {
@@ -131,8 +136,9 @@ public suspend fun OneBotApi<*>.request(
 public suspend fun OneBotApi<*>.request(
     client: HttpClient,
     host: String,
-    actionSuffixes: List<String>? = null,
-): HttpResponse = request(client, Url(host), actionSuffixes)
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+): HttpResponse = request(client, Url(host), accessToken, actionSuffixes)
 
 /**
  * 对 [this] 发起一次请求，并得到响应体的字符串内容。
@@ -148,10 +154,11 @@ public suspend fun OneBotApi<*>.request(
 public suspend fun OneBotApi<*>.requestRaw(
     client: HttpClient,
     host: Url,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8
 ): String {
-    val response = request(client, host, actionSuffixes)
+    val response = request(client, host, accessToken, actionSuffixes)
     val status = response.status
     if (!status.isSuccess()) {
         throw OneBotApiResponseNotSuccessException(status)
@@ -173,9 +180,10 @@ public suspend fun OneBotApi<*>.requestRaw(
 public suspend fun OneBotApi<*>.requestRaw(
     client: HttpClient,
     host: String,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8
-): String = requestRaw(client, Url(host), actionSuffixes, charset)
+): String = requestRaw(client, Url(host), accessToken, actionSuffixes, charset)
 
 /**
  * 对 [this] 发起一次请求，并得到响应体的 [OneBotApiResult] 结果。
@@ -190,10 +198,11 @@ public suspend fun OneBotApi<*>.requestRaw(
 public suspend fun <T : Any> OneBotApi<T>.requestResult(
     client: HttpClient,
     host: Url,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
 ): OneBotApiResult<T> {
-    val raw = requestRaw(client, host, actionSuffixes, charset)
+    val raw = requestRaw(client, host, accessToken, actionSuffixes, charset)
     return OneBot11.DefaultJson.decodeFromString(apiResultDeserializer, raw)
 }
 
@@ -210,9 +219,10 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
 public suspend fun <T : Any> OneBotApi<T>.requestResult(
     client: HttpClient,
     host: String,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8
-): OneBotApiResult<T> = requestResult(client, Url(host), actionSuffixes, charset)
+): OneBotApiResult<T> = requestResult(client, Url(host), accessToken, actionSuffixes, charset)
 
 /**
  * 对 [this] 发起一次请求，并得到响应体的 [T] 类型结果。
@@ -229,10 +239,11 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
 public suspend fun <T : Any> OneBotApi<T>.requestData(
     client: HttpClient,
     host: Url,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
 ): T {
-    val result = requestResult(client, host, actionSuffixes, charset)
+    val result = requestResult(client, host, accessToken, actionSuffixes, charset)
     return result.dataOrThrow
 }
 
@@ -251,9 +262,10 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
 public suspend fun <T : Any> OneBotApi<T>.requestData(
     client: HttpClient,
     host: String,
-    actionSuffixes: List<String>? = null,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8
-): T = requestData(client, Url(host), actionSuffixes, charset)
+): T = requestData(client, Url(host), accessToken, actionSuffixes, charset)
 
 
 /**

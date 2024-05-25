@@ -39,7 +39,7 @@ public class OneBotImage private constructor(
     override val data: Data,
     @Transient
     private val resource0: Resource? = null,
-) : OneBotMessageSegment, Image {
+) : OneBotMessageSegment, OneBotMessageSegmentElementResolver {
     /**
      * 当前 [OneBotImage] 中的资源信息。
      * 如果 [Data.url] 不为 `null`(即此消息是接收到的)
@@ -133,6 +133,16 @@ public class OneBotImage private constructor(
         val proxy: Boolean? = null, // send only
         val timeout: Int? = null, // send only
     )
+
+    override fun toElement(): OneBotMessageSegmentElement =
+        Element(this)
+
+    @Serializable
+    @SerialName("ob11.segment.image")
+    public data class Element(override val segment: OneBotImage) : OneBotMessageSegmentElement(), Image {
+        public val resource: Resource
+            get() = segment.resource
+    }
 
     /**
      * 用于 [OneBotImage] 提供的部分工厂函数中，
