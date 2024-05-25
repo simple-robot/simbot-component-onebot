@@ -56,9 +56,11 @@ class ApiRequestTests {
 
         val data = SendPrivateMsgApi.create(
             123.ID,
-            listOf(
-                OneBotText.create("Hello, World"),
-                OneBotFace.create(555.ID)
+            OneBotMessageOutgoing.Companion.create(
+                listOf(
+                    OneBotText.create("Hello, World"),
+                    OneBotFace.create(555.ID)
+                )
             ),
         ).requestData(
             client,
