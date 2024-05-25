@@ -22,6 +22,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElementSerializer
 import kotlin.jvm.JvmOverloads
@@ -113,7 +114,7 @@ auto_escape	boolean	false	消息内容是否作为纯文本发送（即不解析
  */
 @Serializable
 public data class SendPrivateMsgResult
-@ApiResultType internal constructor(
+@ApiResultConstructor internal constructor(
     @SerialName("message_id")
     val messageId: ID
 )

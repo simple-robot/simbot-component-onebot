@@ -15,16 +15,21 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.meta
-
-import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
-
+package love.forte.simbot.component.onebot.v11.common.event
 
 /**
- * OneBot中的元事件类型。
- * @author ForteScarlet
+ * 标记在 `Event` 的某个具体实现数据类的构造上，
+ * 并做出如下警告：
+ * 这是用作 `Event` 的类型(或与之相关)，它应当仅通过序列化器构造。
+ * 作为数据类，它可能无法保证兼容性，请避免直接构造它。
  */
-public interface OneBotMetaEvent : OneBotEvent {
-    override val sourceEvent: MetaEvent
-}
+@Target(AnnotationTarget.CONSTRUCTOR)
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "这是用作OneBot `Event` 的类型(或与之相关)，" +
+        "它应当仅通过序列化器构造。" +
+        "作为数据类，它可能无法保证兼容性，请避免直接构造它。",
+    level = RequiresOptIn.Level.ERROR
+)
+@MustBeDocumented
+public annotation class SourceEventConstructor

@@ -42,6 +42,7 @@ kotlin {
             compileOnly(libs.simbot.api)
             compileOnly(libs.simbot.common.annotations)
 
+            api(project(":simbot-component-onebot11-common"))
             api(project(":simbot-component-onebot11-message"))
 
             api(libs.kotlinx.coroutines.core)
@@ -55,6 +56,8 @@ kotlin {
         }
 
         commonTest.dependencies {
+            api(project(":simbot-component-onebot11-common"))
+
             api(libs.simbot.core)
             api(kotlin("test"))
             api(libs.ktor.client.mock)

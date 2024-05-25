@@ -20,11 +20,16 @@ package love.forte.simbot.component.onebot.v11.core.event.message
 import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
 import love.forte.simbot.event.MessageEvent
 
+/**
+ * OneBot11原始的消息事件结构体定义类型。
+ */
+public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.event.message.MessageEvent
 
 /**
+ * OneBot组件中的消息相关事件。
  *
  * @author ForteScarlet
  */
 public interface OneBotMessageEvent : OneBotEvent, MessageEvent {
-    // TODO
+    override val sourceEvent: OBSourceMessageEvent
 }

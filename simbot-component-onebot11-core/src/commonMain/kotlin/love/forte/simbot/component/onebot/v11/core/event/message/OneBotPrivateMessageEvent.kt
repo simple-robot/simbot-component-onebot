@@ -17,15 +17,23 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.message
 
+import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.definition.Contact
+import love.forte.simbot.definition.Member
 import love.forte.simbot.event.ContactMessageEvent
+import love.forte.simbot.event.MemberMessageEvent
 
 
 /**
  * [私聊消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#私聊消息)
  *
+ * @see PrivateMessageEvent
+ *
  * @author ForteScarlet
  */
-public interface OneBotPrivateMessageEvent : OneBotMessageEvent, ContactMessageEvent {
+public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
+    override val sourceEvent: PrivateMessageEvent
+
     /**
      * private 消息类型
      */
@@ -38,19 +46,18 @@ public interface OneBotPrivateMessageEvent : OneBotMessageEvent, ContactMessageE
     public val subType: String
 }
 
-/*
-事件数据
-字段名	数据类型	可能的值	说明
-time	number (int64)	-	事件发生的时间戳
-self_id	number (int64)	-	收到事件的机器人 QQ 号
-post_type	string	message	上报类型
-
-message_type	string	private	消息类型
-sub_type	string	friend、group、other	消息子类型，如果是好友则是 friend，如果是群临时会话则是 group
-message_id	number (int32)	-	消息 ID
-user_id	number (int64)	-	发送者 QQ 号
-message	message	-	消息内容
-raw_message	string	-	原始消息内容
-font	number (int32)	-	字体
-sender	object	-	发送人信息
+/**
+ * 一个代表好友私聊消息的 [OneBotPrivateMessageEvent]。
+ * 即 [subType] == `friend`。
  */
+public interface OneBotFriendMessageEvent : OneBotPrivateMessageEvent, ContactMessageEvent {
+    override suspend fun content(): Contact
+}
+
+/**
+ * 一个代表群成员私聊的临时消息（群临时会话）的 [OneBotPrivateMessageEvent]。
+ * 即 [subType] == `group`。
+ */
+public interface OneBotGroupPrivateMessageEvent : OneBotPrivateMessageEvent, MemberMessageEvent {
+    override suspend fun content(): Member
+}

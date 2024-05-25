@@ -17,14 +17,42 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.meta
 
-import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.component.onebot.v11.common.api.StatusResult
+import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import kotlin.jvm.JvmSynthetic
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 
 /**
- * OneBot中的元事件类型。
+ * [心跳事件](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#心跳)
+ *
+ * @see MetaEvent
+ *
  * @author ForteScarlet
  */
-public interface OneBotMetaEvent : OneBotEvent {
-    override val sourceEvent: MetaEvent
+public interface OneBotHeartbeatEvent : OneBotMetaEvent {
+    override val sourceEvent: HeartbeatEvent
+
+    /**
+     * 状态信息
+     */
+    public val status: StatusResult
+        get() = sourceEvent.status
+
+    /**
+     * 到下次心跳的间隔，单位毫秒
+     */
+    @Api4J
+    public val intervalValue: Long
+        get() = sourceEvent.interval
+
+    /**
+     * 到下次心跳的间隔
+     */
+    @get:JvmSynthetic
+    public val interval: Duration
+        get() = sourceEvent.interval.milliseconds
 }

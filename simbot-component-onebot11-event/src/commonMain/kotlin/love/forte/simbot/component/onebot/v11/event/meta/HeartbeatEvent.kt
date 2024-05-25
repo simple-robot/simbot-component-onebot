@@ -20,6 +20,7 @@ package love.forte.simbot.component.onebot.v11.event.meta
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.common.api.StatusResult
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 
@@ -43,6 +44,6 @@ public data class HeartbeatEvent(
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    public val status: String, // GetStatusResult
+    public val status: StatusResult,
     public val interval: Long,
 ) : MetaEvent

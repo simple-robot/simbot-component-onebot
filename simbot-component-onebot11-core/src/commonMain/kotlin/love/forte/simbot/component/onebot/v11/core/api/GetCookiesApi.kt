@@ -7,6 +7,7 @@ import kotlin.jvm.JvmStatic
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
 
 /**
  * [`get_cookies`-获取 Cookies](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_cookies-获取-cookies)
@@ -56,6 +57,6 @@ public class GetCookiesApi private constructor(
  * @param cookies Cookies
  */
 @Serializable
-public data class GetCookiesResult @ApiResultType internal constructor(
+public data class GetCookiesResult @ApiResultConstructor internal constructor(
     public val cookies: String,
 )

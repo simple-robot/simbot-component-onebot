@@ -22,7 +22,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
-import love.forte.simbot.component.onebot.v11.event.SourceEventConstructor
+import love.forte.simbot.component.onebot.v11.common.event.SourceEventConstructor
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 
 /**

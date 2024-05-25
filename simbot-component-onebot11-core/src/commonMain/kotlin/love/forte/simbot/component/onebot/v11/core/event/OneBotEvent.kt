@@ -21,6 +21,9 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.event.Event
 
+/**
+ * OneBot11原始事件结构体类型。
+ */
 public typealias OBSourceEvent = love.forte.simbot.component.onebot.v11.event.Event
 
 /**
@@ -45,7 +48,7 @@ public interface OneBotEvent : Event {
      */
     public val timestamp: Timestamp
         get() = Timestamp.ofMilliseconds(sourceEvent.time)
-    // (既然是 `int64`, 那么原始数据应该是毫秒值)
+    // 既然是 `int64`, 那么原始数据应该是毫秒值
 
     /**
      * 收到事件的机器人 QQ 号

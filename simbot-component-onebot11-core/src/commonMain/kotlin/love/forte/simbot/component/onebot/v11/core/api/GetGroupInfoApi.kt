@@ -12,6 +12,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
 
 /**
  * [`get_group_info`-获取群信息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_info-获取群信息)
@@ -70,7 +71,7 @@ public class GetGroupInfoApi private constructor(
  * @param maxMemberCount 最大成员数（群容量）
  */
 @Serializable
-public data class GetGroupInfoResult @ApiResultType internal constructor(
+public data class GetGroupInfoResult @ApiResultConstructor internal constructor(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("group_name")
