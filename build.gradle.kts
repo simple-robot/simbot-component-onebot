@@ -8,6 +8,7 @@ plugins {
     `simbot-onebot-dokka-multi-module`
 
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
 }
 
 group = "love.forte.simbot.component"
@@ -88,4 +89,25 @@ tasks.withType<Detekt>().configureEach {
     exclude("**/*Test/java/")
     exclude("**/test/kotlin/")
     exclude("**/test/java/")
+}
+
+apiValidation {
+    ignoredPackages.add("*.internal.*")
+
+    this.ignoredProjects.addAll(
+        listOf(
+            "event-type-resolver-processor",
+            "include-component-message-elements-processor",
+        )
+    )
+
+    // 实验性和内部API可能无法保证二进制兼容
+    nonPublicMarkers.addAll(
+        listOf(
+            "love.forte.simbot.annotations.ExperimentalSimbotAPI",
+            "love.forte.simbot.annotations.InternalSimbotAPI",
+        ),
+    )
+
+    apiDumpDirectory = "api"
 }
