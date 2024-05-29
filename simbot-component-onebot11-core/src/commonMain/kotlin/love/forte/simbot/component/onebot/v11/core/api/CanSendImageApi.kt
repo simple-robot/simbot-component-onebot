@@ -46,7 +46,7 @@ public class CanSendImageApi private constructor() : OneBotApi<CanSendImageResul
 /**
  * [CanSendImageApi] 的响应体。
  *
- * @param yes 是或否
+ * @property yes 是或否
  */
 @Serializable
 public data class CanSendImageResult @ApiResultConstructor internal constructor(

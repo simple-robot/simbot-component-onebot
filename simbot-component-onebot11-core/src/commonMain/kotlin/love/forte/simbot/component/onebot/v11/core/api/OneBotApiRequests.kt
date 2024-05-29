@@ -27,15 +27,29 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.utils.io.charsets.*
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.serialization.guessSerializer
 import love.forte.simbot.component.onebot.v11.core.OneBot11
+import love.forte.simbot.logger.Logger
+import love.forte.simbot.logger.LoggerFactory
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
 // TODO JVM async, blocking
 
-// TODO logger
+/**
+ * 用于在对 [OneBotApi] 发起请求时输出相关的 `debug` 日志。
+ */
+@InternalSimbotAPI
+public val ApiReqLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.REQ")
+
+/**
+ * 用于在对 [OneBotApi] 发起请求后、得到响应时输出相关的 `debug` 日志。
+ */
+@InternalSimbotAPI
+public val ApiResLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.RES")
+
 
 /**
  * 对 [this] 发起一次请求，并得到相应的 [HttpResponse] 响应。
@@ -112,6 +126,20 @@ public suspend fun OneBotApi<*>.request(
                 }
             }
         }
+
+        ApiReqLogger.debug(
+            "API [{}] REQ ===> {}, body: {}",
+            action,
+            url,
+            this@request.body,
+        )
+    }.also { res ->
+        ApiResLogger.debug(
+            "API [{}] RES <=== {}, status: {}",
+            action,
+            res.request.url,
+            res.status,
+        )
     }
 }
 
@@ -163,7 +191,14 @@ public suspend fun OneBotApi<*>.requestRaw(
     if (!status.isSuccess()) {
         throw OneBotApiResponseNotSuccessException(status)
     }
-    return response.bodyAsText(charset)
+    return response.bodyAsText(charset).also { raw ->
+        ApiResLogger.debug(
+            "API [{}] RES <=== {}, raw: {}",
+            action,
+            response.request.url,
+            raw
+        )
+    }
 }
 
 /**

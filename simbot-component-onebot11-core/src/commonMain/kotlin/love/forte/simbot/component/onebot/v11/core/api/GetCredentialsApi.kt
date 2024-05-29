@@ -47,7 +47,7 @@ public class GetCredentialsApi private constructor(
     }
 
     /**
-     * @param domain 需要获取 cookies 的域名
+     * @property domain 需要获取 cookies 的域名
      */
     @Serializable
     internal data class Body(
@@ -58,8 +58,8 @@ public class GetCredentialsApi private constructor(
 /**
  * [GetCredentialsApi] 的响应体。
  *
- * @param cookies Cookies
- * @param csrfToken CSRF Token
+ * @property cookies Cookies
+ * @property csrfToken CSRF Token
  */
 @Serializable
 public data class GetCredentialsResult @ApiResultConstructor internal constructor(

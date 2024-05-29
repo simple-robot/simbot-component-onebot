@@ -32,7 +32,7 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty("metaEventType")
+@ExpectEventSubTypeProperty(value = "metaEventType", postType = MetaEvent.POST_TYPE, name = "meta_event_type")
 public interface MetaEvent : Event {
     /**
      * 元事件类型

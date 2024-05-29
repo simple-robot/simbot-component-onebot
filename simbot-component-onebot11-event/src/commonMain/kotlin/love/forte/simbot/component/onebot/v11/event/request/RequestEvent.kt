@@ -26,7 +26,7 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty("requestType")
+@ExpectEventSubTypeProperty(value = "requestType", postType = RequestEvent.POST_TYPE, name = "request_type")
 public interface RequestEvent : Event {
     /**
      * 请求类型

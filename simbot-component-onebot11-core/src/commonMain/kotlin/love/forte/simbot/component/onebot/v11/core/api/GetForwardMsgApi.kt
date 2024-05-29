@@ -42,7 +42,7 @@ public class GetForwardMsgApi private constructor(
     }
 
     /**
-     * @param id 合并转发 ID
+     * @property id 合并转发 ID
      */
     @Serializable
     internal data class Body(
@@ -53,7 +53,7 @@ public class GetForwardMsgApi private constructor(
 /**
  * [GetForwardMsgApi] 的响应体。
  *
- * @param message 消息内容，使用 [消息的数组格式](https://github.com/botuniverse/onebot-11/blob/master/message/array.md) 表示，
+ * @property message 消息内容，使用 [消息的数组格式](https://github.com/botuniverse/onebot-11/blob/master/message/array.md) 表示，
  * 数组中的消息段全部为 [`node` 消息段](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#合并转发自定义节点)
  */
 @Serializable

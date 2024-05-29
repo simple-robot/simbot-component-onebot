@@ -47,9 +47,9 @@ public class GetFriendListApi private constructor() : OneBotApi<List<GetFriendLi
 /**
  * [GetFriendListApi] 的响应体。
  *
- * @param userId QQ 号
- * @param nickname 昵称
- * @param remark 备注名
+ * @property userId QQ 号
+ * @property nickname 昵称
+ * @property remark 备注名
  */
 @Serializable
 public data class GetFriendListResult @ApiResultConstructor internal constructor(

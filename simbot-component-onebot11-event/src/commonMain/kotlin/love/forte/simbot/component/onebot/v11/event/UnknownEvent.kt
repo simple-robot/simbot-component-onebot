@@ -35,7 +35,7 @@ import love.forte.simbot.common.id.LongID
  * @author ForteScarlet
  */
 @FragileSimbotAPI
-public class UnknownEvent(
+public data class UnknownEvent(
     override val time: Long,
     override val selfId: LongID,
     override val postType: String,

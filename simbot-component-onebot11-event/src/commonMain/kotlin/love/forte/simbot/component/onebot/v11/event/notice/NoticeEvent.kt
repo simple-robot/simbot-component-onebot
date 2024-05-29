@@ -26,7 +26,7 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty("noticeType")
+@ExpectEventSubTypeProperty(value = "noticeType", postType = NoticeEvent.POST_TYPE, name = "notice_type")
 public interface NoticeEvent : Event {
     /**
      * 通知类型

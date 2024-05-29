@@ -46,7 +46,7 @@ public class GetCsrfTokenApi private constructor() : OneBotApi<GetCsrfTokenResul
 /**
  * [GetCsrfTokenApi] 的响应体。
  *
- * @param token CSRF Token
+ * @property token CSRF Token
  */
 @Serializable
 public data class GetCsrfTokenResult @ApiResultConstructor internal constructor(

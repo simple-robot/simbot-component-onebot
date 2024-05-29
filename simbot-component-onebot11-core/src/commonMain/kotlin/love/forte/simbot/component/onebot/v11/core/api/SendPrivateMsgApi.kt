@@ -66,6 +66,11 @@ public class SendPrivateMsgApi private constructor(
         )
     }
 
+    /**
+     * @property userId 对方 QQ 号
+     * @property message 要发送的内容
+     * @property autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
+     */
     @Serializable
     internal data class Body(
         @SerialName("user_id")

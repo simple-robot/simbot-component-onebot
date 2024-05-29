@@ -47,7 +47,7 @@ public class CanSendRecordApi private constructor() : OneBotApi<CanSendRecordRes
 /**
  * [CanSendRecordApi] 的响应体。
  *
- * @param yes 是或否
+ * @property yes 是或否
  */
 @Serializable
 public data class CanSendRecordResult @ApiResultConstructor internal constructor(

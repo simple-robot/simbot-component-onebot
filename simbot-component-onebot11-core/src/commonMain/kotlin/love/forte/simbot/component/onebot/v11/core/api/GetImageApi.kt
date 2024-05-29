@@ -41,7 +41,7 @@ public class GetImageApi private constructor(
     }
 
     /**
-     * @param file 收到的图片文件名（消息段的 `file` 参数），如 `6B4DE3DFD1BD271E3297859D41C530F5.jpg`
+     * @property file 收到的图片文件名（消息段的 `file` 参数），如 `6B4DE3DFD1BD271E3297859D41C530F5.jpg`
      */
     @Serializable
     internal data class Body(
@@ -52,7 +52,7 @@ public class GetImageApi private constructor(
 /**
  * [GetImageApi] 的响应体。
  *
- * @param file 下载后的图片文件路径，如 `/home/somebody/cqhttp/data/image/6B4DE3DFD1BD271E3297859D41C530F5.jpg`
+ * @property file 下载后的图片文件路径，如 `/home/somebody/cqhttp/data/image/6B4DE3DFD1BD271E3297859D41C530F5.jpg`
  */
 @Serializable
 public data class GetImageResult @ApiResultConstructor internal constructor(
