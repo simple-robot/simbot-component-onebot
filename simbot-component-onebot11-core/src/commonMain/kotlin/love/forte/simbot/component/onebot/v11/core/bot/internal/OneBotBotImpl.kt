@@ -131,11 +131,11 @@ internal class OneBotBotImpl(
     }
 
     // 联系人相关操作，OB里即为好友
-    override val contactRelation: ContactRelation?
+    override val contactRelation: ContactRelation
         get() = TODO("Not yet implemented")
 
     // 与群聊相关的操作
-    override val groupRelation: GroupRelation?
+    override val groupRelation: GroupRelation
         get() = TODO("Not yet implemented")
 
 }

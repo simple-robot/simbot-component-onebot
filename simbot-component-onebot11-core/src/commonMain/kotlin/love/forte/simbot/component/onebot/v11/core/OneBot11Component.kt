@@ -85,5 +85,4 @@ public class OneBot11ComponentFactoryProvider : ComponentFactoryProvider<OneBot1
 public interface OneBot11ComponentFactoryConfigurerProvider :
     ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>
 
-internal expect fun loadOneBot11ComponentConfigures():
-    Sequence<OneBot11ComponentFactoryConfigurerProvider>
+internal expect fun loadOneBot11ComponentConfigures(): Sequence<OneBot11ComponentFactoryConfigurerProvider>
