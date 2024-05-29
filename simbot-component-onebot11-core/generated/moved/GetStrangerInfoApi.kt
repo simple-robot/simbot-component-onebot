@@ -71,7 +71,7 @@ public class GetStrangerInfoApi private constructor(
  * @param age 年龄
  */
 @Serializable
-public data class GetStrangerInfoResult @ApiResultType internal constructor(
+public data class GetStrangerInfoResult @ApiResultConstructor internal constructor(
     @SerialName("user_id")
     public val userId: LongID,
     public val nickname: String,
