@@ -20,7 +20,10 @@ package love.forte.simbot.component.onebot.v11.core
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.bot.serializableBotConfigurationPolymorphic
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotSerializableConfiguration
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
 import love.forte.simbot.component.onebot.v11.message.includeAllComponentMessageElementImpls
 import love.forte.simbot.component.onebot.v11.message.includeAllOneBotSegmentImpls
@@ -50,6 +53,9 @@ public object OneBot11 {
         }
         polymorphic(OneBotMessageSegment::class) {
             includeAllOneBotSegmentImpls()
+        }
+        serializableBotConfigurationPolymorphic {
+            subclass(OneBotBotSerializableConfiguration.serializer())
         }
     }
 
