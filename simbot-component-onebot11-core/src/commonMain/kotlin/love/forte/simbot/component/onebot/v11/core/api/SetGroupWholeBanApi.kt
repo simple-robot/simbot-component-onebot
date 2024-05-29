@@ -41,7 +41,7 @@ public class SetGroupWholeBanApi private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(groupId: ID, enable: Boolean? = null): SetGroupWholeBanApi =
-                SetGroupWholeBanApi(Body(groupId, enable))
+            SetGroupWholeBanApi(Body(groupId, enable))
     }
 
     /**

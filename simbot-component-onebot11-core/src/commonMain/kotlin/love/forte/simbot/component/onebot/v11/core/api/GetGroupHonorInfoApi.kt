@@ -46,8 +46,8 @@ public class GetGroupHonorInfoApi private constructor(
     }
 
     /**
-     * @param groupId 群号
-     * @param type 要获取的群荣誉类型，可传入 `talkative` `performer` `legend` `strong_newbie` `emotion`
+     * @property groupId 群号
+     * @property type 要获取的群荣誉类型，可传入 `talkative` `performer` `legend` `strong_newbie` `emotion`
      * 以分别获取单个类型的群荣誉数据，或传入 `all` 获取所有数据
      */
     @Serializable
@@ -61,13 +61,13 @@ public class GetGroupHonorInfoApi private constructor(
 /**
  * [GetGroupHonorInfoApi] 的响应体。
  *
- * @param groupId 群号
- * @param currentTalkative 当前龙王，仅 `type` 为 `talkative` 或 `all` 时有数据
- * @param talkativeList 历史龙王，仅 `type` 为 `talkative` 或 `all` 时有数据
- * @param performerList 群聊之火，仅 `type` 为 `performer` 或 `all` 时有数据
- * @param legendList 群聊炽焰，仅 `type` 为 `legend` 或 `all` 时有数据
- * @param strongNewbieList 冒尖小春笋，仅 `type` 为 `strong_newbie` 或 `all` 时有数据
- * @param emotionList 快乐之源，仅 `type` 为 `emotion` 或 `all` 时有数据
+ * @property groupId 群号
+ * @property currentTalkative 当前龙王，仅 `type` 为 `talkative` 或 `all` 时有数据
+ * @property talkativeList 历史龙王，仅 `type` 为 `talkative` 或 `all` 时有数据
+ * @property performerList 群聊之火，仅 `type` 为 `performer` 或 `all` 时有数据
+ * @property legendList 群聊炽焰，仅 `type` 为 `legend` 或 `all` 时有数据
+ * @property strongNewbieList 冒尖小春笋，仅 `type` 为 `strong_newbie` 或 `all` 时有数据
+ * @property emotionList 快乐之源，仅 `type` 为 `emotion` 或 `all` 时有数据
  */
 @Serializable
 public data class GetGroupHonorInfoResult @ApiResultConstructor internal constructor(
@@ -89,10 +89,10 @@ public data class GetGroupHonorInfoResult @ApiResultConstructor internal constru
 
     /**
      * 当前龙王
-     * @param userId QQ 号
-     * @param nickname 昵称
-     * @param avatar 头像 URL
-     * @param dayCount 持续天数
+     * @property userId QQ 号
+     * @property nickname 昵称
+     * @property avatar 头像 URL
+     * @property dayCount 持续天数
      */
     @Serializable
     public data class CurrentTalkative(
@@ -107,10 +107,10 @@ public data class GetGroupHonorInfoResult @ApiResultConstructor internal constru
     /**
      * 龙王以外的荣耀信息内容。
      *
-     * @param userId QQ 号
-     * @param nickname 昵称
-     * @param avatar 头像 URL
-     * @param description 荣誉描述
+     * @property userId QQ 号
+     * @property nickname 昵称
+     * @property avatar 头像 URL
+     * @property description 荣誉描述
      */
     @Serializable
     public data class HonorInfo(

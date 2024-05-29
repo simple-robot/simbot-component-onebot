@@ -75,6 +75,7 @@ private const val SERIALIZABLE_ANNOTATION = "kotlinx.serialization.Serializable"
 
 private const val FUNCTION_RESOLVER_SERIALIZER_NAME = "resolveEventSerializer"
 private const val FUNCTION_RESOLVER_TYPE_NAME = "resolveEventType"
+private const val FUNCTION_RESOLVER_SUB_TYPE_NAME = "resolveEventSubTypeFieldName"
 
 private const val FILE_NAME = "EventResolver.generated"
 private const val FILE_JVM_NAME = "EventResolvers"
@@ -138,6 +139,9 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         val resolveRootEventFunction =
             resolveRootEventFunction(expectEventSubTypePropertyAnnotationDeclaration, rootSubEventTypes)
 
+        val resolveSubTypeFieldNameFunction =
+            resolveSubTypeFieldNameFunction(expectEventSubTypePropertyAnnotationDeclaration, rootSubEventTypes)
+
         val generatedFile = FileSpec.builder(EVENT_BASE_PACKAGE, FILE_NAME).apply {
             addFileComment(
                 """
@@ -158,6 +162,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
             addFunction(resolveSerializerFunction)
             addFunction(resolveTypeFunction)
             addFunction(resolveRootEventFunction)
+            addFunction(resolveSubTypeFieldNameFunction)
 
             indent("    ")
         }.build()
@@ -196,6 +201,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         rootSubEventTypes: List<KSClassDeclaration>
     ): FunSpec {
         return FunSpec.builder(FUNCTION_RESOLVER_SERIALIZER_NAME).apply {
+            addAnnotation(InternalSimbotAPIClassName)
             addParameter(FUNCTION_EVENT_PARAM_NAME, EventClassName)
             returns(
                 KSerializerClassName.parameterizedBy(
@@ -420,6 +426,52 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
                     )
                 }
             )
+        }.build()
+    }
+
+    private fun resolveSubTypeFieldNameFunction(
+        annotationDeclaration: KSClassDeclaration,
+        rootSubEventTypes: List<KSClassDeclaration>
+    ): FunSpec {
+        return FunSpec.builder(FUNCTION_RESOLVER_SUB_TYPE_NAME).apply {
+            addAnnotation(InternalSimbotAPIClassName)
+            addParameter(FUNCTION_POST_TYPE_PARAM_NAME, STRING)
+
+            returns(STRING.copy(nullable = true))
+
+            addCode(
+                buildCodeBlock {
+                    addCode("return ")
+                    beginControlFlow("when (%L)", FUNCTION_POST_TYPE_PARAM_NAME)
+
+                    for (rootSubEventType in rootSubEventTypes) {
+                        val annotation = rootSubEventType.annotations
+                            .find {
+                                annotationDeclaration
+                                    .asStarProjectedType()
+                                    .isAssignableFrom(it.annotationType.resolve())
+                            }
+                            ?: continue
+
+                        val postTypeValue =
+                            annotation.arguments.find { it.name?.asString() == "postType" }?.value as? String?
+                                ?: continue
+
+                        val propertyName =
+                            annotation.arguments.find { it.name?.asString() == "name" }?.value as? String?
+                                ?: continue
+
+                        addStatement("%S -> %S", postTypeValue, propertyName)
+
+                    }
+
+                    addStatement("else -> null")
+
+                    endControlFlow()
+                }
+            )
+
+
         }.build()
     }
 

@@ -33,7 +33,7 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegme
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty("messageType")
+@ExpectEventSubTypeProperty(value = "messageType", postType = MessageEvent.POST_TYPE, name = "message_type")
 public interface MessageEvent : Event {
     /**
      * 消息 ID

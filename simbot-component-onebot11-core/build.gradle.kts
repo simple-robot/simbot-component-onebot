@@ -51,6 +51,7 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.serialization.json)
             api(libs.ktor.client.core)
+            api(libs.ktor.client.ws)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
             api(libs.ktor.client.contentNegotiation)
@@ -62,6 +63,7 @@ kotlin {
             api(libs.simbot.core)
             api(kotlin("test"))
             api(libs.ktor.client.mock)
+            api(libs.ktor.client.java)
             api(libs.kotlinx.coroutines.test)
         }
 

@@ -45,7 +45,7 @@ public class GetMsgApi private constructor(
     }
 
     /**
-     * @param messageId 消息 ID
+     * @property messageId 消息 ID
      */
     @Serializable
     internal data class Body(
@@ -57,12 +57,12 @@ public class GetMsgApi private constructor(
 /**
  * [GetMsgApi] 的响应体。
  *
- * @param time 发送时间
- * @param messageType 消息类型，同 [消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md)
- * @param messageId 消息 ID
- * @param realId 消息真实 ID
- * @param sender 发送人信息，同 [消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md)
- * @param message 消息内容
+ * @property time 发送时间
+ * @property messageType 消息类型，同 [消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md)
+ * @property messageId 消息 ID
+ * @property realId 消息真实 ID
+ * @property sender 发送人信息，同 [消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md)
+ * @property message 消息内容
  */
 @Serializable
 public data class GetMsgResult @ApiResultConstructor internal constructor(

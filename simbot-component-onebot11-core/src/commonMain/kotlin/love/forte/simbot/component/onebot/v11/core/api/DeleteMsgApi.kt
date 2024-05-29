@@ -40,7 +40,7 @@ public class DeleteMsgApi private constructor(
     }
 
     /**
-     * @param messageId 消息 ID
+     * @property messageId 消息 ID
      */
     @Serializable
     internal data class Body(

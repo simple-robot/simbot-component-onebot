@@ -50,8 +50,8 @@ public class GetGroupInfoApi private constructor(
     }
 
     /**
-     * @param groupId 群号
-     * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
+     * @property groupId 群号
+     * @property noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
      */
     @Serializable
     internal data class Body(
@@ -65,10 +65,10 @@ public class GetGroupInfoApi private constructor(
 /**
  * [GetGroupInfoApi] 的响应体。
  *
- * @param groupId 群号
- * @param groupName 群名称
- * @param memberCount 成员数
- * @param maxMemberCount 最大成员数（群容量）
+ * @property groupId 群号
+ * @property groupName 群名称
+ * @property memberCount 成员数
+ * @property maxMemberCount 最大成员数（群容量）
  */
 @Serializable
 public data class GetGroupInfoResult @ApiResultConstructor internal constructor(

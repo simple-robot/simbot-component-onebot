@@ -43,7 +43,7 @@ public class GetCookiesApi private constructor(
     }
 
     /**
-     * @param domain 需要获取 cookies 的域名
+     * @property domain 需要获取 cookies 的域名
      */
     @Serializable
     internal data class Body(
@@ -54,7 +54,7 @@ public class GetCookiesApi private constructor(
 /**
  * [GetCookiesApi] 的响应体。
  *
- * @param cookies Cookies
+ * @property cookies Cookies
  */
 @Serializable
 public data class GetCookiesResult @ApiResultConstructor internal constructor(

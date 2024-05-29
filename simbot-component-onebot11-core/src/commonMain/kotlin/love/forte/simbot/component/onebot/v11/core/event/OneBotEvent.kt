@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.event
 
 import love.forte.simbot.common.id.LongID
+import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.event.Event
 
@@ -47,8 +48,9 @@ public interface OneBotEvent : Event {
      * 事件发生的时间戳
      */
     public val timestamp: Timestamp
-        get() = Timestamp.ofMilliseconds(sourceEvent.time)
+        get() = Timestamp.ofMilliseconds(TimeUnit.SECONDS.toMillis(sourceEvent.time))
     // 既然是 `int64`, 那么原始数据应该是毫秒值
+    // 不是，似乎都是秒，10位的
 
     /**
      * 收到事件的机器人 QQ 号
