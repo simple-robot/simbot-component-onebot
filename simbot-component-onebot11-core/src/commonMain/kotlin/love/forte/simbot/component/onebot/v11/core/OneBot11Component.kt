@@ -20,9 +20,8 @@ package love.forte.simbot.component.onebot.v11.core
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.component.Component
-import love.forte.simbot.component.ComponentConfigureContext
-import love.forte.simbot.component.ComponentFactory
+import love.forte.simbot.common.services.Services
+import love.forte.simbot.component.*
 import kotlin.jvm.JvmField
 
 
@@ -61,4 +60,31 @@ public class OneBot11Component : Component {
  */
 public class OneBot11ComponentConfiguration
 
-// TODO Provider
+// TODO module.java
+
+/**
+ * 用于通过 SPI 自动加载 [OneBot11Component] 的 provider。
+ */
+public class OneBot11ComponentFactoryProvider : ComponentFactoryProvider<OneBot11ComponentConfiguration> {
+    override fun loadConfigures(): Sequence<ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>> =
+        loadOneBot11ComponentConfigures()
+
+    override fun provide(): ComponentFactory<*, OneBot11ComponentConfiguration> = OneBot11Component
+
+    public companion object {
+        // init {
+        //     TODO https://github.com/simple-robot/simpler-robot/pull/833
+        //     Services.addProviderExceptJvm(ComponentFactoryProvider::class) { OneBot11ComponentFactoryProvider() }
+        // }
+    }
+}
+
+/**
+ * 用于提供额外的 [OneBot11ComponentFactoryProvider] 配置器的 provider，
+ * 会在 [OneBot11ComponentFactoryProvider.loadConfigures] 中被加载。
+ */
+public interface OneBot11ComponentFactoryConfigurerProvider :
+    ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>
+
+internal expect fun loadOneBot11ComponentConfigures():
+    Sequence<ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>>
