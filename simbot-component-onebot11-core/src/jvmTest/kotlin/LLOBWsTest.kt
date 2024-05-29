@@ -3,55 +3,60 @@ import io.ktor.client.engine.java.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.long
 import love.forte.simbot.annotations.FragileSimbotAPI
-import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.OneBot11
-import love.forte.simbot.component.onebot.v11.event.UnknownEvent
-import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
-import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
-@OptIn(FragileSimbotAPI::class)
+@OptIn(FragileSimbotAPI::class, ExperimentalStdlibApi::class)
 suspend fun main() {
     val host = Url("ws://localhost:3001")
     val client = HttpClient(Java) {
         WebSockets {}
     }
 
+    val job = SupervisorJob()
     val json = OneBot11.DefaultJson
 
-    client.ws(host.toString()) {
-        incoming.receiveAsFlow().collect { frame ->
-            when (frame) {
-                is Frame.Text -> {
-                    val text = frame.readText()
-                    val obj = json.decodeFromString(JsonObject.serializer(), text)
+    val scope = CoroutineScope(EmptyCoroutineContext)
 
-                    val postType = obj["post_type"]!!.jsonPrimitive.content
-                    val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
-                    val subType = obj[subTypeFieldName]!!.jsonPrimitive.content
-                    val event = resolveEventSerializer(postType, subType)?.let {
-                        json.decodeFromJsonElement(it, obj)
-                    } ?: run {
-                        val time = obj["time"]?.jsonPrimitive?.long ?: -1L
-                        val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
-                        UnknownEvent(time, selfId, postType, text)
-                    }
+    val session = client.webSocketSession(host.toString())
 
-                    println("Event raw: $text")
-                    println("Event:     $event")
-                    println()
-                }
-
-                else -> {
-                    println("Unknown event: $frame")
-                }
-            }
-
-        }
+    scope.launch {
+        delay(5.seconds)
+        job.cancel()
     }
+
+    println(session.coroutineContext[Job])
+    println(session.coroutineContext[CoroutineDispatcher])
+
+    job.invokeOnCompletion {
+        session.cancel("Cancelled by job")
+    }
+
+    try {
+        session.incoming.receiveAsFlow()
+            .catch { e ->
+                println("incoming Err: $e")
+                e.printStackTrace()
+            }
+            .collect {
+                println("Received $it")
+            }
+    } catch (e: Exception) {
+        println("withContext Err: $e")
+        e.printStackTrace()
+    }
+
+    println(session)
+    println(session.isActive)
+
+    session.close()
+
+    println(session)
+    println(session.isActive)
 
 }

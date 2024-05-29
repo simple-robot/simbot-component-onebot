@@ -21,10 +21,7 @@ import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.bot.ContactRelation
@@ -185,6 +182,8 @@ internal class OneBotBotImpl(
 
 
     override suspend fun start() = startLock.withLock {
+        job.ensureActive()
+
         // TODO cancel current session if exists
 
         // OB11 似乎没有什么心跳之类乱七八糟的，似乎可以直接省略状态机
