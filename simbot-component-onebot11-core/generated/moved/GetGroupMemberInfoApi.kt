@@ -89,7 +89,7 @@ public class GetGroupMemberInfoApi private constructor(
  * @param cardChangeable 是否允许修改群名片
  */
 @Serializable
-public data class GetGroupMemberInfoResult @ApiResultType internal constructor(
+public data class GetGroupMemberInfoResult @ApiResultConstructor internal constructor(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("user_id")

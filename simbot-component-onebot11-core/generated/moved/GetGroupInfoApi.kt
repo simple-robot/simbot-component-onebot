@@ -70,7 +70,7 @@ public class GetGroupInfoApi private constructor(
  * @param maxMemberCount 最大成员数（群容量）
  */
 @Serializable
-public data class GetGroupInfoResult @ApiResultType internal constructor(
+public data class GetGroupInfoResult @ApiResultConstructor internal constructor(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("group_name")

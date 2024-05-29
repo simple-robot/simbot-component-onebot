@@ -62,7 +62,7 @@ public class GetCredentialsApi private constructor(
  * @param csrfToken CSRF Token
  */
 @Serializable
-public data class GetCredentialsResult @ApiResultType internal constructor(
+public data class GetCredentialsResult @ApiResultConstructor internal constructor(
     public val cookies: String,
     @SerialName("csrf_token")
     public val csrfToken: Int,

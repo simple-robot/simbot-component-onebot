@@ -50,7 +50,7 @@ public class GetLoginInfoApi private constructor() : OneBotApi<GetLoginInfoResul
  * @param nickname QQ 昵称
  */
 @Serializable
-public data class GetLoginInfoResult @ApiResultType internal constructor(
+public data class GetLoginInfoResult @ApiResultConstructor internal constructor(
     @SerialName("user_id")
     public val userId: LongID,
     public val nickname: String,

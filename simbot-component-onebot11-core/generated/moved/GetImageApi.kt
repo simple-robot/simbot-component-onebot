@@ -54,6 +54,6 @@ public class GetImageApi private constructor(
  * @param file 下载后的图片文件路径，如 `/home/somebody/cqhttp/data/image/6B4DE3DFD1BD271E3297859D41C530F5.jpg`
  */
 @Serializable
-public data class GetImageResult @ApiResultType internal constructor(
+public data class GetImageResult @ApiResultConstructor internal constructor(
     public val `file`: String,
 )

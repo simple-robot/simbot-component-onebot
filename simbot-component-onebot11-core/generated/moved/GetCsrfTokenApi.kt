@@ -49,6 +49,6 @@ public class GetCsrfTokenApi private constructor() : OneBotApi<GetCsrfTokenResul
  * @param token CSRF Token
  */
 @Serializable
-public data class GetCsrfTokenResult @ApiResultType internal constructor(
+public data class GetCsrfTokenResult @ApiResultConstructor internal constructor(
     public val token: Int,
 )

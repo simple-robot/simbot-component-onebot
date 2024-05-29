@@ -83,7 +83,7 @@ public class GetGroupHonorInfoApi private constructor(
  * @param description 荣誉描述
  */
 @Serializable
-public data class GetGroupHonorInfoResult @ApiResultType internal constructor(
+public data class GetGroupHonorInfoResult @ApiResultConstructor internal constructor(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("current_talkative")

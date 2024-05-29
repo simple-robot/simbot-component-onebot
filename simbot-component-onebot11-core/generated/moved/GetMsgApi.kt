@@ -64,7 +64,7 @@ public class GetMsgApi private constructor(
  * @param message 消息内容
  */
 @Serializable
-public data class GetMsgResult @ApiResultType internal constructor(
+public data class GetMsgResult @ApiResultConstructor internal constructor(
     public val time: Int,
     @SerialName("message_type")
     public val messageType: String,

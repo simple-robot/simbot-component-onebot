@@ -51,7 +51,7 @@ public class GetStatusApi private constructor() : OneBotApi<GetStatusResult> {
  * @param …… OneBot 实现自行添加的其它内容
  */
 @Serializable
-public data class GetStatusResult @ApiResultType internal constructor(
+public data class GetStatusResult @ApiResultConstructor internal constructor(
     public val online: Boolean,
     public val good: Boolean,
     public val `……`: Nothing = TODO("……?"),

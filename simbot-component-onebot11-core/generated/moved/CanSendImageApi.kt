@@ -48,6 +48,6 @@ public class CanSendImageApi private constructor() : OneBotApi<CanSendImageResul
  * @param yes 是或否
  */
 @Serializable
-public data class CanSendImageResult @ApiResultType internal constructor(
+public data class CanSendImageResult @ApiResultConstructor internal constructor(
     public val yes: Boolean,
 )

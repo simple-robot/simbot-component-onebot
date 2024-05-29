@@ -49,6 +49,6 @@ public class CanSendRecordApi private constructor() : OneBotApi<CanSendRecordRes
  * @param yes 是或否
  */
 @Serializable
-public data class CanSendRecordResult @ApiResultType internal constructor(
+public data class CanSendRecordResult @ApiResultConstructor internal constructor(
     public val yes: Boolean,
 )

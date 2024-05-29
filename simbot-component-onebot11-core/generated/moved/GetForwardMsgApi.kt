@@ -57,6 +57,6 @@ public class GetForwardMsgApi private constructor(
  * 消息段](../message/segment.md#合并转发自定义节点)
  */
 @Serializable
-public data class GetForwardMsgResult @ApiResultType internal constructor(
+public data class GetForwardMsgResult @ApiResultConstructor internal constructor(
     public val message: Any = TODO("message?"),
 )

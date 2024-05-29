@@ -72,7 +72,7 @@ public class SendGroupMsgApi private constructor(
  * @param messageId 消息 ID
  */
 @Serializable
-public data class SendGroupMsgResult @ApiResultType internal constructor(
+public data class SendGroupMsgResult @ApiResultConstructor internal constructor(
     @SerialName("message_id")
     public val messageId: IntID,
 )

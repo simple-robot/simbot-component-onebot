@@ -52,7 +52,7 @@ public class GetFriendListApi private constructor() : OneBotApi<GetFriendListRes
  * @param remark 备注名
  */
 @Serializable
-public data class GetFriendListResult @ApiResultType internal constructor(
+public data class GetFriendListResult @ApiResultConstructor internal constructor(
     @SerialName("user_id")
     public val userId: LongID,
     public val nickname: String,

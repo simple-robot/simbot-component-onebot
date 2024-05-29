@@ -57,6 +57,6 @@ public class GetCookiesApi private constructor(
  * @param cookies Cookies
  */
 @Serializable
-public data class GetCookiesResult @ApiResultType internal constructor(
+public data class GetCookiesResult @ApiResultConstructor internal constructor(
     public val cookies: String,
 )
