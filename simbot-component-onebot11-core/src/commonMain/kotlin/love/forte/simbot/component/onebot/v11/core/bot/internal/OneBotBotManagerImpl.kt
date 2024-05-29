@@ -60,6 +60,7 @@ internal class OneBotBotManagerImpl(
 
         fun createBot(): OneBotBotImpl =
             OneBotBotImpl(
+                uniqueId,
                 mergedContext,
                 job,
                 configuration,
