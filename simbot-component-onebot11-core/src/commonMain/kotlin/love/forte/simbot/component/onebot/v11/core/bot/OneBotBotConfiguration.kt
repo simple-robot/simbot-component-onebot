@@ -146,4 +146,6 @@ public class OneBotBotConfiguration {
      */
     public var wsClientEngineFactory: HttpClientEngineFactory<*>? = null
 
+    // TODO wsConnectionRetry config?
+
 }

@@ -20,11 +20,15 @@ package love.forte.simbot.component.onebot.v11.core.bot
 import io.ktor.client.*
 import io.ktor.http.*
 import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.ContactRelation
+import love.forte.simbot.bot.GroupRelation
+import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -88,7 +92,7 @@ public interface OneBotBot : Bot {
      * Bot的名称，来自 [GetLoginInfoApi] API.
      * [name] 是一个缓存值，不会实时查询或实时刷新。
      *
-     * 如果希望通过API查询登录信息或刷新此缓存，参考 [getLoginInfo]。
+     * 如果希望通过API查询登录信息或刷新此缓存，参考 [queryLoginInfo]。
      * @throws IllegalStateException Bot的selfId尚未初始化，即Bot尚未启动。
      */
     override val name: String
@@ -98,7 +102,7 @@ public interface OneBotBot : Bot {
      * 并刷新 [userId] 和 [name] 的缓存值。
      */
     @ST
-    public suspend fun getLoginInfo(): GetLoginInfoResult
+    public suspend fun queryLoginInfo(): GetLoginInfoResult
 
     /**
      * 启动Bot。
@@ -108,7 +112,22 @@ public interface OneBotBot : Bot {
      * 启动时，会开始建立与 [OneBotBotConfiguration.eventServerHost] 的 WS 连接。
      * 如果在已经启动的情况下再次启动，则会关闭原本的连接后重新连接。
      */
+    @JvmSynthetic
     override suspend fun start()
 
+    // TODO 联系人相关操作，OB里即好友相关操作
+    override val contactRelation: ContactRelation?
+        get() = null
+
+    // TODO 与群聊相关的操作
+    override val groupRelation: GroupRelation?
+        get() = null
+
+    /**
+     * 始终为 `null`。
+     * OB11协议主要为普通群聊设计。
+     */
+    override val guildRelation: GuildRelation?
+        get() = null
 
 }

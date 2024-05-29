@@ -101,7 +101,7 @@ internal class OneBotBotImpl(
     @Volatile
     private var _loginInfoResult: GetLoginInfoResult? = null
 
-    override suspend fun getLoginInfo(): GetLoginInfoResult {
+    override suspend fun queryLoginInfo(): GetLoginInfoResult {
         val result = GetLoginInfoApi.create().requestDataBy(this)
         _loginInfoResult = result
         return result
@@ -125,17 +125,18 @@ internal class OneBotBotImpl(
             ?: true
     }
 
-
     override suspend fun start() {
+        // OB11 似乎没有什么心跳之类乱七八糟的，似乎可以直接省略状态机
+        // 直接连接、断线重连
         TODO("Not yet implemented")
     }
 
+    // 联系人相关操作，OB里即为好友
     override val contactRelation: ContactRelation?
         get() = TODO("Not yet implemented")
 
+    // 与群聊相关的操作
     override val groupRelation: GroupRelation?
         get() = TODO("Not yet implemented")
 
-    override val guildRelation: GuildRelation?
-        get() = TODO("Not yet implemented")
 }
