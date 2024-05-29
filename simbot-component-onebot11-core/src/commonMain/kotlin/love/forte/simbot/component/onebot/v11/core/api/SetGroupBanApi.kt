@@ -1,7 +1,7 @@
 package love.forte.simbot.component.onebot.v11.core.api
 
 import kotlin.Any
-import kotlin.Boolean
+import kotlin.Long
 import kotlin.String
 import kotlin.Unit
 import kotlin.jvm.JvmOverloads
@@ -13,11 +13,11 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_anonymous`-群组匿名](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_anonymous-群组匿名)
+ * [`set_group_ban`-群组单人禁言](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_ban-群组单人禁言)
  *
  * @author ForteScarlet
  */
-public class SetGroupAnonymousApi private constructor(
+public class SetGroupBanApi private constructor(
     override val body: Any,
 ) : OneBotApi<Unit> {
     override val action: String
@@ -30,28 +30,35 @@ public class SetGroupAnonymousApi private constructor(
         get() = OneBotApiResult.emptySerializer()
 
     public companion object Factory {
-        private const val ACTION: String = "set_group_anonymous"
+        private const val ACTION: String = "set_group_ban"
 
         /**
-         * 构建一个 [SetGroupAnonymousApi].
+         * 构建一个 [SetGroupBanApi].
          *
          * @param groupId 群号
-         * @param enable 是否允许匿名聊天
+         * @param userId 要禁言的 QQ 号
+         * @param duration 禁言时长，单位秒，0 表示取消禁言
          */
         @JvmStatic
         @JvmOverloads
-        public fun create(groupId: ID, enable: Boolean? = null): SetGroupAnonymousApi =
-            SetGroupAnonymousApi(Body(groupId, enable))
+        public fun create(
+            groupId: ID,
+            userId: ID,
+            duration: Long? = null,
+        ): SetGroupBanApi = SetGroupBanApi(Body(groupId, userId, duration))
     }
 
     /**
      * @property groupId 群号
-     * @property enable 是否允许匿名聊天
+     * @property userId 要禁言的 QQ 号
+     * @property duration 禁言时长，单位秒，0 表示取消禁言
      */
     @Serializable
     internal data class Body(
         @SerialName("group_id")
         internal val groupId: ID,
-        internal val enable: Boolean? = null,
+        @SerialName("user_id")
+        internal val userId: ID,
+        internal val duration: Long? = null,
     )
 }

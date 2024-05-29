@@ -13,11 +13,11 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
 
 /**
- * [`set_group_anonymous`-群组匿名](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_anonymous-群组匿名)
+ * [`set_group_kick`-群组踢人](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#set_group_kick-群组踢人)
  *
  * @author ForteScarlet
  */
-public class SetGroupAnonymousApi private constructor(
+public class SetGroupKickApi private constructor(
     override val body: Any,
 ) : OneBotApi<Unit> {
     override val action: String
@@ -30,28 +30,36 @@ public class SetGroupAnonymousApi private constructor(
         get() = OneBotApiResult.emptySerializer()
 
     public companion object Factory {
-        private const val ACTION: String = "set_group_anonymous"
+        private const val ACTION: String = "set_group_kick"
 
         /**
-         * 构建一个 [SetGroupAnonymousApi].
+         * 构建一个 [SetGroupKickApi].
          *
          * @param groupId 群号
-         * @param enable 是否允许匿名聊天
+         * @param userId 要踢的 QQ 号
+         * @param rejectAddRequest 拒绝此人的加群请求
          */
         @JvmStatic
         @JvmOverloads
-        public fun create(groupId: ID, enable: Boolean? = null): SetGroupAnonymousApi =
-            SetGroupAnonymousApi(Body(groupId, enable))
+        public fun create(
+            groupId: ID,
+            userId: ID,
+            rejectAddRequest: Boolean? = null,
+        ): SetGroupKickApi = SetGroupKickApi(Body(groupId, userId, rejectAddRequest))
     }
 
     /**
      * @property groupId 群号
-     * @property enable 是否允许匿名聊天
+     * @property userId 要踢的 QQ 号
+     * @property rejectAddRequest 拒绝此人的加群请求
      */
     @Serializable
     internal data class Body(
         @SerialName("group_id")
         internal val groupId: ID,
-        internal val enable: Boolean? = null,
+        @SerialName("user_id")
+        internal val userId: ID,
+        @SerialName("reject_add_request")
+        internal val rejectAddRequest: Boolean? = null,
     )
 }
