@@ -18,8 +18,6 @@
 package love.forte.simbot.component.onebot.v11.core
 
 import love.forte.simbot.common.services.Services
-import love.forte.simbot.component.ComponentFactoryConfigurerProvider
 
-internal actual fun loadOneBot11ComponentConfigures():
-    Sequence<ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>> =
+internal actual fun loadOneBot11ComponentConfigures(): Sequence<OneBot11ComponentFactoryConfigurerProvider> =
     Services.loadProviders<OneBot11ComponentFactoryConfigurerProvider>().map { it() }

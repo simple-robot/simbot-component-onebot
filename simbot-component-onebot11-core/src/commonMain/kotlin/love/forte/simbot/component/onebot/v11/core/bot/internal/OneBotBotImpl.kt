@@ -22,7 +22,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.Job
 import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
-import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.id.ID

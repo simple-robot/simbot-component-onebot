@@ -20,7 +20,6 @@ package love.forte.simbot.component.onebot.v11.core
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.common.services.Services
 import love.forte.simbot.component.*
 import kotlin.jvm.JvmField
 
@@ -87,4 +86,4 @@ public interface OneBot11ComponentFactoryConfigurerProvider :
     ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>
 
 internal expect fun loadOneBot11ComponentConfigures():
-    Sequence<ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>>
+    Sequence<OneBot11ComponentFactoryConfigurerProvider>

@@ -15,14 +15,10 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
+package love.forte.simbot.component.onebot.v11.core.bot
 
 import love.forte.simbot.common.services.Services
-import java.util.*
 
-internal actual fun loadOneBot11ComponentConfigures(): Sequence<OneBot11ComponentFactoryConfigurerProvider> {
-    return ServiceLoader
-        .load(OneBot11ComponentFactoryConfigurerProvider::class.java)
-        .asSequence() +
-        Services.loadProviders<OneBot11ComponentFactoryConfigurerProvider>().map { it() }
-}
+internal actual fun loadOneBotBotManagerConfigures(): Sequence<OneBotBotManagerFactoryConfigurerProvider> =
+    Services.loadProviders<OneBotBotManagerFactoryConfigurerProvider>().map { it() }
+

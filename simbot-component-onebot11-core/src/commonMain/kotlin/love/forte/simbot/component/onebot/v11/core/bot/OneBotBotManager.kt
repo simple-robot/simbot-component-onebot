@@ -29,6 +29,8 @@ import love.forte.simbot.component.onebot.v11.core.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotManagerImpl
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
+import love.forte.simbot.plugin.PluginFactoryConfigurerProvider
+import love.forte.simbot.plugin.PluginFactoryProvider
 
 
 /**
@@ -102,3 +104,23 @@ public abstract class OneBotBotManager : BotManager, JobBasedBotManager() {
 public class OneBotBotManagerConfiguration
 
 // TODO SPI provider
+
+/**
+ * 用于通过 SPI 自动加载 [OneBot11Component] 的 provider。
+ */
+public class OneBotBotManagerFactoryProvider : PluginFactoryProvider<OneBotBotManagerConfiguration> {
+    override fun loadConfigures(): Sequence<PluginFactoryConfigurerProvider<OneBotBotManagerConfiguration>>? {
+        return super.loadConfigures()
+    }
+
+    override fun provide(): PluginFactory<*, OneBotBotManagerConfiguration> = OneBotBotManager
+}
+
+/**
+ * 用于提供额外的 [OneBotBotManagerFactoryProvider] 配置器的 provider，
+ * 会在 [OneBotBotManagerFactoryProvider.loadConfigures] 中被加载。
+ */
+public interface OneBotBotManagerFactoryConfigurerProvider :
+    PluginFactoryConfigurerProvider<OneBotBotManagerConfiguration>
+
+internal expect fun loadOneBotBotManagerConfigures(): Sequence<OneBotBotManagerFactoryConfigurerProvider>
