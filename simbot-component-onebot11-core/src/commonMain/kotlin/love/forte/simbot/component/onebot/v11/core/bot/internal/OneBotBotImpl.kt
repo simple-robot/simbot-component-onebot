@@ -37,6 +37,7 @@ import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 
@@ -45,7 +46,6 @@ import kotlin.coroutines.CoroutineContext
  * [OneBotBot] 的实现
  * @author ForteScarlet
  */
-
 internal class OneBotBotImpl(
     private val uniqueId: String,
     override val coroutineContext: CoroutineContext,
@@ -66,6 +66,11 @@ internal class OneBotBotImpl(
         )
         job.invokeOnCompletion { apiClient.close() }
     }
+
+    private val logger = LoggerFactory
+        .getLogger(
+            "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId"
+        )
 
     private val eventServerHost =
         requireNotNull(configuration.eventServerHost) {
@@ -176,6 +181,11 @@ internal class OneBotBotImpl(
             ?: true
     }
 
+    /**
+     * 当前的 ws session
+     *
+     * 需要在 [startLock] 中进行修改
+     */
     @Volatile
     private var wsSession: WsEventSession? = null
     private val startLock = Mutex()
@@ -184,19 +194,77 @@ internal class OneBotBotImpl(
     override suspend fun start() = startLock.withLock {
         job.ensureActive()
 
-        // TODO cancel current session if exists
+        createEventSession()
+
+        isStarted = true
+    }
+
+    private suspend fun createEventSession() {
+        // Cancel current session if exists
+        val currentSession = wsSession
+        wsSession = null
+        currentSession?.cancel()
 
         // OB11 似乎没有什么心跳之类乱七八糟的，似乎可以直接省略状态机
         // 直接连接、断线重连
-        val host = configuration.eventServerHost
-        val session = wsClient.webSocketSession(eventServerHost.toString()) {
-            TODO("")
+        wsSession = WsEventSession {
+            wsClient.webSocketSession {
+                url { takeFrom(eventServerHost) }
+            }
+        }.also { s -> launch { s.launch() } }
+    }
+
+
+    private inner class WsEventSession(
+        private val sessionFactory: suspend () -> DefaultWebSocketSession,
+    ) {
+        private val job = Job(this@OneBotBotImpl.job).apply {
+
+        }
+        private var session: DefaultWebSocketSession? = null
+
+        private suspend fun createSession(): DefaultWebSocketSession {
+            // TODO
+            return sessionFactory()
         }
 
-        wsSession = WsEventSession(session).also { it.launch(this) }
 
-        isStarted = true
-        TODO("Not yet implemented")
+        suspend fun launch() {
+            // TODO
+            while (job.isActive) {
+                // TODO retry?
+                val session = createSession().also {
+                    this@WsEventSession.session = it
+                }
+
+                receiveEvent(session)
+
+                // Session is done or dead.
+
+                val reason = session.closeReason.await()
+                logger.debug("Session {} done. The reason: {}", session, reason)
+            }
+
+            logger.debug(
+                "The EventSession is done.",
+                isActive,
+                job.isActive
+            )
+        }
+
+        private suspend fun receiveEvent(session: DefaultWebSocketSession) {
+            with(session) {
+                while (isActive) {
+                    val receive = incoming.receive()
+                    // TODO incoming.tryReceive() ?
+
+                }
+            }
+        }
+
+        fun cancel() {
+            // todo
+        }
     }
 
     // 联系人相关操作，OB里即为好友
@@ -213,26 +281,3 @@ internal class OneBotBotImpl(
 }
 
 
-private class WsEventSession(
-    initialSession: DefaultWebSocketSession,
-) {
-    private var session: DefaultWebSocketSession = initialSession
-
-    fun launch(scope: CoroutineScope): Job {
-        return scope.launch {
-            while (scope.isActive) {
-                with(session) {
-                    while (session.isActive) {
-                        val receive = incoming.receive()
-                        // TODO incoming.tryReceive() ?
-
-                    }
-                }
-            }
-        }
-    }
-
-    fun cancel() {
-        // TODO ?
-    }
-}
