@@ -25,6 +25,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
+import love.forte.simbot.component.onebot.v11.message.resolveToMessageElement
+import love.forte.simbot.message.At
+import love.forte.simbot.message.AtAll
+import love.forte.simbot.message.Face
 import love.forte.simbot.message.MentionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessagesBuilder
@@ -67,6 +71,10 @@ public interface OneBotMessageSegmentElementResolver {
 
 /**
  * 将 [OneBotMessageSegment] 转化或包装为 [OneBotMessageSegmentElement]。
+ * 这并不是在收到消息时用于转换类型的直接方法，
+ * 而是 [OneBotMessageSegment.resolveToMessageElement] ——
+ * 后者会将一些与标准消息元素无差别的类型直接转为标准消息类型，
+ * 例如将 [OneBotAt] 转为 [At] 或 [AtAll]、[OneBotFace] 转为 [Face]。
  */
 public fun OneBotMessageSegment.toElement(): OneBotMessageSegmentElement =
     when (this) {

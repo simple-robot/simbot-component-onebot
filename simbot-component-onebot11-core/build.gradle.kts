@@ -63,7 +63,6 @@ kotlin {
             api(libs.simbot.core)
             api(kotlin("test"))
             api(libs.ktor.client.mock)
-            api(libs.ktor.client.java)
             api(libs.kotlinx.coroutines.test)
         }
 
@@ -78,6 +77,7 @@ kotlin {
             implementation(libs.log4j.core)
             implementation(libs.log4j.slf4j2)
             implementation(libs.kotlinPoet)
+            api(libs.ktor.client.java)
         }
 
         jsMain.dependencies {

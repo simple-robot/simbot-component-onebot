@@ -20,7 +20,6 @@ package love.forte.simbot.component.onebot.v11.message.segment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.message.EmoticonMessage
 import love.forte.simbot.message.Face
 import kotlin.jvm.JvmStatic
 
@@ -35,8 +34,7 @@ import kotlin.jvm.JvmStatic
 @Serializable
 @SerialName(OneBotFace.TYPE)
 public class OneBotFace private constructor(override val data: Data) :
-    OneBotMessageSegment,
-    OneBotMessageSegmentElementResolver {
+    OneBotMessageSegment {
     public val id: ID
         get() = data.id
 
@@ -50,14 +48,6 @@ public class OneBotFace private constructor(override val data: Data) :
 
     @Serializable
     public data class Data(val id: ID)
-
-    override fun toElement(): OneBotMessageSegmentElement =
-        Element(this)
-
-    @Serializable
-    @SerialName("ob11.segment.face")
-    public data class Element(override val segment: OneBotFace) :
-        OneBotMessageSegmentElement(), EmoticonMessage
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

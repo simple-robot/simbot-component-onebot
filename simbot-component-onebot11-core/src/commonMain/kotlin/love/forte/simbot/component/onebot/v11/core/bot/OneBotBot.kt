@@ -34,6 +34,15 @@ import kotlin.jvm.JvmSynthetic
 /**
  * 一个 OneBot协议的 [Bot]。
  *
+ * ### Bot 的终止
+ * Bot的运行状态 ([isActive]) 可能会因为一些原因被更改：
+ * - 手动终止 (使用 [cancel])。
+ * - 父级Job或被关联的Job被终止 (可能来自 BotManager、Application等)。
+ * - 会话连接失败且重试次数到达上限。比如 ws 的连接会话意外被中断，
+ * 且在重新连接的过程中始终失败并达到了重试次数上限，此时会话中的任务会被视为因异常结束，
+ * 并连带 [OneBotBot] 的任务一同终结。
+ *
+ *
  * @author ForteScarlet
  */
 public interface OneBotBot : Bot {

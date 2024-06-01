@@ -1,17 +1,12 @@
 package love.forte.simbot.component.onebot.v11.core.api
 
-import kotlin.Any
-import kotlin.Boolean
-import kotlin.String
-import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.IntID
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * [`send_group_msg`-发送群消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_group_msg-发送群消息)
@@ -20,21 +15,21 @@ import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
  */
 public class SendGroupMsgApi private constructor(
     override val body: Any,
-) : OneBotApi<SendGroupMsgResult> {
+) : OneBotApi<SendMsgResult> {
     override val action: String
         get() = ACTION
 
-    override val resultDeserializer: DeserializationStrategy<SendGroupMsgResult>
-        get() = SendGroupMsgResult.serializer()
+    override val resultDeserializer: DeserializationStrategy<SendMsgResult>
+        get() = SendMsgResult.serializer()
 
-    override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<SendGroupMsgResult>>
+    override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<SendMsgResult>>
         get() = RES_SER
 
     public companion object Factory {
         private const val ACTION: String = "send_group_msg"
 
-        private val RES_SER: KSerializer<OneBotApiResult<SendGroupMsgResult>> =
-            OneBotApiResult.serializer(SendGroupMsgResult.serializer())
+        private val RES_SER: KSerializer<OneBotApiResult<SendMsgResult>> =
+            OneBotApiResult.serializer(SendMsgResult.serializer())
 
         /**
          * 构建一个 [SendGroupMsgApi].
@@ -67,13 +62,13 @@ public class SendGroupMsgApi private constructor(
     )
 }
 
-/**
- * [SendGroupMsgApi] 的响应体。
- *
- * @property messageId 消息 ID
- */
-@Serializable
-public data class SendGroupMsgResult @ApiResultConstructor internal constructor(
-    @SerialName("message_id")
-    public val messageId: IntID,
-)
+// /**
+//  * [SendGroupMsgApi] 的响应体。
+//  *
+//  * @property messageId 消息 ID
+//  */
+// @Serializable
+// public data class SendGroupMsgResult @ApiResultConstructor internal constructor(
+//     @SerialName("message_id")
+//     public val messageId: IntID,
+// )

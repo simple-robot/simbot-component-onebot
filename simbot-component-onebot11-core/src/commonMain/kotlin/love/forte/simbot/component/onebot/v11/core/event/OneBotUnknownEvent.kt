@@ -17,48 +17,36 @@
 
 package love.forte.simbot.component.onebot.v11.core.event
 
-import love.forte.simbot.common.id.LongID
+import love.forte.simbot.annotations.FragileSimbotAPI
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.onebot.v11.core.utils.timestamp
-import love.forte.simbot.event.Event
+import love.forte.simbot.component.onebot.v11.event.UnknownEvent
+
 
 /**
- * OneBot11原始事件结构体类型。
- */
-public typealias OBSourceEvent = love.forte.simbot.component.onebot.v11.event.Event
-
-/**
- * OneBot11的[事件](https://github.com/botuniverse/onebot-11/tree/master/event)。
+ * OneBot组件对一个未知事件 [UnknownEvent] 的包装。
+ *
+ * 与 [OneBotUnsupportedEvent] 不同的是，
+ * [OneBotUnknownEvent] 的事件类型明确为 [UnknownEvent]，
+ * 它是在 OneBot 协议本身上的“未知”，也就是指无法解析事件的报文。
  *
  * @author ForteScarlet
  */
-public interface OneBotEvent : Event {
+@FragileSimbotAPI
+public data class OneBotUnknownEvent(
+    override val sourceEventRaw: String?,
+    override val sourceEvent: UnknownEvent
+) : OneBotEvent {
     /**
-     * 来自事件JSON的反序列化数据体。
+     * 一个无意义的随机ID。
      */
-    public val sourceEvent: OBSourceEvent
+    override val id: ID = UUID.random()
 
     /**
-     * 如果能够支持，则获取来自事件JSON的原始字符串。
-     * 不支持、无法获取等情况下得到 `null`。
+     * 事件时间。
      */
-    public val sourceEventRaw: String?
-
-    /**
-     * 事件发生的时间戳
-     */
-    public val timestamp: Timestamp
+    override val time: Timestamp
         get() = sourceEvent.timestamp()
-
-    /**
-     * 收到事件的机器人 QQ 号
-     */
-    public val selfId: LongID
-        get() = sourceEvent.selfId
-
-    /**
-     * 事件类型
-     */
-    public val postType: String
-        get() = sourceEvent.postType
 }

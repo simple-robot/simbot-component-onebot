@@ -22,7 +22,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -34,20 +33,20 @@ import kotlin.jvm.JvmStatic
  */
 public class SendPrivateMsgApi private constructor(
     override val body: Any
-) : OneBotApi<SendPrivateMsgResult> {
+) : OneBotApi<SendMsgResult> {
 
     override val action: String
         get() = ACTION
 
-    override val resultDeserializer: DeserializationStrategy<SendPrivateMsgResult>
-        get() = SendPrivateMsgResult.serializer()
+    override val resultDeserializer: DeserializationStrategy<SendMsgResult>
+        get() = SendMsgResult.serializer()
 
-    override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<SendPrivateMsgResult>>
+    override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<SendMsgResult>>
         get() = RES_SER
 
     public companion object Factory {
         private const val ACTION = "send_private_msg"
-        private val RES_SER = OneBotApiResult.serializer(SendPrivateMsgResult.serializer())
+        private val RES_SER = OneBotApiResult.serializer(SendMsgResult.serializer())
 
         /**
          * 构建一个 [SendPrivateMsgApi].
@@ -88,12 +87,12 @@ message	message	-	要发送的内容
 auto_escape	boolean	false	消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
  */
 
-/**
- * [SendPrivateMsgApi] 的响应体。
- */
-@Serializable
-public data class SendPrivateMsgResult
-@ApiResultConstructor internal constructor(
-    @SerialName("message_id")
-    val messageId: ID
-)
+// /**
+//  * [SendPrivateMsgApi] 的响应体。
+//  */
+// @Serializable
+// public data class SendPrivateMsgResult
+// @ApiResultConstructor internal constructor(
+//     @SerialName("message_id")
+//     val messageId: ID
+// )

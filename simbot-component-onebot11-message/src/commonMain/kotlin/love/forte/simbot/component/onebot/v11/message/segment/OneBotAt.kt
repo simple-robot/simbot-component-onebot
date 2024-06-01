@@ -23,21 +23,20 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.message.At
 import love.forte.simbot.message.AtAll
-import love.forte.simbot.message.MentionMessage
 import kotlin.jvm.JvmStatic
 
 /**
  * [@某人](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E6%9F%90%E4%BA%BA)
  *
  * 可用于发送，与直接使用 [At] 和 [AtAll] 没什么区别。
- * 不会被用于接收，接收时会直接解析为对应的 [At] 或 [AtAll]
+ * 不会被用于接收，接收时会直接解析为对应的 [At] 或 [AtAll]。
  *
  */
 @Serializable
 @SerialName(OneBotAt.TYPE)
 public class OneBotAt private constructor(
     override val data: Data,
-) : OneBotMessageSegment, OneBotMessageSegmentElementResolver {
+) : OneBotMessageSegment {
     /**
      * 判断是否为 at 全体
      */
@@ -72,14 +71,6 @@ public class OneBotAt private constructor(
 
     @Serializable
     public data class Data internal constructor(val qq: String)
-
-    override fun toElement(): OneBotMessageSegmentElement =
-        Element(this)
-
-    @Serializable
-    @SerialName("ob11.segment.at")
-    public data class Element(override val segment: OneBotMessageSegment) :
-        OneBotMessageSegmentElement(), MentionMessage
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

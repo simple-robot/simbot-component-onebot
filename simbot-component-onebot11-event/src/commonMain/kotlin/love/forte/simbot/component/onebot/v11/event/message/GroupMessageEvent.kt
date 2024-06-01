@@ -21,8 +21,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 import love.forte.simbot.component.onebot.v11.common.event.SourceEventConstructor
+import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 
 /**
@@ -101,4 +101,16 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
         override val age: Int = DEFAULT_AGE,
     ) : MessageEvent.Sender
 
+
+    public companion object {
+        /** @see GroupMessageEvent.subType */
+        public const val SUB_TYPE_NORMAL: String = "normal"
+
+        /** @see GroupMessageEvent.subType */
+        public const val SUB_TYPE_ANONYMOUS: String = "anonymous"
+
+        /** @see GroupMessageEvent.subType */
+        public const val SUB_TYPE_NOTICE: String = "notice"
+
+    }
 }

@@ -44,7 +44,8 @@ public class OneBotBotConfiguration {
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
     /**
-     * 必填属性，在OneBot组件中用于区分不同Bot的唯一ID。
+     * 必填属性，在OneBot组件中用于区分不同Bot的唯一ID，
+     * 建议可以直接使用QQ号。
      * 更多说明参考 [OneBotBot.id]。
      */
     public var botUniqueId: String? = null
@@ -147,5 +148,21 @@ public class OneBotBotConfiguration {
     public var wsClientEngineFactory: HttpClientEngineFactory<*>? = null
 
     // TODO wsConnectionRetry config?
+
+    /**
+     * 每次尝试连接到 ws 服务时的最大重试次数。
+     * 如果小于等于0则代表无限。
+     * 默认为 `2147483647`。
+     */
+    public var wsConnectMaxRetryTimes: Int = Int.MAX_VALUE
+
+    /**
+     * 每次尝试连接到 ws 服务时，如果需要重新尝试，则每次尝试之间的等待时长，
+     * 单位为毫秒。
+     * 如果小于等于 `0` 则代表不等待。
+     * 默认为 `3500`。
+     *
+     */
+    public var wsConnectRetryDelayMillis: Long = 3500L
 
 }

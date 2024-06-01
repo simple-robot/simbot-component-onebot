@@ -50,8 +50,8 @@ class ApiRequestTests {
     fun sendPrivateMsgApiTest() = runTest {
         val client = createClient(
             "send_private_msg",
-            respDataSer = { SendPrivateMsgResult.serializer() },
-            respData = { SendPrivateMsgResult(123.ID) }
+            respDataSer = { SendMsgResult.serializer() },
+            respData = { SendMsgResult(123.ID) }
         )
 
         val data = SendPrivateMsgApi.create(

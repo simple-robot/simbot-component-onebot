@@ -1,14 +1,14 @@
 package love.forte.simbot.component.onebot.v11.core.api
 
-import kotlinx.serialization.*
-import kotlin.Any
-import kotlin.Boolean
-import kotlin.String
-import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IntID
 import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * [`send_msg`-发送消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_msg-发送消息)
@@ -28,6 +28,9 @@ public class SendMsgApi private constructor(
         get() = RES_SER
 
     public companion object Factory {
+        public const val MESSAGE_TYPE_PRIVATE: String = "private"
+        public const val MESSAGE_TYPE_GROUP: String = "group"
+
         private const val ACTION: String = "send_msg"
 
         private val RES_SER: KSerializer<OneBotApiResult<SendMsgResult>> =
@@ -46,11 +49,53 @@ public class SendMsgApi private constructor(
         @JvmOverloads
         public fun create(
             messageType: String,
-            userId: ID,
-            groupId: ID,
+            userId: ID?,
+            groupId: ID?,
             message: OneBotMessageOutgoing,
             autoEscape: Boolean? = null,
         ): SendMsgApi = SendMsgApi(Body(messageType, userId, groupId, message, autoEscape))
+
+        /**
+         * 构建一个发送到私聊的 [SendMsgApi].
+         *
+         * @param userId 对方 QQ 号（消息类型为 `private` 时需要）
+         * @param message 要发送的内容
+         * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 `message` 字段是字符串时有效
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun createPrivate(
+            userId: ID,
+            message: OneBotMessageOutgoing,
+            autoEscape: Boolean? = null,
+        ): SendMsgApi = create(
+            messageType = MESSAGE_TYPE_PRIVATE,
+            userId = userId,
+            groupId = null,
+            message = message,
+            autoEscape = autoEscape
+        )
+
+        /**
+         * 构建一个发送到群聊的 [SendMsgApi].
+         *
+         * @param groupId 群号（消息类型为 `group` 时需要）
+         * @param message 要发送的内容
+         * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 `message` 字段是字符串时有效
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun createGroup(
+            groupId: ID,
+            message: OneBotMessageOutgoing,
+            autoEscape: Boolean? = null,
+        ): SendMsgApi = create(
+            messageType = MESSAGE_TYPE_GROUP,
+            userId = null,
+            groupId = groupId,
+            message = message,
+            autoEscape = autoEscape
+        )
     }
 
     /**
@@ -65,9 +110,9 @@ public class SendMsgApi private constructor(
         @SerialName("message_type")
         internal val messageType: String,
         @SerialName("user_id")
-        internal val userId: ID,
+        internal val userId: ID? = null,
         @SerialName("group_id")
-        internal val groupId: ID,
+        internal val groupId: ID? = null,
         internal val message: OneBotMessageOutgoing,
         @SerialName("auto_escape")
         internal val autoEscape: Boolean? = null,

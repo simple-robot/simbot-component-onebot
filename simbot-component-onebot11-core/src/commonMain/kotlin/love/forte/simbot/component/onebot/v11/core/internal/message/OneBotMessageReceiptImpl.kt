@@ -15,28 +15,25 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.message
+package love.forte.simbot.component.onebot.v11.core.internal.message
 
-import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
-import love.forte.simbot.event.MessageEvent
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 
-/**
- * OneBot11原始的消息事件结构体定义类型。
- */
-public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.event.message.MessageEvent
 
 /**
- * OneBot组件中的消息相关事件。
- *
  * @author ForteScarlet
  */
-public interface OneBotMessageEvent : OneBotEvent, MessageEvent {
-    override val bot: OneBotBot
-    override val sourceEvent: OBSourceMessageEvent
-
-    override val time: Timestamp
-        get() = sourceEvent.timestamp()
+internal class OneBotMessageReceiptImpl(
+    override val messageId: ID
+) : OneBotMessageReceipt {
+    override suspend fun delete(vararg options: DeleteOption) {
+        TODO("Not yet implemented")
+    }
 }
+
+
+internal fun SendMsgResult.toReceipt(): OneBotMessageReceiptImpl =
+    OneBotMessageReceiptImpl(messageId)

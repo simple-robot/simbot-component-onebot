@@ -21,6 +21,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.definition.Member
+import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.ChatGroupMessageEvent
 
 
@@ -31,8 +32,13 @@ import love.forte.simbot.event.ChatGroupMessageEvent
  *
  * @author ForteScarlet
  */
-public interface OneBotGroupMessageEvent : OneBotMessageEvent {
+public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
     override val sourceEvent: GroupMessageEvent
+
+    /**
+     * 事件发生所在群
+     */
+    override suspend fun content(): OneBotGroup
 
     /**
      * 消息子类型，正常消息是 `normal`，匿名消息是 `anonymous`，
@@ -88,4 +94,6 @@ public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, Cha
  * 系统提示消息类型的 [OneBotGroupMessageEvent]。
  * 即 [subType] == `notice`
  */
-public interface OneBotNoticeGroupMessageEvent : OneBotGroupMessageEvent
+public interface OneBotNoticeGroupMessageEvent : OneBotGroupMessageEvent {
+    override suspend fun content(): OneBotGroup
+}

@@ -15,28 +15,31 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.message
+package love.forte.simbot.component.onebot.v11.message
 
-import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
-import love.forte.simbot.event.MessageEvent
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.message.MessageReceipt
 
-/**
- * OneBot11原始的消息事件结构体定义类型。
- */
-public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.event.message.MessageEvent
 
 /**
- * OneBot组件中的消息相关事件。
+ * OneBot组件中，消息发送成功后得到的回执。
  *
  * @author ForteScarlet
  */
-public interface OneBotMessageEvent : OneBotEvent, MessageEvent {
-    override val bot: OneBotBot
-    override val sourceEvent: OBSourceMessageEvent
+public interface OneBotMessageReceipt : MessageReceipt {
+    /**
+     * 消息发送后的结果id。
+     */
+    public val messageId: ID
 
-    override val time: Timestamp
-        get() = sourceEvent.timestamp()
+    /**
+     * 删除此消息。
+     *
+     * @throws Exception 任何请求API过程中可能会产生的异常，
+     * 例如因权限不足或消息不存在得到的请求错误
+     */
+    override suspend fun delete(vararg options: DeleteOption)
 }
+
+// 实现在core模块：因为要使用到API

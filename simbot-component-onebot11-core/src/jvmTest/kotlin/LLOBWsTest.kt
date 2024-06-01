@@ -23,7 +23,9 @@ suspend fun main() {
 
     val scope = CoroutineScope(EmptyCoroutineContext)
 
-    val session = client.webSocketSession(host.toString())
+    val session = client.webSocketSession {
+        url { takeFrom(host) }
+    }
 
     scope.launch {
         delay(5.seconds)
