@@ -29,7 +29,6 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-useK2()
 configJavaCompileWithModule("simbot.component.onebot11.event")
 // apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
@@ -56,8 +55,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            compileOnly(libs.simbot.api)
-            compileOnly(libs.simbot.common.annotations)
+            api(libs.simbot.api)
+            api(libs.simbot.common.annotations)
 
             api(project(":simbot-component-onebot11-common"))
             api(project(":simbot-component-onebot11-message"))
@@ -83,7 +82,8 @@ kotlin {
 
         jvmMain {
             dependencies {
-                // compileOnly(libs.ktor.client.contentNegotiation)
+                compileOnly(libs.simbot.api)
+                compileOnly(libs.simbot.common.annotations)
             }
         }
 
@@ -94,14 +94,14 @@ kotlin {
             implementation(libs.kotlinPoet)
         }
 
-        jsMain.dependencies {
-            implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
-        }
-        nativeMain.dependencies {
-            implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
-        }
+        // jsMain.dependencies {
+        //     implementation(libs.simbot.api)
+        //     implementation(libs.simbot.common.annotations)
+        // }
+        // nativeMain.dependencies {
+            // compileOnly(libs.simbot.api)
+            // compileOnly(libs.simbot.common.annotations)
+        // }
     }
 }
 

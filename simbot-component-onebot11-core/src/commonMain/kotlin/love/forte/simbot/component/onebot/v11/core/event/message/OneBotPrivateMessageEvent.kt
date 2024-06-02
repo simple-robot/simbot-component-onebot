@@ -17,17 +17,12 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.message
 
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.definition.Contact
 import love.forte.simbot.event.ContactMessageEvent
 import love.forte.simbot.event.MemberMessageEvent
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 
 
@@ -61,7 +56,7 @@ public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
  */
 @STP
 public interface OneBotFriendMessageEvent : OneBotPrivateMessageEvent, ContactMessageEvent {
-    override suspend fun content(): Contact
+    override suspend fun content(): OneBotFriend
 }
 
 /**

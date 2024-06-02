@@ -26,7 +26,6 @@ plugins {
     // alias(libs.plugins.ksp)
 }
 
-useK2()
 configJavaCompileWithModule("simbot.component.onebot11.common")
 // apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
@@ -47,17 +46,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(libs.simbot.common.annotations)
             api(libs.kotlinx.serialization.core)
         }
 
         commonTest.dependencies {
             api(kotlin("test"))
             api(libs.kotlinx.serialization.json)
-            api(libs.ktor.client.mock)
             api(libs.kotlinx.coroutines.test)
         }
 
         jvmTest.dependencies {
+            compileOnly(libs.simbot.common.annotations)
             implementation(libs.log4j.api)
             implementation(libs.log4j.core)
             implementation(libs.log4j.slf4j2)

@@ -25,6 +25,9 @@ import love.forte.simbot.message.Message
 
 /**
  * OneBot组件中的 [Message.Element] 统一类型。
+ *
+ * [OneBotMessageElement] 接口本身由内部实现，不可用于第三方自定义实现。
+ *
  * @author ForteScarlet
  */
 public interface OneBotMessageElement : Message.Element

@@ -21,7 +21,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.bot.SerializableBotConfiguration
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 
 
 /**

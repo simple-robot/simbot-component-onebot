@@ -18,20 +18,30 @@
 package love.forte.simbot.component.onebot.v11.core.actor
 
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.ST
+import kotlin.coroutines.CoroutineContext
 
 
 /**
  * OneBot中的 `group` 的 [ChatGroup] 实现。
  *
+ * 群通常的来源：
+ * - 来自事件
+ * - 来自 Bot relation API
+ * ([OneBotBot.groupRelation][love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.groupRelation])
+ *
  * @author ForteScarlet
  */
 public interface OneBotGroup : ChatGroup {
-    // TODD
+    /**
+     * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
+     */
+    override val coroutineContext: CoroutineContext
 
     /**
      * 群号

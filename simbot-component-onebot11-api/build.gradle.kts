@@ -9,7 +9,6 @@ plugins {
     // alias(libs.plugins.ksp)
 }
 
-useK2()
 configJavaCompileWithModule("simbot.component.onebot11.common")
 // apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 

@@ -26,7 +26,7 @@ import love.forte.simbot.common.collection.removeValue
 import love.forte.simbot.common.coroutines.mergeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManager

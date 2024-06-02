@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.internal.message
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
@@ -34,14 +35,12 @@ import love.forte.simbot.component.onebot.v11.core.utils.sendTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.definition.Contact
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 
 
 internal abstract class OneBotPrivateMessageEventImpl(
-    override val sourceEvent: PrivateMessageEvent
+    final override val sourceEvent: PrivateMessageEvent
 ) : OneBotPrivateMessageEvent {
     override val id: ID
         get() = "${sourceEvent.userId}-${sourceEvent.messageId}".ID
@@ -87,7 +86,7 @@ internal class OneBotFriendMessageEventImpl(
     override val bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEventImpl(sourceEvent),
     OneBotFriendMessageEvent {
-    override suspend fun content(): Contact {
+    override suspend fun content(): OneBotFriend {
         TODO("Not yet implemented")
     }
 }
@@ -109,6 +108,6 @@ internal class OneBotGroupPrivateMessageEventImpl(
 
 internal class OneBotDefaultPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: PrivateMessageEvent,
+    sourceEvent: PrivateMessageEvent,
     override val bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEventImpl(sourceEvent)

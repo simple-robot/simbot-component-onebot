@@ -15,12 +15,13 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
+package love.forte.simbot.component.onebot.v11.core.component
 
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.component.*
+import love.forte.simbot.component.onebot.v11.core.OneBot11
 import kotlin.jvm.JvmField
 
 

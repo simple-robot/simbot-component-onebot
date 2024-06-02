@@ -25,7 +25,7 @@ import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.NoSuchComponentException
 import love.forte.simbot.component.find
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotManagerImpl
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
@@ -102,8 +102,6 @@ public abstract class OneBotBotManager : BotManager, JobBasedBotManager() {
  * [OneBotBotManager] 的工厂配置类。
  */
 public class OneBotBotManagerConfiguration
-
-// TODO SPI provider
 
 /**
  * 用于通过 SPI 自动加载 [OneBot11Component] 的 provider。

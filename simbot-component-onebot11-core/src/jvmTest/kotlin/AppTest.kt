@@ -2,7 +2,7 @@ import io.ktor.client.engine.java.Java
 import io.ktor.http.Url
 import love.forte.simbot.application.listeners
 import love.forte.simbot.bot.get
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManager
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGroupMessageEvent

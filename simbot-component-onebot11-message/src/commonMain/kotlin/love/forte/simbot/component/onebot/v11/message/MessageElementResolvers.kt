@@ -24,11 +24,17 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotAt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotFace
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentElement
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
 import love.forte.simbot.component.onebot.v11.message.segment.toElement
 import love.forte.simbot.message.At
 import love.forte.simbot.message.AtAll
 import love.forte.simbot.message.Face
+import love.forte.simbot.message.Image
 import love.forte.simbot.message.Message
+import love.forte.simbot.message.OfflineImage
+import love.forte.simbot.message.RemoteImage
+import love.forte.simbot.message.Text
 import kotlin.jvm.JvmName
 
 /**
@@ -42,10 +48,37 @@ import kotlin.jvm.JvmName
  */
 @InternalSimbotAPI
 public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
-    when (this) {
+    return when (this) {
         is OneBotAt -> if (isAll) AtAll else At(data.qq.ID)
         is OneBotFace -> Face(data.id)
         else -> toElement()
     }
-    TODO()
+}
+
+/**
+ * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
+ */
+@InternalSimbotAPI
+public fun Message.Element.resolveToOneBotSegment(): OneBotMessageSegment? {
+    return when (this) {
+        is OneBotMessageSegmentElement -> segment
+        // stand messages
+        is Text -> OneBotText.create(text)
+        is Face -> OneBotFace.create(id)
+        is At -> OneBotAt.create(target)
+        is AtAll -> OneBotAt.createAtAll()
+        is Image -> {
+            when (this) {
+                // offline image
+                is OfflineImage -> TODO()
+                // remote images
+                is RemoteImage -> TODO()
+
+                else -> null
+            }
+        }
+
+
+        else -> null
+    }
 }

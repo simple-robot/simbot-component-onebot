@@ -18,28 +18,43 @@
 package love.forte.simbot.component.onebot.v11.core.actor
 
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.Contact
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.suspendrunner.ST
+import kotlin.coroutines.CoroutineContext
 
 
 /**
  * 一个用来代表 OneBot 中好友的类型。
+ *
  * 好友通常的来源：
  * - 来自事件
  * - 来自 Bot relation API
  * ([OneBotBot.contactRelation][love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.contactRelation])
- * 
+ *
  * @author ForteScarlet
  */
 public interface OneBotFriend : Contact {
     /**
+     * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
+     */
+    override val coroutineContext: CoroutineContext
+
+    /**
      * 此人的ID
      */
     override val id: ID
+
+    /**
+     * 头像链接
+     */
+    override val avatar: String
+        get() = qqAvatar640(id.literal)
 
     @ST
     override suspend fun send(message: Message): OneBotMessageReceipt

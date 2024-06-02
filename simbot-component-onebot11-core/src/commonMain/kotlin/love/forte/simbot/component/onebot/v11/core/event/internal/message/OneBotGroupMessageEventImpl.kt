@@ -37,7 +37,6 @@ import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 
 internal abstract class OneBotGroupMessageEventImpl(
     sourceEvent: GroupMessageEvent

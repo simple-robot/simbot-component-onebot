@@ -15,9 +15,27 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core
+@file:JvmName("AvatarUtil")
 
-import love.forte.simbot.common.services.Services
+package love.forte.simbot.component.onebot.v11.common.utils
 
-internal actual fun loadOneBot11ComponentConfigures(): Sequence<OneBot11ComponentFactoryConfigurerProvider> =
-    Services.loadProviders<OneBot11ComponentFactoryConfigurerProvider>().map { it() }
+import love.forte.simbot.annotations.InternalSimbotAPI
+import kotlin.jvm.JvmName
+
+/**
+ * 得到 `s=640` 的QQ头像。
+ *
+ * @param id QQ号
+ */
+@InternalSimbotAPI
+public fun qqAvatar640(id: String): String =
+    "https://q1.qlogo.cn/g?b=qq&nk=$id&s=640"
+
+/**
+ * 得到 `s=100` 的QQ头像。
+ *
+ * @param id QQ号
+ */
+@InternalSimbotAPI
+public fun qqAvatar100(id: String): String =
+    "https://q1.qlogo.cn/g?b=qq&nk=$id&s=100"

@@ -15,14 +15,9 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.Project
+package love.forte.simbot.component.onebot.v11.core.component
 
+import love.forte.simbot.common.services.Services
 
-fun Project.useK2(languageVersion: String = "2.0") {
-    logger.warn("暂时关闭 K2，等待 Kotlin 2.0 正式版发布。languageVersion = {}", languageVersion)
-    // tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    //     kotlinOptions {
-    //         this.languageVersion = languageVersion
-    //     }
-    // }
-}
+internal actual fun loadOneBot11ComponentConfigures(): Sequence<OneBot11ComponentFactoryConfigurerProvider> =
+    Services.loadProviders<OneBot11ComponentFactoryConfigurerProvider>().map { it() }

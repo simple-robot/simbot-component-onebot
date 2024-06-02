@@ -56,7 +56,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.OneBot11
-import love.forte.simbot.component.onebot.v11.core.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
@@ -112,6 +112,8 @@ internal class OneBotBotImpl(
         )
         job.invokeOnCompletion { apiClient.close() }
     }
+
+    internal val subContext = coroutineContext.minusKey(Job)
 
     private val logger = LoggerFactory
         .getLogger(
@@ -496,11 +498,13 @@ internal class OneBotBotImpl(
                         event,
                         bot
                     )
+
                     PrivateMessageEvent.SUB_TYPE_GROUP -> OneBotGroupPrivateMessageEventImpl(
                         raw,
                         event,
                         bot
                     )
+
                     else -> OneBotDefaultPrivateMessageEventImpl(
                         raw,
                         event,

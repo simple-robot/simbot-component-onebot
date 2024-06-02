@@ -17,28 +17,25 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
-import love.forte.simbot.common.id.ID
-import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
-import love.forte.simbot.component.onebot.v11.core.api.GetFriendListResult
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendTextMsgApi
-import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import kotlin.coroutines.CoroutineContext
 
-internal abstract class OneBotFriendImpl : OneBotFriend {
+
+internal abstract class OneBotGroupImpl : OneBotGroup {
     protected abstract val bot: OneBotBotImpl
 
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendTextMsgApi(
-            messageType = SendMsgApi.MESSAGE_TYPE_PRIVATE,
+            messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
             target = id,
             text = text,
         ).requestDataBy(bot).toReceipt()
@@ -47,7 +44,7 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
             return sendMsgApi(
-                messageType = SendMsgApi.MESSAGE_TYPE_PRIVATE,
+                messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
                 target = id,
                 message = messageContent.sourceSegments,
             ).requestDataBy(bot).toReceipt()
@@ -60,40 +57,3 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
         TODO("Not yet implemented")
     }
 }
-
-/**
- * 基于 [PrivateMessageEvent.Sender] 的 [OneBotFriend] 实现
- *
- */
-internal class OneBotFriendEventSenderImpl(
-    private val sender: PrivateMessageEvent.Sender,
-    override val bot: OneBotBotImpl,
-) : OneBotFriendImpl(), OneBotFriend {
-    override val coroutineContext: CoroutineContext = bot.subContext
-
-    override val id: ID
-        get() = sender.userId
-
-    override val name: String
-        get() = sender.nickname
-}
-
-internal fun PrivateMessageEvent.Sender.toFriend(bot: OneBotBotImpl): OneBotFriendEventSenderImpl =
-    OneBotFriendEventSenderImpl(this, bot)
-
-internal class OneBotFriendApiResultImpl(
-    private val result: GetFriendListResult,
-    override val bot: OneBotBotImpl,
-) : OneBotFriendImpl(), OneBotFriend {
-    override val coroutineContext: CoroutineContext = bot.subContext
-
-    override val name: String
-        get() = result.nickname
-
-    override val id: ID
-        get() = result.userId
-}
-
-internal fun GetFriendListResult.toFriend(bot: OneBotBotImpl): OneBotFriendApiResultImpl =
-    OneBotFriendApiResultImpl(this, bot)
-
