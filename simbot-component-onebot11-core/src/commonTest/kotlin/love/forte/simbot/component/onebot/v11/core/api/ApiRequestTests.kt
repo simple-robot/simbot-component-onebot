@@ -36,7 +36,7 @@ class ApiRequestTests {
                     OneBot11.DefaultJson.encodeToString(
                         OneBotApiResult.serializer(respDataSer()),
                         OneBotApiResult(
-                            OneBotApiResult.SUCCESS_RETCODE,
+                            OneBotApiResult.RETCODE_SUCCESS,
                             null,
                             respData()
                         )

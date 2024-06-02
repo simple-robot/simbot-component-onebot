@@ -27,6 +27,7 @@ import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberListApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
+import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
@@ -44,19 +45,26 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
 
     override val members: Collectable<OneBotMember>
         get() = flowCollectable {
-            GetGroupMemberInfoApi
             val list = GetGroupMemberListApi.create(id)
                 .requestDataBy(bot)
 
-            TODO("to member")
+            for (memberInfoResult in list) {
+                emit(memberInfoResult.toMember(bot))
+            }
         }
 
-    override suspend fun botAsMember(): OneBotMember {
-        TODO("Not yet implemented")
-    }
+    override suspend fun botAsMember(): OneBotMember =
+        member(bot.userId) ?: error("Cannot find the member with userId ${bot.userId} of bot")
 
     override suspend fun member(id: ID): OneBotMember? {
-        TODO("Not yet implemented")
+        val result = GetGroupMemberInfoApi.create(
+            groupId = this.id,
+            userId = id,
+        ).requestResultBy(bot)
+
+        // TODO 如果没找到，如何判断？404？
+
+        return result.dataOrThrow.toMember(bot)
     }
 
     override suspend fun send(text: String): OneBotMessageReceipt {

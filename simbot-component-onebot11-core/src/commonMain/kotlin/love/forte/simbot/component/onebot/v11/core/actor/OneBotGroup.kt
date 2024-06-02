@@ -74,6 +74,10 @@ public interface OneBotGroup : ChatGroup {
 
     /**
      * 将当前所属Bot作为一个 [OneBotMember] 获取。
+     *
+     * @throws IllegalStateException 如果最终没有找到bot的user id的用户信息，
+     * 例如可能bot已经离开了这个群
+     * @throws Exception 请求API过程中可能产生的任何异常
      */
     @STP
     override suspend fun botAsMember(): OneBotMember

@@ -17,8 +17,12 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor
 
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
+import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -27,6 +31,12 @@ import kotlin.coroutines.CoroutineContext
 
 
 /**
+ * OneBot中的 `member` 的 [Member] 实现。
+ *
+ * 群成员通常的来源：
+ * - 来自事件
+ * - 来自 Group API
+ * ([OneBotGroup.members])
  *
  * @author ForteScarlet
  */
@@ -35,6 +45,23 @@ public interface OneBotMember : Member {
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
      */
     override val coroutineContext: CoroutineContext
+
+    /**
+     * 成员群号
+     */
+    override val id: ID
+
+    /**
+     * 此成员所属角色。
+     * 如果无法获取（例如是在群临时会话的私聊中）则得到 `null`
+     */
+    public val role: OneBotMemberRole?
+
+    /**
+     * 成员QQ头像
+     */
+    override val avatar: String
+        get() = qqAvatar640(id.literal)
 
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
