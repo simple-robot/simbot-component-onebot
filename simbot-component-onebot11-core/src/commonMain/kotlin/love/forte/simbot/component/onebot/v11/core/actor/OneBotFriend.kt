@@ -19,22 +19,25 @@ package love.forte.simbot.component.onebot.v11.core.actor
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.definition.ChatGroup
+import love.forte.simbot.definition.Contact
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.suspendrunner.ST
 
 
 /**
- * OneBot中的 `group` 的 [ChatGroup] 实现。
- *
+ * 一个用来代表 OneBot 中好友的类型。
+ * 好友通常的来源：
+ * - 来自事件
+ * - 来自 Bot relation API
+ * ([OneBotBot.contactRelation][love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.contactRelation])
+ * 
  * @author ForteScarlet
  */
-public interface OneBotGroup : ChatGroup {
-    // TODD
-
+public interface OneBotFriend : Contact {
     /**
-     * 群号
+     * 此人的ID
      */
     override val id: ID
 
@@ -46,5 +49,4 @@ public interface OneBotGroup : ChatGroup {
 
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
-
 }

@@ -17,11 +17,18 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.message
 
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.Contact
-import love.forte.simbot.definition.Member
 import love.forte.simbot.event.ContactMessageEvent
 import love.forte.simbot.event.MemberMessageEvent
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -38,18 +45,21 @@ public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
      * private 消息类型
      */
     public val messageType: String
+        get() = sourceEvent.messageType
 
     /**
      * friend、group、other	消息子类型。
      * 如果是好友则是 friend，如果是群临时会话则是 group
      */
     public val subType: String
+        get() = sourceEvent.subType
 }
 
 /**
  * 一个代表好友私聊消息的 [OneBotPrivateMessageEvent]。
  * 即 [subType] == `friend`。
  */
+@STP
 public interface OneBotFriendMessageEvent : OneBotPrivateMessageEvent, ContactMessageEvent {
     override suspend fun content(): Contact
 }
@@ -58,6 +68,16 @@ public interface OneBotFriendMessageEvent : OneBotPrivateMessageEvent, ContactMe
  * 一个代表群成员私聊的临时消息（群临时会话）的 [OneBotPrivateMessageEvent]。
  * 即 [subType] == `group`。
  */
+@STP
 public interface OneBotGroupPrivateMessageEvent : OneBotPrivateMessageEvent, MemberMessageEvent {
-    override suspend fun content(): Member
+
+    /**
+     * 发起会话的成员
+     */
+    override suspend fun content(): OneBotMember
+
+    /**
+     * [content] 的所属群
+     */
+    override suspend fun source(): OneBotGroup
 }

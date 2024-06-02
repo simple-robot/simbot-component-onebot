@@ -66,10 +66,14 @@ import love.forte.simbot.component.onebot.v11.core.event.OneBotUnknownEvent
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnsupportedEvent
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotAnonymousGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotDefaultGroupMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotDefaultPrivateMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotFriendMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
+import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.event.Event
@@ -455,46 +459,57 @@ internal class OneBotBotImpl(
             val bot = this@OneBotBotImpl
 
             return when (event) {
-                // TODO
                 // 群消息、匿名消息、系统消息
-                is GroupMessageEvent -> {
-                    when (event.subType) {
-                        GroupMessageEvent.SUB_TYPE_NORMAL ->
-                            OneBotNormalGroupMessageEventImpl(
-                                raw,
-                                event,
-                                bot
-                            )
-
-                        GroupMessageEvent.SUB_TYPE_ANONYMOUS ->
-                            OneBotAnonymousGroupMessageEventImpl(
-                                raw,
-                                event,
-                                bot
-                            )
-
-                        GroupMessageEvent.SUB_TYPE_NOTICE ->
-                            OneBotNoticeGroupMessageEventImpl(
-                                raw,
-                                event,
-                                bot
-                            )
-
-                        else -> OneBotDefaultGroupMessageEventImpl(
+                is GroupMessageEvent -> when (event.subType) {
+                    GroupMessageEvent.SUB_TYPE_NORMAL ->
+                        OneBotNormalGroupMessageEventImpl(
                             raw,
                             event,
                             bot
                         )
-                    }
+
+                    GroupMessageEvent.SUB_TYPE_ANONYMOUS ->
+                        OneBotAnonymousGroupMessageEventImpl(
+                            raw,
+                            event,
+                            bot
+                        )
+
+                    GroupMessageEvent.SUB_TYPE_NOTICE ->
+                        OneBotNoticeGroupMessageEventImpl(
+                            raw,
+                            event,
+                            bot
+                        )
+
+                    else -> OneBotDefaultGroupMessageEventImpl(
+                        raw,
+                        event,
+                        bot
+                    )
                 }
 
                 // 好友私聊消息、成员临时会话
-                // is PrivateMessageEvent -> {
-                // OneBotFriendMessageEvent
-                // OneBotGroupPrivateMessageEvent
-                // else
-                // TODO()
-                // }
+                is PrivateMessageEvent -> when (event.subType) {
+                    PrivateMessageEvent.SUB_TYPE_FRIEND -> OneBotFriendMessageEventImpl(
+                        raw,
+                        event,
+                        bot
+                    )
+                    PrivateMessageEvent.SUB_TYPE_GROUP -> OneBotGroupPrivateMessageEventImpl(
+                        raw,
+                        event,
+                        bot
+                    )
+                    else -> OneBotDefaultPrivateMessageEventImpl(
+                        raw,
+                        event,
+                        bot
+                    )
+                }
+
+                // TODO meta events
+                // TODO notice events
 
                 is UnknownEvent -> OneBotUnknownEvent(raw, event)
                 else -> OneBotUnsupportedEvent(raw, event)

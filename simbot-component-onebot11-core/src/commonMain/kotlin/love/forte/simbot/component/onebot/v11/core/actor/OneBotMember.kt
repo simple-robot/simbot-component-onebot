@@ -17,11 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor
 
+import love.forte.simbot.definition.Member
+
 
 /**
  *
  * @author ForteScarlet
  */
-public interface OneBotMember {
+public interface OneBotMember : Member {
     // TODO
 }

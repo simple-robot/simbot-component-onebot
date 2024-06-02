@@ -15,35 +15,5 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-plugins {
-    kotlin("jvm")
-}
-
-repositories {
-    mavenCentral()
-}
-
-kotlin {
-    jvmToolchain(11)
-    compilerOptions {
-        javaParameters = true
-        jvmTarget.set(JvmTarget.JVM_11)
-    }
-}
-
-configJavaCompileWithModule()
-
-dependencies {
-//    implementation(project(":annotations"))
-    api(libs.ksp)
-    api(libs.kotlinPoet.ksp)
-    api(libs.simbot.common.annotations)
-    testImplementation(kotlin("test-junit5"))
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
+package love.forte.simbot.component.onebot.v11.core.actor.internal
 

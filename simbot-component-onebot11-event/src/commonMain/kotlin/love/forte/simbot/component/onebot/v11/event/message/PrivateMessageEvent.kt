@@ -73,4 +73,17 @@ public data class PrivateMessageEvent @SourceEventConstructor constructor(
         override val sex: String = DEFAULT_SEX,
         override val age: Int = DEFAULT_AGE
     ) : MessageEvent.Sender
+
+    public companion object {
+        /**
+         * @see PrivateMessageEvent.subType
+         */
+        public const val SUB_TYPE_FRIEND: String = "friend"
+
+        /**
+         * @see PrivateMessageEvent.subType
+         */
+        public const val SUB_TYPE_GROUP: String = "group"
+
+    }
 }

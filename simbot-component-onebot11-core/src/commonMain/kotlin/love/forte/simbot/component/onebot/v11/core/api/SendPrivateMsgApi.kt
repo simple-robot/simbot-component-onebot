@@ -92,7 +92,7 @@ auto_escape	boolean	false	消息内容是否作为纯文本发送（即不解析
 //  */
 // @Serializable
 // public data class SendPrivateMsgResult
-// @ApiResultConstructor internal constructor(
+// @ApiResultConstructor constructor(
 //     @SerialName("message_id")
 //     val messageId: ID
 // )

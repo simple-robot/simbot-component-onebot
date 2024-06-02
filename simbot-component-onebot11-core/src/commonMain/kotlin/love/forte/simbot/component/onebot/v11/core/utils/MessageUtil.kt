@@ -79,11 +79,17 @@ internal fun sendMsgApi(
         )
     } else {
         val newMessage = ArrayList<OneBotMessageSegment>(message.size + 1)
-        newMessage.add(OneBotReply.create(reply))
+        var hasReply = false
         for (segment in message) {
-            if (segment !is OneBotReply) {
-                newMessage.add(segment)
+            if (!hasReply && segment is OneBotReply) {
+                hasReply = true
             }
+
+            newMessage.add(segment)
+        }
+
+        if (!hasReply) {
+            newMessage.add(OneBotReply.create(reply))
         }
 
         SendMsgApi.create(

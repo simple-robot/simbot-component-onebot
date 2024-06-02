@@ -23,6 +23,7 @@ import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.definition.Member
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.ChatGroupMessageEvent
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -32,6 +33,7 @@ import love.forte.simbot.event.ChatGroupMessageEvent
  *
  * @author ForteScarlet
  */
+@STP
 public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
     override val sourceEvent: GroupMessageEvent
 
@@ -76,6 +78,7 @@ public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
  * 正常消息类型的 [OneBotGroupMessageEvent]。
  * 即 [subType] == `normal`
  */
+@STP
 public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override suspend fun content(): OneBotGroup
     override suspend fun author(): Member // TODO OneBotMember?
@@ -85,6 +88,7 @@ public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGr
  * 匿名消息类型的 [OneBotGroupMessageEvent]。
  * 即 [subType] == `anonymous`
  */
+@STP
 public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override suspend fun content(): OneBotGroup
     override suspend fun author(): Member // TODO OneBotAnonymousMember?
@@ -94,6 +98,7 @@ public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, Cha
  * 系统提示消息类型的 [OneBotGroupMessageEvent]。
  * 即 [subType] == `notice`
  */
+@STP
 public interface OneBotNoticeGroupMessageEvent : OneBotGroupMessageEvent {
     override suspend fun content(): OneBotGroup
 }
