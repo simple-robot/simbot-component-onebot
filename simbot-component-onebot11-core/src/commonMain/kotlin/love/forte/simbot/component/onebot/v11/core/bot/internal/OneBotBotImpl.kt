@@ -47,21 +47,26 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import love.forte.simbot.annotations.FragileSimbotAPI
-import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.JobBasedBot
+import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.collectable.flowCollectable
 import love.forte.simbot.common.coroutines.IOOrDefault
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.OneBot11
-import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
+import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
+import love.forte.simbot.component.onebot.v11.core.api.GetFriendListApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.FriendRelation
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnknownEvent
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnsupportedEvent
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotAnonymousGroupMessageEventImpl
@@ -538,9 +543,19 @@ internal class OneBotBotImpl(
         }
     }
 
-    // 联系人相关操作，OB里即为好友
-    override val contactRelation: ContactRelation
-        get() = TODO("Not yet implemented")
+    override val contactRelation: FriendRelation = FriendRelationImpl()
+
+    private inner class FriendRelationImpl : FriendRelation {
+        override val contacts: Collectable<OneBotFriend>
+            get() = flowCollectable {
+                val resultList = GetFriendListApi.create()
+                    .requestDataBy(this@OneBotBotImpl)
+
+                for (result in resultList) {
+                    emit(result.toFriend(this@OneBotBotImpl))
+                }
+            }
+    }
 
     // 与群聊相关的操作
     override val groupRelation: GroupRelation

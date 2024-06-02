@@ -17,13 +17,17 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
-import io.ktor.client.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.http.Url
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.firstOrNull
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.GuildRelation
+import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.suspendrunner.ST
@@ -124,9 +128,10 @@ public interface OneBotBot : Bot {
     @JvmSynthetic
     override suspend fun start()
 
-    // TODO 联系人相关操作，OB里即好友相关操作
-    override val contactRelation: ContactRelation?
-        get() = null
+    /**
+     * 联系人相关操作，即好友相关的关系操作。
+     */
+    override val contactRelation: FriendRelation
 
     // TODO 与群聊相关的操作
     override val groupRelation: GroupRelation?
@@ -139,4 +144,41 @@ public interface OneBotBot : Bot {
     override val guildRelation: GuildRelation?
         get() = null
 
+    /**
+     * 联系人相关操作，即好友相关的关系操作。
+     *
+     * @see OneBotBot.contactRelation
+     */
+    public interface FriendRelation : ContactRelation {
+        /**
+         * 获取好友列表。
+         */
+        override val contacts: Collectable<OneBotFriend>
+
+        /**
+         * 根据ID查询某个指定的好友。
+         *
+         * OB11协议中没有直接根据ID查询好友的API，
+         * 因此会直接通过 [contacts]
+         * 查询好友列表，并从内存中筛选。
+         */
+        @ST(
+            blockingBaseName = "getContact",
+            blockingSuffix = "",
+            asyncBaseName = "getContact",
+            reserveBaseName = "getContact"
+        )
+        override suspend fun contact(id: ID): OneBotFriend? =
+            contacts.asFlow().firstOrNull { it.id == id }
+
+        /**
+         * 获取好友的数量。
+         *
+         * OB11中没有直接获取的API，因此会通过 [contacts]
+         * 获取全部列表并从内存中计数来达成此功能。
+         */
+        @JvmSynthetic
+        override suspend fun contactCount(): Int =
+            contacts.asFlow().count()
+    }
 }
