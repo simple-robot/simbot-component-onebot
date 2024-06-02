@@ -86,6 +86,8 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
 
     /**
      * 群消息的发送人信息
+     *
+     * @property role 角色，`owner` 或 `admin` 或 `member`
      */
     @Serializable
     public data class Sender @SourceEventConstructor constructor(

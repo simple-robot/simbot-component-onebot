@@ -17,6 +17,8 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor
 
+import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
@@ -24,6 +26,7 @@ import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.suspendrunner.STP
 import kotlin.coroutines.CoroutineContext
 
 
@@ -47,6 +50,34 @@ public interface OneBotGroup : ChatGroup {
      * 群号
      */
     override val id: ID
+
+    /**
+     * 群内的全部角色权限。
+     * 即 [OneBotMemberRole]
+     * 的枚举元素。
+     *
+     * @see OneBotMemberRole
+     */
+    override val roles: Collectable<OneBotMemberRole>
+        get() = OneBotMemberRole.entries.asCollectable()
+
+    /**
+     * 获取群内所有成员集合。
+     */
+    override val members: Collectable<OneBotMember>
+
+    /**
+     * 根据ID寻找指定的成员。
+     */
+    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
+    override suspend fun member(id: ID): OneBotMember?
+
+    /**
+     * 将当前所属Bot作为一个 [OneBotMember] 获取。
+     */
+    @STP
+    override suspend fun botAsMember(): OneBotMember
+
 
     @ST
     override suspend fun send(message: Message): OneBotMessageReceipt

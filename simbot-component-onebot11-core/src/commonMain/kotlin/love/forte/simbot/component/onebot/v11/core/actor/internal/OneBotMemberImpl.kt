@@ -15,34 +15,25 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.actor
+package love.forte.simbot.component.onebot.v11.core.actor.internal
 
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.suspendrunner.ST
-import kotlin.coroutines.CoroutineContext
+import love.forte.simbot.message.MessageReceipt
 
 
-/**
- *
- * @author ForteScarlet
- */
-public interface OneBotMember : Member {
-    /**
-     * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
-     */
-    override val coroutineContext: CoroutineContext
+internal abstract class OneBotMemberImpl : OneBotMember {
+    override suspend fun send(text: String): OneBotMessageReceipt {
+        TODO("Not yet implemented")
+    }
 
-    @ST
-    override suspend fun send(text: String): OneBotMessageReceipt
+    override suspend fun send(message: Message): OneBotMessageReceipt {
+        TODO("Not yet implemented")
+    }
 
-    @ST
-    override suspend fun send(message: Message): OneBotMessageReceipt
-
-    @ST
-    override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt
-
+    override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
+        TODO("Not yet implemented")
+    }
 }

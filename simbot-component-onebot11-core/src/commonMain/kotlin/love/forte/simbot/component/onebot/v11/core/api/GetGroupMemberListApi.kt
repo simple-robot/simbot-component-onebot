@@ -17,15 +17,12 @@
 
 package love.forte.simbot.component.onebot.v11.core.api
 
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.jvm.JvmStatic
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.builtins.ListSerializer
 import love.forte.simbot.common.id.ID
+import kotlin.jvm.JvmStatic
 
 /**
  * [`get_group_member_list`-获取群成员列表](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_group_member_list-获取群成员列表)
@@ -34,18 +31,21 @@ import love.forte.simbot.common.id.ID
  */
 public class GetGroupMemberListApi private constructor(
     override val body: Any,
-) : OneBotApi<Unit> {
+) : OneBotApi<List<GetGroupMemberInfoResult>> {
     override val action: String
         get() = ACTION
 
-    override val resultDeserializer: DeserializationStrategy<Unit>
-        get() = Unit.serializer()
+    override val resultDeserializer: DeserializationStrategy<List<GetGroupMemberInfoResult>>
+        get() = SER
 
-    override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<Unit>>
-        get() = OneBotApiResult.emptySerializer()
+    override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<List<GetGroupMemberInfoResult>>>
+        get() = R_SER
 
     public companion object Factory {
         private const val ACTION: String = "get_group_member_list"
+
+        private val SER = ListSerializer(GetGroupMemberInfoResult.serializer())
+        private val R_SER = OneBotApiResult.serializer(SER)
 
         /**
          * 构建一个 [GetGroupMemberListApi].

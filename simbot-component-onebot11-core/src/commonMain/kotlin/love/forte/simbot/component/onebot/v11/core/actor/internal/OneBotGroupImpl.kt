@@ -17,21 +17,47 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
+import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.collectable.flowCollectable
+import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoResult
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberListApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
+import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import kotlin.coroutines.CoroutineContext
 
 
 internal abstract class OneBotGroupImpl : OneBotGroup {
     protected abstract val bot: OneBotBotImpl
+
+    override val members: Collectable<OneBotMember>
+        get() = flowCollectable {
+            GetGroupMemberInfoApi
+            val list = GetGroupMemberListApi.create(id)
+                .requestDataBy(bot)
+
+            TODO("to member")
+        }
+
+    override suspend fun botAsMember(): OneBotMember {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun member(id: ID): OneBotMember? {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendGroupTextMsgApi(
@@ -58,3 +84,63 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
         ).requestDataBy(bot).toReceipt()
     }
 }
+
+internal class OneBotGroupEventImpl(
+    private val source: GroupMessageEvent,
+    override val bot: OneBotBotImpl,
+
+    /**
+     * 群名称
+     */
+    override val name: String,
+
+    /**
+     * 群主ID
+     */
+    override val ownerId: ID?
+) : OneBotGroupImpl() {
+    override val coroutineContext: CoroutineContext = bot.subContext
+
+    override val id: ID
+        get() = source.groupId
+}
+
+// TODO 群名称, 可能需要使用缓存或API初始化,
+//  事件中似乎取不到
+internal fun GroupMessageEvent.toGroup(
+    bot: OneBotBotImpl,
+    name: String = "",
+    ownerId: ID? = null
+): OneBotGroupEventImpl =
+    OneBotGroupEventImpl(
+        source = this,
+        bot = bot,
+        name = name,
+        ownerId = ownerId,
+    )
+
+/**
+ * 通过API查询得到的群信息。
+ */
+internal class OneBotGroupApiResultImpl(
+    private val source: GetGroupInfoResult,
+    override val bot: OneBotBotImpl,
+    override val ownerId: ID?,
+) : OneBotGroupImpl() {
+    override val coroutineContext: CoroutineContext = bot.subContext
+    override val id: ID
+        get() = source.groupId
+
+    override val name: String
+        get() = source.groupName
+}
+
+internal fun GetGroupInfoResult.toGroup(
+    bot: OneBotBotImpl,
+    ownerId: ID? = null,
+): OneBotGroupApiResultImpl =
+    OneBotGroupApiResultImpl(
+        source = this,
+        bot = bot,
+        ownerId = ownerId
+    )
