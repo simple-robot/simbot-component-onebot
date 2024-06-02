@@ -93,15 +93,6 @@ kotlin {
             implementation(libs.log4j.slf4j2)
             implementation(libs.kotlinPoet)
         }
-
-        // jsMain.dependencies {
-        //     implementation(libs.simbot.api)
-        //     implementation(libs.simbot.common.annotations)
-        // }
-        // nativeMain.dependencies {
-            // compileOnly(libs.simbot.api)
-            // compileOnly(libs.simbot.common.annotations)
-        // }
     }
 }
 

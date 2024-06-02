@@ -22,7 +22,7 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
+import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
@@ -30,11 +30,12 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupPriv
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
-import love.forte.simbot.component.onebot.v11.core.utils.sendMsgApi
-import love.forte.simbot.component.onebot.v11.core.utils.sendTextMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
+import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 
@@ -54,8 +55,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
     )
 
     override suspend fun reply(text: String): OneBotMessageReceipt {
-        val api = sendTextMsgApi(
-            messageType = SendMsgApi.MESSAGE_TYPE_PRIVATE,
+        val api = sendPrivateTextMsgApi(
             target = sourceEvent.userId,
             text,
         )
@@ -65,8 +65,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
 
     override suspend fun reply(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendMsgApi(
-                messageType = SendMsgApi.MESSAGE_TYPE_PRIVATE,
+            return sendPrivateMsgApi(
                 target = sourceEvent.userId,
                 message = sourceEvent.message,
             ).requestDataBy(bot).toReceipt()
@@ -76,7 +75,10 @@ internal abstract class OneBotPrivateMessageEventImpl(
     }
 
     override suspend fun reply(message: Message): OneBotMessageReceipt {
-        TODO("Not yet implemented")
+        return sendPrivateMsgApi(
+            target = sourceEvent.userId,
+            message = message.resolveToOneBotSegmentList()
+        ).requestDataBy(bot).toReceipt()
     }
 }
 
@@ -87,7 +89,7 @@ internal class OneBotFriendMessageEventImpl(
 ) : OneBotPrivateMessageEventImpl(sourceEvent),
     OneBotFriendMessageEvent {
     override suspend fun content(): OneBotFriend {
-        TODO("Not yet implemented")
+        return sourceEvent.sender.toFriend(bot)
     }
 }
 

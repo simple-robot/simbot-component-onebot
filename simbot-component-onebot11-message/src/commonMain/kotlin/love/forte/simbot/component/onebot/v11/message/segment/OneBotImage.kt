@@ -21,10 +21,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import love.forte.simbot.message.Image
+import love.forte.simbot.message.UrlAwareImage
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSynthetic
 
 /**
  * [图片](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#%E5%9B%BE%E7%89%87)
@@ -139,9 +141,13 @@ public class OneBotImage private constructor(
 
     @Serializable
     @SerialName("ob11.segment.image")
-    public data class Element(override val segment: OneBotImage) : OneBotMessageSegmentElement(), Image {
+    public data class Element(override val segment: OneBotImage) : OneBotMessageSegmentElement(), Image, UrlAwareImage {
         public val resource: Resource
             get() = segment.resource
+
+        @JvmSynthetic
+        override suspend fun url(): String =
+            segment.data.url ?: error("segment.data.url is null")
     }
 
     /**

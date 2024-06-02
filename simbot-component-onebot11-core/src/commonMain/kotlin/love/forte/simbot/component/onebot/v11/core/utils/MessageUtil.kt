@@ -58,6 +58,29 @@ internal fun sendTextMsgApi(
     }
 }
 
+internal fun sendPrivateTextMsgApi(
+    target: ID,
+    text: String,
+    reply: ID? = null,
+): SendMsgApi = sendTextMsgApi(
+    messageType = SendMsgApi.MESSAGE_TYPE_PRIVATE,
+    target = target,
+    text = text,
+    reply = reply,
+)
+
+internal fun sendGroupTextMsgApi(
+    target: ID,
+    text: String,
+    reply: ID? = null,
+): SendMsgApi = sendTextMsgApi(
+    messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
+    target = target,
+    text = text,
+    reply = reply,
+)
+
+
 /**
  * 构建一个发送 segments 的纯文本消息。
  *
@@ -100,3 +123,25 @@ internal fun sendMsgApi(
         )
     }
 }
+
+internal fun sendPrivateMsgApi(
+    target: ID,
+    message: List<OneBotMessageSegment>,
+    reply: ID? = null,
+): SendMsgApi = sendMsgApi(
+    messageType = SendMsgApi.MESSAGE_TYPE_PRIVATE,
+    target = target,
+    message = message,
+    reply = reply,
+)
+
+internal fun sendGroupMsgApi(
+    target: ID,
+    message: List<OneBotMessageSegment>,
+    reply: ID? = null,
+): SendMsgApi = sendMsgApi(
+    messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
+    target = target,
+    message = message,
+    reply = reply,
+)

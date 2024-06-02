@@ -20,7 +20,6 @@ package love.forte.simbot.component.onebot.v11.core.event.internal.message
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
-import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotAnonymousGroupMessageEvent
@@ -29,11 +28,12 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGro
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNoticeGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
-import love.forte.simbot.component.onebot.v11.core.utils.sendMsgApi
-import love.forte.simbot.component.onebot.v11.core.utils.sendTextMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
+import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -57,8 +57,7 @@ internal abstract class OneBotGroupMessageEventImpl(
     }
 
     override suspend fun reply(text: String): OneBotMessageReceipt {
-        val api = sendTextMsgApi(
-            messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
+        val api = sendGroupTextMsgApi(
             target = sourceEvent.groupId,
             text,
             reply = sourceEvent.messageId
@@ -69,8 +68,7 @@ internal abstract class OneBotGroupMessageEventImpl(
 
     override suspend fun reply(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendMsgApi(
-                messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
+            return sendGroupMsgApi(
                 target = sourceEvent.groupId,
                 message = sourceEvent.message,
                 reply = sourceEvent.messageId
@@ -81,7 +79,11 @@ internal abstract class OneBotGroupMessageEventImpl(
     }
 
     override suspend fun reply(message: Message): OneBotMessageReceipt {
-        TODO("Not yet implemented")
+        return sendGroupMsgApi(
+            target = sourceEvent.groupId,
+            message = message.resolveToOneBotSegmentList(),
+            reply = sourceEvent.messageId
+        ).requestDataBy(bot).toReceipt()
     }
 }
 

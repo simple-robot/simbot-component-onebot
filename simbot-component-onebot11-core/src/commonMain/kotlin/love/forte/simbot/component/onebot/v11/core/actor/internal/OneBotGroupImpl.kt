@@ -18,14 +18,14 @@
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
-import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
-import love.forte.simbot.component.onebot.v11.core.utils.sendMsgApi
-import love.forte.simbot.component.onebot.v11.core.utils.sendTextMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
+import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 
@@ -34,8 +34,7 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
     protected abstract val bot: OneBotBotImpl
 
     override suspend fun send(text: String): OneBotMessageReceipt {
-        return sendTextMsgApi(
-            messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
+        return sendGroupTextMsgApi(
             target = id,
             text = text,
         ).requestDataBy(bot).toReceipt()
@@ -43,8 +42,7 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendMsgApi(
-                messageType = SendMsgApi.MESSAGE_TYPE_GROUP,
+            return sendGroupMsgApi(
                 target = id,
                 message = messageContent.sourceSegments,
             ).requestDataBy(bot).toReceipt()
@@ -54,6 +52,9 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
     }
 
     override suspend fun send(message: Message): OneBotMessageReceipt {
-        TODO("Not yet implemented")
+        return sendGroupMsgApi(
+            target = id,
+            message = message.resolveToOneBotSegmentList()
+        ).requestDataBy(bot).toReceipt()
     }
 }
