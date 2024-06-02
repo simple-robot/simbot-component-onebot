@@ -63,6 +63,8 @@ internal abstract class OneBotMemberImpl : OneBotMember {
             message = message.resolveToOneBotSegmentList()
         ).requestDataBy(bot).toReceipt()
     }
+
+    override fun toString(): String = "OneBotMember(id=$id, bot=${bot.id})"
 }
 
 internal class OneBotMemberPrivateMessageEventSenderImpl(

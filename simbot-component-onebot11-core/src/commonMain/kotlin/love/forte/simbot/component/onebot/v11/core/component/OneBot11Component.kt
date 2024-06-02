@@ -20,7 +20,13 @@ package love.forte.simbot.component.onebot.v11.core.component
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.component.*
+import love.forte.simbot.common.services.Services
+import love.forte.simbot.common.services.addProviderExceptJvm
+import love.forte.simbot.component.Component
+import love.forte.simbot.component.ComponentConfigureContext
+import love.forte.simbot.component.ComponentFactory
+import love.forte.simbot.component.ComponentFactoryConfigurerProvider
+import love.forte.simbot.component.ComponentFactoryProvider
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import kotlin.jvm.JvmField
 
@@ -66,16 +72,18 @@ public class OneBot11ComponentConfiguration
  * 用于通过 SPI 自动加载 [OneBot11Component] 的 provider。
  */
 public class OneBot11ComponentFactoryProvider : ComponentFactoryProvider<OneBot11ComponentConfiguration> {
-    override fun loadConfigures(): Sequence<ComponentFactoryConfigurerProvider<OneBot11ComponentConfiguration>> =
+    override fun loadConfigures(): Sequence<OneBot11ComponentFactoryConfigurerProvider> =
         loadOneBot11ComponentConfigures()
 
     override fun provide(): ComponentFactory<*, OneBot11ComponentConfiguration> = OneBot11Component
 
     public companion object {
-        // init {
-        //     TODO https://github.com/simple-robot/simpler-robot/pull/833
-        //     Services.addProviderExceptJvm(ComponentFactoryProvider::class) { OneBot11ComponentFactoryProvider() }
-        // }
+        init {
+            // Fix https://github.com/simple-robot/simpler-robot/pull/833
+            Services.addProviderExceptJvm(ComponentFactoryProvider::class) {
+                OneBot11ComponentFactoryProvider()
+            }
+        }
     }
 }
 

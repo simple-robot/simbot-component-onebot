@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
+import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.annotations.InternalSimbotAPI
@@ -37,17 +38,53 @@ import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 @SerialName(OneBot11Component.ID_VALUE)
 public data class OneBotBotSerializableConfiguration(
     val authorization: Authorization,
+    val config: Config? = null,
 ) : SerializableBotConfiguration() {
     @Serializable
     public data class Authorization(
         val botUniqueId: String,
+        val apiServerHost: String? = null,
+        val eventServerHost: String? = null,
         val accessToken: String? = null,
-        val apiServerHost: String,
-        val eventServerHost: String,
     )
 
+    @Serializable
+    public data class Config(
+        /**
+         * @see OneBotBotConfiguration.apiHttpRequestTimeoutMillis
+         */
+        val apiHttpRequestTimeoutMillis: Long? = null,
+        /**
+         * @see OneBotBotConfiguration.apiHttpConnectTimeoutMillis
+         */
+        val apiHttpConnectTimeoutMillis: Long? = null,
+        /**
+         * @see OneBotBotConfiguration.apiHttpSocketTimeoutMillis
+         */
+        val apiHttpSocketTimeoutMillis: Long? = null,
+        /**
+         * @see OneBotBotConfiguration.wsConnectMaxRetryTimes
+         */
+        val wsConnectMaxRetryTimes: Int? = null,
+        /**
+         * @see OneBotBotConfiguration.wsConnectRetryDelayMillis
+         */
+        val wsConnectRetryDelayMillis: Long? = null
+    )
 
-    public fun toConfiguration(): OneBotBotConfiguration {
-        TODO()
-    }
+    public fun toConfiguration(): OneBotBotConfiguration =
+        OneBotBotConfiguration().also { conf ->
+            conf.botUniqueId = authorization.botUniqueId
+            authorization.apiServerHost?.also { conf.apiServerHost = Url(it) }
+            authorization.eventServerHost?.also { conf.eventServerHost = Url(it) }
+            authorization.accessToken?.also { conf.accessToken = it }
+
+            config?.apply {
+                apiHttpRequestTimeoutMillis?.also { conf.apiHttpRequestTimeoutMillis = it }
+                apiHttpConnectTimeoutMillis?.also { conf.apiHttpConnectTimeoutMillis = it }
+                apiHttpSocketTimeoutMillis?.also { conf.apiHttpSocketTimeoutMillis = it }
+                wsConnectMaxRetryTimes?.also { conf.wsConnectMaxRetryTimes = it }
+                wsConnectRetryDelayMillis?.also { conf.wsConnectRetryDelayMillis = it }
+            }
+        }
 }

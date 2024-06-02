@@ -22,7 +22,6 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent

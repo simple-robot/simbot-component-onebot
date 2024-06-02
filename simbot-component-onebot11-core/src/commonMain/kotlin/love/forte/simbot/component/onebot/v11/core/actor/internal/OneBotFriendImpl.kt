@@ -60,6 +60,8 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
             message = message.resolveToOneBotSegmentList()
         ).requestDataBy(bot).toReceipt()
     }
+
+    override fun toString(): String = "OneBotFriend(id=$id, bot=${bot.id})"
 }
 
 /**

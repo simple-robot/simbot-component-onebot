@@ -107,7 +107,7 @@ public class OneBotBotManagerConfiguration
  * 用于通过 SPI 自动加载 [OneBot11Component] 的 provider。
  */
 public class OneBotBotManagerFactoryProvider : PluginFactoryProvider<OneBotBotManagerConfiguration> {
-    override fun loadConfigures(): Sequence<PluginFactoryConfigurerProvider<OneBotBotManagerConfiguration>> =
+    override fun loadConfigures(): Sequence<OneBotBotManagerFactoryConfigurerProvider> =
         loadOneBotBotManagerConfigures()
 
     override fun provide(): PluginFactory<*, OneBotBotManagerConfiguration> = OneBotBotManager

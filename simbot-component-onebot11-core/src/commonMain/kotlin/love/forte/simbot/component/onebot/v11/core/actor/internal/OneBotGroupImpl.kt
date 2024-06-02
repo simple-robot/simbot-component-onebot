@@ -91,6 +91,8 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
             message = message.resolveToOneBotSegmentList()
         ).requestDataBy(bot).toReceipt()
     }
+
+    override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }
 
 internal class OneBotGroupEventImpl(

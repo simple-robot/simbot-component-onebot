@@ -47,7 +47,6 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import love.forte.simbot.annotations.FragileSimbotAPI
-import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.flowCollectable
@@ -58,14 +57,20 @@ import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
+import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.api.GetFriendListApi
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoApi
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupListApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.FriendRelation
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotFriendRelation
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotGroupRelation
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
+import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnknownEvent
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnsupportedEvent
@@ -125,10 +130,7 @@ internal class OneBotBotImpl(
             "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId"
         )
 
-    private val eventServerHost =
-        requireNotNull(configuration.eventServerHost) {
-            "Required property `eventServerHost` is null"
-        }
+    private val eventServerHost = configuration.eventServerHost
 
     private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
 
@@ -203,9 +205,7 @@ internal class OneBotBotImpl(
         }
     }
 
-    override val apiHost: Url = requireNotNull(configuration.apiServerHost) {
-        "Required config property 'apiServerHost' is null"
-    }
+    override val apiHost: Url = configuration.apiServerHost
 
     override val accessToken: String? = configuration.accessToken
 
@@ -543,9 +543,9 @@ internal class OneBotBotImpl(
         }
     }
 
-    override val contactRelation: FriendRelation = FriendRelationImpl()
+    override val contactRelation: OneBotBotFriendRelation = FriendRelationImpl()
 
-    private inner class FriendRelationImpl : FriendRelation {
+    private inner class FriendRelationImpl : OneBotBotFriendRelation {
         override val contacts: Collectable<OneBotFriend>
             get() = flowCollectable {
                 val resultList = GetFriendListApi.create()
@@ -558,12 +558,40 @@ internal class OneBotBotImpl(
     }
 
     // 与群聊相关的操作
-    override val groupRelation: GroupRelation
-        get() = TODO("Not yet implemented")
+    override val groupRelation: OneBotBotGroupRelation = GroupRelationImpl()
 
+    private inner class GroupRelationImpl : OneBotBotGroupRelation {
+        override val groups: Collectable<OneBotGroup>
+            get() = flowCollectable {
+                val resultList = GetGroupListApi.create()
+                    .requestDataBy(this@OneBotBotImpl)
+
+                for (groupInfoResult in resultList) {
+                    emit(
+                        groupInfoResult.toGroup(
+                            this@OneBotBotImpl,
+                            // TODO owner?
+                        )
+                    )
+                }
+
+            }
+
+        override suspend fun group(id: ID): OneBotGroup {
+            val result = GetGroupInfoApi.create(id)
+                .requestResultBy(this@OneBotBotImpl)
+
+            // TODO 如何检测不存在？
+
+            return result.dataOrThrow.toGroup(
+                this@OneBotBotImpl,
+                // TODO owner?
+            )
+        }
+    }
 
     override fun toString(): String =
-        "OneBotBotImpl(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"
+        "OneBotBot(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"
 }
 
 

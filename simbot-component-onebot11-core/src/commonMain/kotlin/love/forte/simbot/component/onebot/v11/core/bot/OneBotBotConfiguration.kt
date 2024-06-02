@@ -59,12 +59,12 @@ public class OneBotBotConfiguration {
     /**
      * 必填属性，HTTP API的目标服务器地址。
      */
-    public var apiServerHost: Url? = null
+    public var apiServerHost: Url = Url("http://localhost:3001")
 
     /**
      * 必填属性，订阅事件的目标服务器地址。应当是ws或wss协议。
      */
-    public var eventServerHost: Url? = null
+    public var eventServerHost: Url = Url("ws://localhost:3001")
 
 
     /**
@@ -146,8 +146,6 @@ public class OneBotBotConfiguration {
      *
      */
     public var wsClientEngineFactory: HttpClientEngineFactory<*>? = null
-
-    // TODO wsConnectionRetry config?
 
     /**
      * 每次尝试连接到 ws 服务时的最大重试次数。

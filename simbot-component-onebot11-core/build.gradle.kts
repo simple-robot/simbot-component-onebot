@@ -30,7 +30,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-configJavaCompileWithModule("simbot.component.onebot11.core")
+configJavaCompileWithModule("simbot.component.onebot11v.core")
 // apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
 kotlin {
@@ -96,15 +96,6 @@ kotlin {
             implementation(libs.log4j.slf4j2)
             implementation(libs.kotlinPoet)
             api(libs.ktor.client.java)
-        }
-
-        // jsMain.dependencies {
-        //     implementation(libs.simbot.api)
-        //     implementation(libs.simbot.common.annotations)
-        // }
-        nativeMain.dependencies {
-            // compileOnly(libs.simbot.api)
-            // compileOnly(libs.simbot.common.annotations)
         }
     }
 }

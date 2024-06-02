@@ -29,7 +29,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-configJavaCompileWithModule("simbot.component.onebot11.event")
+configJavaCompileWithModule("simbot.component.onebot11v.event")
 // apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
 kotlin {
@@ -51,7 +51,7 @@ kotlin {
 
     applyTier1()
     applyTier2()
-    applyTier3(supportKtorClient = true)
+    applyTier3()
 
     sourceSets {
         commonMain.dependencies {
@@ -62,21 +62,12 @@ kotlin {
             api(project(":simbot-component-onebot11-message"))
 
             api(libs.kotlinx.coroutines.core)
-            // api(libs.kotlinx.serialization.json)
-            // api(libs.ktor.client.core)
-            // api(libs.simbot.logger)
-            // api(libs.simbot.common.suspend)
-            // api(libs.ktor.client.contentNegotiation)
-            // api(libs.simbot.common.atomic)
-            // api(libs.simbot.common.core)
         }
 
         commonTest.dependencies {
             api(project(":simbot-component-onebot11-common"))
-
             api(libs.simbot.core)
             api(kotlin("test"))
-            api(libs.ktor.client.mock)
             api(libs.kotlinx.coroutines.test)
         }
 
