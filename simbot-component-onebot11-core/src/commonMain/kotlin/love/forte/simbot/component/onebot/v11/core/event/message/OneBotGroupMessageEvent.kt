@@ -21,7 +21,6 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
-import love.forte.simbot.definition.Member
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.ChatGroupMessageEvent
 import love.forte.simbot.suspendrunner.STP

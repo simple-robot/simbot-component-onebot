@@ -19,8 +19,6 @@ package love.forte.simbot.component.onebot.v11.core.internal.message
 
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
-import love.forte.simbot.ability.StandardDeleteOption.Companion.standardAnalysis
-import love.forte.simbot.ability.isIgnoreOnFailure
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.DeleteMsgApi
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
