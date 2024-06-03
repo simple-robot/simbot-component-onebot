@@ -24,6 +24,7 @@ plugins {
     idea
     `simbot-onebot-nexus-publish`
     `simbot-onebot-dokka-multi-module`
+    `simbot-onebot-changelog-generator`
 
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
