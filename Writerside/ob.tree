@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="ob"
+                  name="Simple Robot | OneBot"
+                  start-page="Home.md">
+    <toc-element topic="Home.md"/>
+</instance-profile>
