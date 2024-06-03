@@ -42,17 +42,16 @@ class ApplicationUsageTests {
             assertNotNull(botManagers.firstOneBotBotManagerOrNull())
         }
 
-        // TODO simbot 4.0.0-RC2 修复 native Service 注册
-        // with(
-        //     launchSimpleApplication {
-        //         findAndInstallAllComponents(false)
-        //         findAndInstallAllPlugins(false)
-        //     }
-        // ) {
-        //     assertTrue(components.any { it is OneBot11Component })
-        //     assertNotNull(plugins.firstOneBotBotManagerOrNull())
-        //     assertNotNull(botManagers.firstOneBotBotManagerOrNull())
-        // }
+        with(
+            launchSimpleApplication {
+                findAndInstallAllComponents(false)
+                findAndInstallAllPlugins(false)
+            }
+        ) {
+            assertTrue(components.any { it is OneBot11Component })
+            assertNotNull(plugins.firstOneBotBotManagerOrNull())
+            assertNotNull(botManagers.firstOneBotBotManagerOrNull())
+        }
 
         with(
             launchSimpleApplication {

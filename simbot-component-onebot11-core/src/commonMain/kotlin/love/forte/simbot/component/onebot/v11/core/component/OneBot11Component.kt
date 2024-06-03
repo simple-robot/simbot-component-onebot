@@ -44,6 +44,13 @@ public class OneBot11Component : Component {
         get() = SerializersModule
 
     public companion object Factory : ComponentFactory<OneBot11Component, OneBot11ComponentConfiguration> {
+        init {
+            // Fix https://github.com/simple-robot/simpler-robot/pull/833
+            Services.addProviderExceptJvm(ComponentFactoryProvider::class) {
+                OneBot11ComponentFactoryProvider()
+            }
+        }
+
         public const val ID_VALUE: String = "simbot.onebot11"
 
         @JvmField
@@ -76,15 +83,6 @@ public class OneBot11ComponentFactoryProvider : ComponentFactoryProvider<OneBot1
         loadOneBot11ComponentConfigures()
 
     override fun provide(): ComponentFactory<*, OneBot11ComponentConfiguration> = OneBot11Component
-
-    public companion object {
-        init {
-            // Fix https://github.com/simple-robot/simpler-robot/pull/833
-            Services.addProviderExceptJvm(ComponentFactoryProvider::class) {
-                OneBot11ComponentFactoryProvider()
-            }
-        }
-    }
 }
 
 /**
