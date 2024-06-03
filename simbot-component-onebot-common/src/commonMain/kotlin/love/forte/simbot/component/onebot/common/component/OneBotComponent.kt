@@ -15,17 +15,13 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
-rootProject.name = "simbot-component-onebot"
+package love.forte.simbot.component.onebot.common.component
 
-include(":internal-processors:include-component-message-elements-processor")
-include(":internal-processors:event-type-resolver-processor")
+import love.forte.simbot.component.Component
 
-include(":simbot-component-onebot-common")
 
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-common")
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-event")
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-message")
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-core")
+/**
+ * 一个作为 OneBot 组件 [Component] 实现的父级类型。
+ * @author ForteScarlet
+ */
+public interface OneBotComponent : Component

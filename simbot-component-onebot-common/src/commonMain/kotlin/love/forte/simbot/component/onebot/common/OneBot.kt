@@ -15,17 +15,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
-rootProject.name = "simbot-component-onebot"
+package love.forte.simbot.component.onebot.common
 
-include(":internal-processors:include-component-message-elements-processor")
-include(":internal-processors:event-type-resolver-processor")
+import love.forte.simbot.annotations.InternalSimbotAPI
 
-include(":simbot-component-onebot-common")
+/**
+ * An OneBot object.
+ */
+@InternalSimbotAPI
+public object OneBot
 
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-common")
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-event")
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-message")
-include(":simbot-component-onebot-v11:simbot-component-onebot-v11-core")
+// TODO 一些Opt注解放在这个模块？

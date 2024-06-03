@@ -9,8 +9,8 @@
     ~ Simple Robot ~ <br/> <small>OneBot Component</small>
 </h2>
 <a href="https://github.com/simple-robot/simbot-component-onebot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/simple-robot/simbot-component-onebot" /></a>
-<a href="https://repo1.maven.org/maven2/love/forte/simbot/component/simbot-component-onebot-api/" target="_blank">
-  <img alt="release" src="https://img.shields.io/maven-central/v/love.forte.simbot.component/simbot-component-onebot-api" /></a>
+<a href="https://repo1.maven.org/maven2/love/forte/simbot/component/simbot-component-onebot11-core/" target="_blank">
+  <img alt="release" src="https://img.shields.io/maven-central/v/love.forte.simbot.component/simbot-component-onebot11-core" /></a>
    <hr>
    <img alt="stars" src="https://img.shields.io/github/stars/simple-robot/simbot-component-onebot" />
    <img alt="forks" src="https://img.shields.io/github/forks/simple-robot/simbot-component-onebot" />
