@@ -23,6 +23,7 @@ module simbot.component.onebot11v.core {
     requires io.ktor.client.core;
     requires io.ktor.client.websockets;
     requires io.ktor.http;
+    requires io.ktor.io;
 
     exports love.forte.simbot.component.onebot.v11.core;
     exports love.forte.simbot.component.onebot.v11.core.actor;

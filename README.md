@@ -53,6 +53,42 @@ Simple Robot OneBot 组件是一个将
 [协助](https://github.com/simple-robot/simbot-component-onebot/pulls)，
 感谢您的贡献与支持！
 
+## 配置文件
+
+使用spring的时候用的。需要注意实际上是不允许使用注释的，这里只是方便展示。
+
+```json5
+{
+  // 固定值
+  "component": "simbot.onebot11",
+  "authorization": {
+    // 唯一ID，作为组件内 Bot 的 id，用于组件内去重。可以随便编，但建议是bot的qq号
+    "botUniqueId": "123456",
+    // api地址，是个http/https服务器的路径，默认localhost:3000
+    "apiServerHost": "http://localhost:3000",
+    // 订阅事件的服务器地址，是个ws/wss路径，默认localhost:3001
+    "eventServerHost":"ws://localhost:3001",
+    // 配置的 token，可以是null
+    "accessToken": null 
+  },
+  // 额外的可选配置
+  // config本身以及其内的各项属性绝大多数都可省略或null
+  config: { 
+    // API请求中的超时请求配置。整数数字，单位毫秒，默认为 `null`。
+    "apiHttpRequestTimeoutMillis": null,
+    // API请求中的超时请求配置。整数数字，单位毫秒，默认为 `null`。
+    "apiHttpConnectTimeoutMillis": null,
+    // API请求中的超时请求配置。整数数字，单位毫秒，默认为 `null`。
+    "apiHttpSocketTimeoutMillis": null,
+    // 每次尝试连接到 ws 服务时的最大重试次数，大于等于0的整数，默认为 2147483647
+    "wsConnectMaxRetryTimes": null,
+    // 每次尝试连接到 ws 服务时，如果需要重新尝试，则每次尝试之间的等待时长
+    // 整数数字，单位毫秒，默认为 3500
+    "wsConnectRetryDelayMillis": null,
+  }
+}
+```
+
 ## License
 
 ```

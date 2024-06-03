@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.core
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -63,6 +64,7 @@ public object OneBot11 {
      * 一个默认的 [Json] 序列化器。
      * 会在部分内部API中使用。
      */
+    @OptIn(ExperimentalSerializationApi::class)
     @JvmField
     public val DefaultJson: Json = Json {
         isLenient = true
@@ -70,5 +72,6 @@ public object OneBot11 {
         allowSpecialFloatingPointValues = true
         prettyPrint = false
         serializersModule = OneBot11.serializersModule
+        allowTrailingComma = true
     }
 }

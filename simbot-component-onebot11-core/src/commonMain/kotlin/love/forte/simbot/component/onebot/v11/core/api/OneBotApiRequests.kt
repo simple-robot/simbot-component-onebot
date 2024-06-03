@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("OneBotApiRequests")
+@file:JvmMultifileClass
 
 package love.forte.simbot.component.onebot.v11.core.api
 
@@ -32,11 +33,10 @@ import love.forte.simbot.common.serialization.guessSerializer
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
-
-// TODO JVM async, blocking
 
 /**
  * 用于在对 [OneBotApi] 发起请求时输出相关的 `debug` 日志。

@@ -82,9 +82,6 @@ multiplatformConfigPublishing {
         logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
         mainHost = null
     }
-
-    publicationsFromMainHost += listOf("wasm", "wasm32", "wasm_js")
-    mainHostSupportedTargets += listOf("wasm", "wasm32", "wasm_js")
 }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
