@@ -30,7 +30,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.component.onebot11v.message")
-// apply(plugin = "simbot-onebot-multiplatform-maven-publish")
+apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()

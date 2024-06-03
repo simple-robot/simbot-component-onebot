@@ -97,8 +97,8 @@ inline fun Project.configWasmJsTest(block: () -> Unit = {}) {
         // see https://youtrack.jetbrains.com/issue/KT-63014/Running-tests-with-wasmJs-in-1.9.20-requires-Chrome-Canary#focus=Comments-27-8321383.0-0
         rootProject.the<NodeJsRootExtension>().apply {
             // nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-            nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-            nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+            version = "21.0.0-v8-canary202309143a48826a08"
+            downloadBaseUrl = "https://nodejs.org/download/v8-canary"
         }
 
         tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
