@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.message
 
 import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentElement
@@ -66,11 +67,13 @@ public interface OneBotMessageContent : MessageContent {
     /**
      * 删除此消息。
      *
+     * 支持的操作：
+     * - [StandardDeleteOption.IGNORE_ON_FAILURE] 忽略产生的异常
+     *
      * @throws Exception 任何请求API过程中可能会产生的异常，
      * 例如因权限不足或消息不存在得到的请求错误
      */
     override suspend fun delete(vararg options: DeleteOption)
 }
-
 
 // 实现在core模块里，因为要用到API

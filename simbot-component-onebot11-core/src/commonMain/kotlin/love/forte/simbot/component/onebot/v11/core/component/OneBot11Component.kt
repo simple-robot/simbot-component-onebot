@@ -73,8 +73,6 @@ public class OneBot11Component : Component {
  */
 public class OneBot11ComponentConfiguration
 
-// TODO module.java
-
 /**
  * 用于通过 SPI 自动加载 [OneBot11Component] 的 provider。
  */

@@ -40,7 +40,7 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
         return sendPrivateTextMsgApi(
             target = id,
             text = text,
-        ).requestDataBy(bot).toReceipt()
+        ).requestDataBy(bot).toReceipt(bot)
     }
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
@@ -48,7 +48,7 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
             return sendPrivateMsgApi(
                 target = id,
                 message = messageContent.sourceSegments,
-            ).requestDataBy(bot).toReceipt()
+            ).requestDataBy(bot).toReceipt(bot)
         }
 
         return send(messageContent.messages)
@@ -58,7 +58,7 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
         return sendPrivateMsgApi(
             target = id,
             message = message.resolveToOneBotSegmentList()
-        ).requestDataBy(bot).toReceipt()
+        ).requestDataBy(bot).toReceipt(bot)
     }
 
     override fun toString(): String = "OneBotFriend(id=$id, bot=${bot.id})"

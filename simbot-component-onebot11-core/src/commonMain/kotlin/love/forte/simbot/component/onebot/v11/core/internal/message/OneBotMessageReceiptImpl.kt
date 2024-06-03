@@ -18,8 +18,14 @@
 package love.forte.simbot.component.onebot.v11.core.internal.message
 
 import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
+import love.forte.simbot.ability.StandardDeleteOption.Companion.standardAnalysis
+import love.forte.simbot.ability.isIgnoreOnFailure
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.v11.core.api.DeleteMsgApi
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
+import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
+import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 
 
@@ -27,13 +33,20 @@ import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
  * @author ForteScarlet
  */
 internal class OneBotMessageReceiptImpl(
-    override val messageId: ID
+    override val messageId: ID,
+    private val bot: OneBotBotImpl,
 ) : OneBotMessageReceipt {
     override suspend fun delete(vararg options: DeleteOption) {
-        TODO("Not yet implemented")
+        kotlin.runCatching {
+            DeleteMsgApi.create(messageId).requestDataBy(bot)
+        }.onFailure { ex ->
+            if (StandardDeleteOption.IGNORE_ON_FAILURE !in options) {
+                throw ex
+            }
+        }
     }
 }
 
 
-internal fun SendMsgResult.toReceipt(): OneBotMessageReceiptImpl =
-    OneBotMessageReceiptImpl(messageId)
+internal fun SendMsgResult.toReceipt(bot: OneBotBotImpl): OneBotMessageReceiptImpl =
+    OneBotMessageReceiptImpl(messageId, bot)

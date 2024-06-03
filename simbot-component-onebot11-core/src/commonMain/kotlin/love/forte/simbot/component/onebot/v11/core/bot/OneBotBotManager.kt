@@ -19,18 +19,21 @@ package love.forte.simbot.component.onebot.v11.core.bot
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import love.forte.simbot.bot.*
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotManagerFactory
+import love.forte.simbot.bot.BotRegisterFailureException
+import love.forte.simbot.bot.JobBasedBotManager
+import love.forte.simbot.bot.SerializableBotConfiguration
+import love.forte.simbot.bot.UnsupportedBotConfigurationException
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.services.Services
 import love.forte.simbot.common.services.addProviderExceptJvm
-import love.forte.simbot.component.ComponentFactoryProvider
 import love.forte.simbot.component.NoSuchComponentException
 import love.forte.simbot.component.find
-import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotManagerImpl
-import love.forte.simbot.component.onebot.v11.core.component.OneBot11ComponentFactoryProvider
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
 import love.forte.simbot.plugin.PluginFactoryConfigurerProvider

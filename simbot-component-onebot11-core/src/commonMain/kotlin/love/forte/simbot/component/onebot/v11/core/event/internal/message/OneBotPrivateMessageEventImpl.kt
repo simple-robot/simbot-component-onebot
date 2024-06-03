@@ -23,6 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
+import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
@@ -41,7 +42,8 @@ import love.forte.simbot.message.MessageContent
 
 
 internal abstract class OneBotPrivateMessageEventImpl(
-    final override val sourceEvent: PrivateMessageEvent
+    final override val sourceEvent: PrivateMessageEvent,
+    final override val bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEvent {
     override val id: ID
         get() = "${sourceEvent.userId}-${sourceEvent.messageId}".ID
@@ -51,7 +53,8 @@ internal abstract class OneBotPrivateMessageEventImpl(
 
     override val messageContent: MessageContent = OneBotMessageContentImpl(
         sourceEvent.messageId,
-        sourceEvent.message
+        sourceEvent.message,
+        bot
     )
 
     override suspend fun reply(text: String): OneBotMessageReceipt {
@@ -60,7 +63,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
             text,
         )
 
-        return api.requestDataBy(bot).toReceipt()
+        return api.requestDataBy(bot).toReceipt(bot)
     }
 
     override suspend fun reply(messageContent: MessageContent): OneBotMessageReceipt {
@@ -68,7 +71,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
             return sendPrivateMsgApi(
                 target = sourceEvent.userId,
                 message = sourceEvent.message,
-            ).requestDataBy(bot).toReceipt()
+            ).requestDataBy(bot).toReceipt(bot)
         }
 
         return reply(messageContent.messages)
@@ -78,15 +81,15 @@ internal abstract class OneBotPrivateMessageEventImpl(
         return sendPrivateMsgApi(
             target = sourceEvent.userId,
             message = message.resolveToOneBotSegmentList()
-        ).requestDataBy(bot).toReceipt()
+        ).requestDataBy(bot).toReceipt(bot)
     }
 }
 
 internal class OneBotFriendMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: PrivateMessageEvent,
-    override val bot: OneBotBotImpl,
-) : OneBotPrivateMessageEventImpl(sourceEvent),
+    bot: OneBotBotImpl,
+) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotFriendMessageEvent {
     override suspend fun content(): OneBotFriend {
         return sourceEvent.sender.toFriend(bot)
@@ -96,20 +99,22 @@ internal class OneBotFriendMessageEventImpl(
 internal class OneBotGroupPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: PrivateMessageEvent,
-    override val bot: OneBotBotImpl,
-) : OneBotPrivateMessageEventImpl(sourceEvent),
+    bot: OneBotBotImpl,
+) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotGroupPrivateMessageEvent {
     override suspend fun content(): OneBotMember {
-        TODO("Not yet implemented")
+        return sourceEvent.sender.toMember(bot)
     }
 
     override suspend fun source(): OneBotGroup {
-        TODO("Not yet implemented")
+        // TODO 额，怎么知道群号？
+        // 无法得知群号
+        throw UnsupportedOperationException("Don't know how to get the group number from PrivateMessageEvent")
     }
 }
 
 internal class OneBotDefaultPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: PrivateMessageEvent,
-    override val bot: OneBotBotImpl,
-) : OneBotPrivateMessageEventImpl(sourceEvent)
+    bot: OneBotBotImpl,
+) : OneBotPrivateMessageEventImpl(sourceEvent, bot)

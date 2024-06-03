@@ -71,7 +71,7 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
         return sendGroupTextMsgApi(
             target = id,
             text = text,
-        ).requestDataBy(bot).toReceipt()
+        ).requestDataBy(bot).toReceipt(bot)
     }
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
@@ -79,7 +79,7 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
             return sendGroupMsgApi(
                 target = id,
                 message = messageContent.sourceSegments,
-            ).requestDataBy(bot).toReceipt()
+            ).requestDataBy(bot).toReceipt(bot)
         }
 
         return send(messageContent.messages)
@@ -89,7 +89,7 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
         return sendGroupMsgApi(
             target = id,
             message = message.resolveToOneBotSegmentList()
-        ).requestDataBy(bot).toReceipt()
+        ).requestDataBy(bot).toReceipt(bot)
     }
 
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"

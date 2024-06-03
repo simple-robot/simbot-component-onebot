@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.message
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.definition.Member
 import love.forte.simbot.event.ChatGroupEvent
@@ -81,7 +82,7 @@ public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
 @STP
 public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override suspend fun content(): OneBotGroup
-    override suspend fun author(): Member // TODO OneBotMember?
+    override suspend fun author(): OneBotMember
 }
 
 /**
@@ -91,7 +92,7 @@ public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGr
 @STP
 public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override suspend fun content(): OneBotGroup
-    override suspend fun author(): Member // TODO OneBotAnonymousMember?
+    override suspend fun author(): OneBotMember
 }
 
 /**
