@@ -15,6 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
@@ -22,10 +23,11 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-
+    `simbot-onebot-dokka-partial-configure`
     // alias(libs.plugins.ksp)
 }
 
+setup(P.ComponentOneBot)
 configJavaCompileWithModule("simbot.component.onebot11v.common")
 apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
@@ -33,9 +35,8 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    configKotlinJvm {
-        withJava()
-    }
+    configKotlinJvm()
+
     js(IR) {
         configJs()
     }

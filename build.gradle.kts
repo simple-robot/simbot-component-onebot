@@ -22,6 +22,7 @@ import util.isCi
 
 plugins {
     idea
+    `simbot-onebot-nexus-publish`
     `simbot-onebot-dokka-multi-module`
 
     alias(libs.plugins.detekt)

@@ -16,6 +16,7 @@
  */
 
 import com.google.devtools.ksp.gradle.KspTaskMetadata
+import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
@@ -30,6 +31,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+setup(P.ComponentOneBot)
 configJavaCompileWithModule("simbot.component.onebot11v.core")
 apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 
@@ -44,9 +46,8 @@ kotlin {
         )
     }
 
-    configKotlinJvm {
-        withJava()
-    }
+    configKotlinJvm()
+
     js(IR) {
         configJs()
     }
