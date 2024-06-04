@@ -6,7 +6,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.KSerializer
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotFace
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText

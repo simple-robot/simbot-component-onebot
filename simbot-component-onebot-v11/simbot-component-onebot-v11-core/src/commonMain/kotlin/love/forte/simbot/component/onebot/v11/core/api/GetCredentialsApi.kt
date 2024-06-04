@@ -26,7 +26,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 
 /**
  * [`get_credentials`-获取 QQ 相关接口凭证](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_credentials-获取-qq-相关接口凭证)

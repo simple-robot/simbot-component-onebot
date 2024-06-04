@@ -22,7 +22,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 import kotlin.jvm.JvmStatic
 
 /**

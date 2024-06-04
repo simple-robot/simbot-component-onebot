@@ -127,8 +127,8 @@ apiValidation {
         listOf(
             "love.forte.simbot.annotations.ExperimentalSimbotAPI",
             "love.forte.simbot.annotations.InternalSimbotAPI",
-            "love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor",
-            "love.forte.simbot.component.onebot.v11.common.event.SourceEventConstructor",
+            "love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor",
+            "love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor",
         ),
     )
 

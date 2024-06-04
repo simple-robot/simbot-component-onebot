@@ -25,7 +25,7 @@ import kotlinx.serialization.json.JsonObject
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IntID
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import kotlin.jvm.JvmStatic
 

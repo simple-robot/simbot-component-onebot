@@ -47,6 +47,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":simbot-component-onebot-common"))
             implementation(libs.simbot.common.annotations)
             api(libs.kotlinx.serialization.core)
         }

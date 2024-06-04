@@ -1,6 +1,7 @@
 module simbot.component.onebot11v.event {
     requires kotlin.stdlib;
     requires simbot.api;
+    requires simbot.component.onebot.common;
     requires static simbot.common.annotations;
     requires transitive simbot.component.onebot11v.common;
     requires transitive simbot.component.onebot11v.message;

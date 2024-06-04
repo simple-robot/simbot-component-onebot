@@ -58,6 +58,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
+            implementation(project(":simbot-component-onebot-common"))
 
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-common"))
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-message"))

@@ -24,7 +24,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.onebot.v11.common.api.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 
 /**
  * [`get_record`-获取语音](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_record-获取语音)

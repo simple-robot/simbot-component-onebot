@@ -18,7 +18,8 @@
 package love.forte.simbot.component.onebot.v11.common.api
 
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.onebot.v11.common.event.SourceEventConstructor
+import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor
 
 
 /**
