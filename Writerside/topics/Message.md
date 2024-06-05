@@ -5,10 +5,10 @@
 作为一个simbot组件，OneBot组件理所当然的会支持部分simbot核心库所定义的标准消息元素。
 
 <deflist>
-<def title="Text"></def>
-<def title="At"></def>
-<def title="Face"></def>
-<def title="Image"></def>
+<def id="Text" title="Text"></def>
+<def id="At" title="At"></def>
+<def id="Face" title="Face"></def>
+<def id="Image" title="Image"></def>
 </deflist>
 
 ## 消息段

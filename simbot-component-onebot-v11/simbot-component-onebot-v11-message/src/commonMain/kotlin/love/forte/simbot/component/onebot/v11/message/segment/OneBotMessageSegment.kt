@@ -122,3 +122,11 @@ public fun MessagesBuilder.add(segment: OneBotMessageSegment): MessagesBuilder =
  */
 public object OneBotMessageSegmentSerializer : KSerializer<List<OneBotMessageSegment>> by
 ListSerializer(PolymorphicSerializer(OneBotMessageSegment::class))
+
+/**
+ * 判断 [this] 的类型是 [OneBotMessageSegmentElement]
+ * 并且 [segment][OneBotMessageSegmentElement.segment]
+ * 的类型是 [T]。
+ */
+public inline fun <reified T : OneBotMessageSegment> Message.Element.isOneBotSegment(): Boolean =
+    this is OneBotMessageSegmentElement && segment is T
