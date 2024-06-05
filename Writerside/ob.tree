@@ -6,4 +6,9 @@
                   name="Simple Robot | OneBot"
                   start-page="Home.md">
     <toc-element topic="Home.md"/>
+    <toc-element toc-title="基础内容">
+        <toc-element topic="Event.md">
+        </toc-element>
+        <toc-element topic="Message.md"/>
+    </toc-element>
 </instance-profile>
