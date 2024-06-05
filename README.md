@@ -53,9 +53,120 @@ Simple Robot OneBot 组件是一个将
 [协助](https://github.com/simple-robot/simbot-component-onebot/pulls)，
 感谢您的贡献与支持！
 
+## 快速开始
+
+> 手册施工完成之前，此处临时提供快速开始。手册施工完成后会删除。
+
+> [!note]
+> 核心库的版本可前往 
+> [此处](https://github.com/simple-robot/simpler-robot/releases) 
+> 参考。
+
+### 普通核心库
+
+Gradle:
+
+```kotlin
+// 指定核心库依赖
+implementation("love.forte.simbot:simbot-core:$SIMBOT_VERSION")
+// 引入OneBot组件库
+implementation("love.forte.simbot.component:simbot-component-onebot-v11-core:$VERSION")
+```
+
+Maven:
+
+```xml
+<dependencies>
+    <!-- 指定核心库依赖 -->
+    <dependency>
+        <groupId>love.forte.simbot</groupId>
+        <artifactId>simbot-core-jvm</artifactId>
+        <version>${SIMBOT_VERSION}</version>
+    </dependency>
+    <dependency>
+        <groupId>love.forte.simbot.component</groupId>
+        <artifactId>simbot-component-onebot-v11-core</artifactId>
+        <version>${VERSION}</version>
+    </dependency>
+</dependencies>
+```
+
+```kotlin
+suspend fun main() {
+    val app = launchSimpleApplication {
+        // 使用OneBot11协议组件
+        useOneBot11()
+    }
+
+    // 注册、监听事件
+    app.listeners {
+        // 例如：监听OneBot的普通群消息
+        process<OneBotNormalGroupMessageEvent> { event ->
+            println("event: $event")
+            if (event.messageContent.plainText?.trim() == "你好") {
+                event.reply("你也好")
+            }
+        }
+    }
+
+    // 注册Bot
+    // 先得到OneBot的BotManager
+    app.oneBot11Bots {
+        val bot = register(OneBotBotConfiguration().apply {
+            botUniqueId = "123456"
+            apiServerHost = Url("http://localhost:3000")
+            eventServerHost = Url("ws://localhost:3001")
+        })
+
+        // 启动bot
+        bot.start()
+    }
+
+    // 挂起直到被终止
+    app.join()
+}
+```
+
+### 配合 Spring Boot
+
+Gradle:
+
+```kotlin
+// 你的其他SpringBoot依赖..
+
+// 指定核心库依赖
+implementation("love.forte.simbot:simbot-core-spring-boot-starter:$SIMBOT_VERSION")
+// 引入OneBot组件库
+implementation("love.forte.simbot.component:simbot-component-onebot-v11-core:$VERSION")
+```
+
+Maven:
+
+```xml
+<dependencies>
+    <!-- 你的其他SpringBoot依赖.. -->
+    
+    
+    <!-- 指定核心库依赖 -->
+    <dependency>
+        <groupId>love.forte.simbot</groupId>
+        <artifactId>simbot-core-spring-boot-starter</artifactId>
+        <version>${SIMBOT_VERSION}</version>
+    </dependency>
+    <dependency>
+        <groupId>love.forte.simbot.component</groupId>
+        <artifactId>simbot-component-onebot-v11-core</artifactId>
+        <version>${VERSION}</version>
+    </dependency>
+</dependencies>
+```
+
 ## 配置文件
 
 使用spring的时候用的。需要注意实际上是不允许使用注释的，这里只是方便展示。
+
+配置文件放在资源目录 `resources` 中的 `/simbot-bots/` 目录下，以 `.bot.json` 格式结尾，
+例如 `myBot.bot.json`。
 
 ```json5
 {
@@ -86,6 +197,58 @@ Simple Robot OneBot 组件是一个将
     // 整数数字，单位毫秒，默认为 3500
     "wsConnectRetryDelayMillis": null,
   }
+}
+```
+
+Kotlin:
+
+```Kotlin
+@SpringBootApplication
+@EnableSimbot
+class MyApp
+
+fun main(vararg args: String) {
+    runApplication<MyApp>(*args)
+}
+
+@Component
+class MyHandlers {
+
+    /**
+     * 例如：监听OneBot的普通群消息
+     */
+    @Listener
+    @Filter("你好")
+    @ContentTrim
+    suspend fun onGroupMessage(event: OneBotNormalGroupMessageEvent) {
+        event.reply("你也好")
+    }
+}
+```
+
+or Java:
+
+```java
+@SpringBootApplication
+@EnableSimbot
+public class MyApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApp.class, args);
+    }
+
+    @Component
+    static class MyHandlers {
+
+        /**
+         * 例如：监听OneBot的普通群消息
+         */
+        @Listener
+        @Filter("你好")
+        @ContentTrim
+        public CompletableFuture<?> onGroupMessage(OneBotNormalGroupMessageEvent event) {
+            return event.replyAsync("你也好");
+        }
+    }
 }
 ```
 
