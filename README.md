@@ -85,7 +85,7 @@ Maven:
     </dependency>
     <dependency>
         <groupId>love.forte.simbot.component</groupId>
-        <artifactId>simbot-component-onebot-v11-core</artifactId>
+        <artifactId>simbot-component-onebot-v11-core-jvm</artifactId>
         <version>${VERSION}</version>
     </dependency>
 </dependencies>
@@ -155,7 +155,7 @@ Maven:
     </dependency>
     <dependency>
         <groupId>love.forte.simbot.component</groupId>
-        <artifactId>simbot-component-onebot-v11-core</artifactId>
+        <artifactId>simbot-component-onebot-v11-core-jvm</artifactId>
         <version>${VERSION}</version>
     </dependency>
 </dependencies>
