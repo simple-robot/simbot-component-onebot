@@ -17,7 +17,10 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot.internal
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import love.forte.simbot.bot.BotRegisterFailureException
 import love.forte.simbot.bot.NoSuchBotException
 import love.forte.simbot.common.collection.computeValue
@@ -26,10 +29,12 @@ import love.forte.simbot.common.collection.removeValue
 import love.forte.simbot.common.coroutines.mergeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManager
+import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotRegisteredEventImpl
+import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.event.EventProcessor
 import kotlin.coroutines.CoroutineContext
 
@@ -40,10 +45,11 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class OneBotBotManagerImpl(
     override val job: Job,
-    private val coroutineContext: CoroutineContext,
+    override val coroutineContext: CoroutineContext,
     private val component: OneBot11Component,
     private val eventProcessor: EventProcessor
-) : OneBotBotManager() {
+) : OneBotBotManager(), CoroutineScope {
+
     private val bots = concurrentMutableMap<String, OneBotBot>()
 
     override fun all(): Sequence<OneBotBot> =
@@ -82,6 +88,15 @@ internal class OneBotBotManagerImpl(
             bots.removeValue(uniqueId) { created }
         }
 
+        // push event
+        launch {
+            eventProcessor
+                .push(OneBotBotRegisteredEventImpl(created))
+                .onEachErrorLog(logger)
+                .collect()
+        }
+
+
         return created
     }
 
@@ -90,4 +105,6 @@ internal class OneBotBotManagerImpl(
 
     override fun find(id: ID): OneBotBot? =
         bots[id.literal]
+
+
 }

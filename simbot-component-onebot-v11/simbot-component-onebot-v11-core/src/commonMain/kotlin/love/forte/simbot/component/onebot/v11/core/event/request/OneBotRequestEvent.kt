@@ -17,13 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.request
 
-import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
+import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
 
 
 /**
  *
  * @author ForteScarlet
  */
-public interface OneBotRequestEvent : OneBotEvent {
+public interface OneBotRequestEvent : OneBotBotEvent {
     // TODO
 }

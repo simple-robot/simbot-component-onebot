@@ -34,6 +34,7 @@ import love.forte.simbot.component.NoSuchComponentException
 import love.forte.simbot.component.find
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotManagerImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
 import love.forte.simbot.plugin.PluginFactoryConfigurerProvider
@@ -85,6 +86,10 @@ public abstract class OneBotBotManager : BotManager, JobBasedBotManager() {
                 OneBotBotManagerFactoryProvider()
             }
         }
+
+        internal val logger = LoggerFactory.getLogger(
+            "love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManager"
+        )
 
         override val key: PluginFactory.Key = object : PluginFactory.Key {}
 

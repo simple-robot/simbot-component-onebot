@@ -19,7 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.message
 
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
+import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
 import love.forte.simbot.component.onebot.v11.core.utils.timestamp
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
@@ -39,7 +39,7 @@ public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.e
  *
  * @author ForteScarlet
  */
-public interface OneBotMessageEvent : OneBotEvent, MessageEvent {
+public interface OneBotMessageEvent : OneBotBotEvent, MessageEvent {
     override val bot: OneBotBot
     override val sourceEvent: OBSourceMessageEvent
 

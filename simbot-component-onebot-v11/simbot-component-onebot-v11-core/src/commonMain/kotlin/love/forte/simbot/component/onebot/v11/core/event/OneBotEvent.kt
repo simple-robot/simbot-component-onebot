@@ -19,7 +19,10 @@ package love.forte.simbot.component.onebot.v11.core.event
 
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.common.time.Timestamp
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.event.stage.OneBotBotStageEvent
 import love.forte.simbot.component.onebot.v11.core.utils.timestamp
+import love.forte.simbot.event.BotEvent
 import love.forte.simbot.event.Event
 
 /**
@@ -28,11 +31,20 @@ import love.forte.simbot.event.Event
 public typealias OBSourceEvent = love.forte.simbot.component.onebot.v11.event.Event
 
 /**
+ * 一个OneBot组件事件基类。
+ * 是 [OneBotEvent] 的父类，
+ * 也是一些与OneBot协议本身无关的事件类型
+ * (例如 [OneBotBotStageEvent]) 的父类。
+ */
+public interface OneBotCommonEvent : Event
+
+
+/**
  * OneBot11的[事件](https://github.com/botuniverse/onebot-11/tree/master/event)。
  *
  * @author ForteScarlet
  */
-public interface OneBotEvent : Event {
+public interface OneBotEvent : OneBotCommonEvent {
     /**
      * 来自事件JSON的反序列化数据体。
      */
@@ -61,4 +73,11 @@ public interface OneBotEvent : Event {
      */
     public val postType: String
         get() = sourceEvent.postType
+}
+
+/**
+ * OneBot组件事件中的 [BotEvent]。
+ */
+public interface OneBotBotEvent : OneBotEvent, BotEvent {
+    override val bot: OneBotBot
 }

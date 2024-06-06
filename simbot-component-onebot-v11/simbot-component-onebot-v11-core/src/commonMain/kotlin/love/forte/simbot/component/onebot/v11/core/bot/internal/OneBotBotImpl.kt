@@ -37,6 +37,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -81,6 +82,8 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
+import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
@@ -88,7 +91,6 @@ import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
-import love.forte.simbot.event.onEachError
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
@@ -248,7 +250,7 @@ internal class OneBotBotImpl(
     private val startLock = Mutex()
 
 
-    override suspend fun start() = startLock.withLock {
+    override suspend fun start(): Unit = startLock.withLock {
         job.ensureActive()
 
         wsSession = createEventSession().also { s ->
@@ -256,6 +258,12 @@ internal class OneBotBotImpl(
         }
 
         isStarted = true
+        launch {
+            eventProcessor
+                .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
+                .onEachErrorLog(logger)
+                .collect()
+        }
     }
 
     private fun createEventSession(): WsEventSession {
@@ -528,13 +536,7 @@ internal class OneBotBotImpl(
         private fun pushEvent(event: Event): Job {
             return eventProcessor
                 .push(event)
-                .onEachError { errRes ->
-                    logger.error(
-                        "Event process with an error result: {}",
-                        errRes.content.message,
-                        errRes.content
-                    )
-                }
+                .onEachErrorLog(logger)
                 .launchIn(this@OneBotBotImpl)
         }
 

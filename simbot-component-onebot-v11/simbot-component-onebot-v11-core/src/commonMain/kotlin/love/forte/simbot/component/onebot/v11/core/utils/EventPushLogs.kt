@@ -15,15 +15,19 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.notice
+package love.forte.simbot.component.onebot.v11.core.utils
 
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
+import kotlinx.coroutines.flow.Flow
+import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.onEachError
+import love.forte.simbot.logger.Logger
 
-
-/**
- *
- * @author ForteScarlet
- */
-public interface OneBotNoticeEvent : OneBotBotEvent {
-    // TODO
+internal inline fun Flow<EventResult>.onEachErrorLog(
+    logger: Logger
+): Flow<EventResult> = onEachError { err ->
+    logger.error(
+        "Event process with an error result: {}",
+        err.content.message,
+        err.content
+    )
 }
