@@ -62,6 +62,37 @@ Simple Robot OneBot 组件是一个将
 > [此处](https://github.com/simple-robot/simpler-robot/releases) 
 > 参考。
 
+### Ktor 客户端引擎
+
+OneBot组件默认使用 [Ktor](https://ktor.io/)
+作为HTTP客户端与WS客户端，但是默认情况下依赖中不会有任何具体的引擎实现。
+
+你需要根据你的使用平台前往 [Ktor client Engines](https://ktor.io/docs/client-engines.html#limitations)
+选择一个合适的引擎使用。
+
+> [!tip]
+> 注意，你需要选择一个支持HTTP和WebSocket的引擎。
+> 除非你打算通过更详细的配置为两个场景分配不同的引擎实现。
+
+以 Java11+ 的情况为例，我们选择使用 `Java` 引擎：
+
+Gradle:
+
+```kotlin
+runtimeOnly("io.ktor:ktor-client-java:$KTOR_VERSION")
+```
+
+Maven:
+
+```xml
+<dependency>
+    <groupId>io.ktor</groupId>
+    <artifactId>ktor-client-java-jvm</artifactId>
+    <version>${KTOR_VERSION}</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
 ### 普通核心库
 
 Gradle:
