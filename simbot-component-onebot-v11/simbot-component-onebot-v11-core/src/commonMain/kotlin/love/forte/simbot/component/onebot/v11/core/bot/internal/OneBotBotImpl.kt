@@ -129,11 +129,7 @@ internal class OneBotBotImpl(
 
     init {
         apiClient = resolveHttpClient()
-        wsClient = resolveWsClient(
-            wsConfig = {
-                pingInterval = 6000L
-            }
-        )
+        wsClient = resolveWsClient()
         job.invokeOnCompletion { apiClient.close() }
     }
 
