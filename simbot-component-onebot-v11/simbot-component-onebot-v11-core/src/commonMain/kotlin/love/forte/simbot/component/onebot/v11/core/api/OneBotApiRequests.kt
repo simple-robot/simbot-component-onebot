@@ -39,17 +39,10 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
 /**
- * 用于在对 [OneBotApi] 发起请求时输出相关的 `debug` 日志。
+ * 用于在对 [OneBotApi] 发起请求时或得到想用后输出相关日志日志收集器。
  */
 @InternalSimbotAPI
-public val ApiReqLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.REQ")
-
-/**
- * 用于在对 [OneBotApi] 发起请求后、得到响应时输出相关的 `debug` 日志。
- */
-@InternalSimbotAPI
-public val ApiResLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.RES")
-
+public val ApiLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.API")
 
 /**
  * 对 [this] 发起一次请求，并得到相应的 [HttpResponse] 响应。
@@ -127,14 +120,14 @@ public suspend fun OneBotApi<*>.request(
             }
         }
 
-        ApiReqLogger.debug(
+        ApiLogger.debug(
             "API [{}] REQ ===> {}, body: {}",
             action,
             url,
             this@request.body,
         )
     }.also { res ->
-        ApiResLogger.debug(
+        ApiLogger.debug(
             "API [{}] RES <=== {}, status: {}",
             action,
             res.request.url,
@@ -192,7 +185,7 @@ public suspend fun OneBotApi<*>.requestRaw(
         throw OneBotApiResponseNotSuccessException(status)
     }
     return response.bodyAsText(charset).also { raw ->
-        ApiResLogger.debug(
+        ApiLogger.debug(
             "API [{}] RES <=== {}, raw: {}",
             action,
             response.request.url,

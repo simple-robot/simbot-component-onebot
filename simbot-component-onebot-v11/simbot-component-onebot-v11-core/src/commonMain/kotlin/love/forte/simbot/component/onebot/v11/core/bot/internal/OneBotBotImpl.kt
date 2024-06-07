@@ -68,7 +68,6 @@ import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupListApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
-import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotFriendRelation
@@ -450,7 +449,7 @@ internal class OneBotBotImpl(
                         resolveRawEvent(eventRaw)
                     }.getOrElse { e ->
                         val exMsg = "Failed to resolve raw event $eventRaw, " +
-                                "session and bot will be closed exceptionally"
+                            "session and bot will be closed exceptionally"
 
                         val ex = IllegalStateException(
                             exMsg,
