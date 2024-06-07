@@ -84,11 +84,17 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotDefaultMetaEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
+import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
+import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.event.Event
@@ -449,7 +455,7 @@ internal class OneBotBotImpl(
                         resolveRawEvent(eventRaw)
                     }.getOrElse { e ->
                         val exMsg = "Failed to resolve raw event $eventRaw, " +
-                            "session and bot will be closed exceptionally"
+                                "session and bot will be closed exceptionally"
 
                         val ex = IllegalStateException(
                             exMsg,
@@ -547,7 +553,28 @@ internal class OneBotBotImpl(
                     )
                 }
 
-                // TODO meta events
+                //region Meta events
+                is MetaEvent -> when (event) {
+                    is LifecycleEvent -> OneBotLifecycleEventImpl(
+                        raw,
+                        event,
+                        bot,
+                    )
+
+                    is HeartbeatEvent -> OneBotHeartbeatEventImpl(
+                        raw,
+                        event,
+                        bot,
+                    )
+
+                    else -> OneBotDefaultMetaEventImpl(
+                        raw,
+                        event,
+                        bot
+                    )
+                }
+                //endregion
+
                 // TODO notice events
 
                 is UnknownEvent -> OneBotUnknownEvent(raw, event)

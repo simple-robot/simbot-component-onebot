@@ -32,7 +32,7 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventType
  * 只有正向 WebSocket 和反向 WebSocket 可以收到 `connect`。
  */
 @Serializable
-@ExpectEventType(postType = MetaEvent.POST_TYPE, subType = "private")
+@ExpectEventType(postType = MetaEvent.POST_TYPE, subType = "lifecycle")
 public data class LifecycleEvent(
     override val time: Long,
     @SerialName("self_id")
