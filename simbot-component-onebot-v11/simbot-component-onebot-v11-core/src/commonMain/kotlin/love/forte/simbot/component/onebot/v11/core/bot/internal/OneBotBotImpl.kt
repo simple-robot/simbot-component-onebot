@@ -21,11 +21,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.client.request.bearerAuth
 import io.ktor.http.Url
 import io.ktor.http.takeFrom
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
+import io.ktor.websocket.closeExceptionally
 import io.ktor.websocket.readBytes
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
@@ -284,7 +286,10 @@ internal class OneBotBotImpl(
 
         private suspend fun createSession(): DefaultWebSocketSession {
             return wsClient.webSocketSession {
-                url { takeFrom(eventServerHost) }
+                url {
+                    takeFrom(eventServerHost)
+                    accessToken?.also { bearerAuth(it) }
+                }
             }
         }
 
@@ -440,7 +445,24 @@ internal class OneBotBotImpl(
                         }
                     } ?: continue
 
-                    val event = resolveRawEvent(eventRaw)
+                    val event = kotlin.runCatching {
+                        resolveRawEvent(eventRaw)
+                    }.getOrElse { e ->
+                        val exMsg = "Failed to resolve raw event $eventRaw, " +
+                            "session and bot will be closed exceptionally"
+
+                        val ex = IllegalStateException(
+                            exMsg,
+                            e
+                        )
+                        // 接收的事件解析出现错误，
+                        // 这应该是预期外的情况，
+                        // 直接终止 session 和 Bot
+                        session.closeExceptionally(ex)
+                        job.cancel(exMsg, ex)
+
+                        throw ex
+                    }
 
                     pushEvent(resolveRawEventToEvent(eventRaw, event))
                 }
