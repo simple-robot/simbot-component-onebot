@@ -4,7 +4,7 @@
 
     <variables>
         <primary-color>ruby</primary-color>
-        <custom-favicons>logo-icon.svg</custom-favicons>
+        <custom-favicons>logo-icon-dark.svg</custom-favicons>
         <header-logo>logo-icon.svg</header-logo>
         <product-web-url>https://github.com/simple-robot/simbot-component-onebot/</product-web-url>
         <download-title>GitHub</download-title>
