@@ -32,6 +32,9 @@ internal class OneBotBotRegisteredEventImpl(
 
     @OptIn(ExperimentalSimbotAPI::class)
     override val time: Timestamp = Timestamp.now()
+
+    override fun toString(): String =
+        "OneBotBotRegisteredEvent(bot=$bot)"
 }
 
 internal class OneBotBotStartedEventImpl(
@@ -41,4 +44,7 @@ internal class OneBotBotStartedEventImpl(
 
     @OptIn(ExperimentalSimbotAPI::class)
     override val time: Timestamp = Timestamp.now()
+
+    override fun toString(): String =
+        "OneBotBotStartedEvent(bot=$bot)"
 }

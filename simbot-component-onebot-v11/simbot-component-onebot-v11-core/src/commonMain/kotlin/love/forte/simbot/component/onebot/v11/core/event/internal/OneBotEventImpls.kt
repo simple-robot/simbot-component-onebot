@@ -15,19 +15,11 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.request
+package love.forte.simbot.component.onebot.v11.core.event.internal
 
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.event.RequestEvent
+import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
 
-public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.event.request.RequestEvent
-
-/**
- * OneBot组件中的 [事件请求][love.forte.simbot.component.onebot.v11.event.request.RequestEvent]
- * 的组件事件类型。
- *
- * @author ForteScarlet
- */
-public interface OneBotRequestEvent : OneBotBotEvent, RequestEvent {
-    override val sourceEvent: OBSourceRequestEvent
-}
+internal fun OneBotEvent.eventToString(
+    eventName: String
+): String =
+    "$eventName(source=$sourceEvent, raw='$sourceEventRaw')"

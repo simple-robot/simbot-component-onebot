@@ -26,6 +26,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
+import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotPrivateMessageEvent
@@ -94,6 +95,9 @@ internal class OneBotFriendMessageEventImpl(
     override suspend fun content(): OneBotFriend {
         return sourceEvent.sender.toFriend(bot)
     }
+
+    override fun toString(): String =
+        eventToString("OneBotFriendMessageEvent")
 }
 
 internal class OneBotGroupPrivateMessageEventImpl(
@@ -111,10 +115,17 @@ internal class OneBotGroupPrivateMessageEventImpl(
         // 无法得知群号
         throw UnsupportedOperationException("Don't know how to get the group number from PrivateMessageEvent")
     }
+
+    override fun toString(): String =
+        eventToString("OneBotGroupPrivateMessageEvent")
 }
 
 internal class OneBotDefaultPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: PrivateMessageEvent,
     bot: OneBotBotImpl,
-) : OneBotPrivateMessageEventImpl(sourceEvent, bot)
+) : OneBotPrivateMessageEventImpl(sourceEvent, bot) {
+
+    override fun toString(): String =
+        eventToString("OneBotDefaultPrivateMessageEvent")
+}
