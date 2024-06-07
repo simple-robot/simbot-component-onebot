@@ -92,8 +92,42 @@
 </deflist>
 
 </def>
+<def id="OneBotMetaEvent" title="OneBotMetaEvent">
+元数据相关的事件
+<deflist>
+<def id="OneBotLifecycleEvent" title="OneBotLifecycleEvent">
+生命周期事件
+</def>
+<def id="OneBotHeartbeatEvent" title="OneBotHeartbeatEvent">
+心跳事件
+</def>
 </deflist>
+</def>
+<def id="OneBotRequestEvent" title="OneBotRequestEvent">
+请求相关的事件
+<deflist>
+<def id="OneBotFriendRequestEvent" title="OneBotFriendRequestEvent">
+好友添加申请
+</def>
+<def id="OneBotGroupRequestEvent" title="OneBotGroupRequestEvent">
+群添加申请
+</def>
+</deflist>
+</def>
 
+
+<def id="OneBotBotStageEvent" title="OneBotBotStageEvent">
+与OneBot协议本身无关的Bot的阶段事件。
+<deflist>
+<def id="OneBotBotRegisteredEvent" title="OneBotBotRegisteredEvent">
+一个 `OneBotBot` 被注册了的事件
+</def>
+<def id="OneBotBotStartedEvent" title="OneBotBotStartedEvent">
+一个 `OneBotBot` 被(首次)启动了的事件
+</def>
+</deflist>
+</def>
+</deflist>
 
 
 ### 未知事件

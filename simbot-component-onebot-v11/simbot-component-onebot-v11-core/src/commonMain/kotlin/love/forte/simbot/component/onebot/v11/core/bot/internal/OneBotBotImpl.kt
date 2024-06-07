@@ -269,12 +269,14 @@ internal class OneBotBotImpl(
             launch { s.launch() }
         }
 
-        isStarted = true
-        launch {
-            eventProcessor
-                .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
-                .onEachErrorLog(logger)
-                .collect()
+        if (!isStarted) {
+            isStarted = true
+            launch {
+                eventProcessor
+                    .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
+                    .onEachErrorLog(logger)
+                    .collect()
+            }
         }
     }
 
