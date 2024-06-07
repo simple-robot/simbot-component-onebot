@@ -22,7 +22,7 @@ import love.forte.simbot.event.EventResult
 import love.forte.simbot.event.onEachError
 import love.forte.simbot.logger.Logger
 
-internal inline fun Flow<EventResult>.onEachErrorLog(
+internal fun Flow<EventResult>.onEachErrorLog(
     logger: Logger
 ): Flow<EventResult> = onEachError { err ->
     logger.error(
