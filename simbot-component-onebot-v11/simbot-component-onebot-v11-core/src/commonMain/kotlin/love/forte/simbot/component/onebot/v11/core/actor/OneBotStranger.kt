@@ -15,16 +15,37 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.meta
+package love.forte.simbot.component.onebot.v11.core.actor
 
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
+import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
+import love.forte.simbot.definition.User
 
 
 /**
- * OneBot中的元事件类型。
+ * 一个陌生人。
+ * 通常是通过 [GetStrangerInfoApi]
+ * 得到的信息。
+ *
  * @author ForteScarlet
  */
-public interface OneBotMetaEvent : OneBotBotEvent {
-    override val sourceEvent: MetaEvent
+public interface OneBotStranger : User {
+    override val id: ID
+    override val name: String
+
+    override val avatar: String
+        get() = qqAvatar640(id.literal)
+
+    /**
+     * 年龄。
+     * 如果无法获取则有可能会被填充一个默认值。
+     */
+    public val age: Int
+
+    /**
+     * 性别。`male` 或 `female` 或 `unknown`
+     */
+    public val sex: String
 }

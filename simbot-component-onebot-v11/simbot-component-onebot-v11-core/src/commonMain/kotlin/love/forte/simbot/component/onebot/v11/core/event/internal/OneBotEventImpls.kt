@@ -15,16 +15,11 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.meta
+package love.forte.simbot.component.onebot.v11.core.event.internal
 
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.component.onebot.v11.core.event.OneBotEvent
 
-
-/**
- * OneBot中的元事件类型。
- * @author ForteScarlet
- */
-public interface OneBotMetaEvent : OneBotBotEvent {
-    override val sourceEvent: MetaEvent
-}
+internal fun OneBotEvent.eventToString(
+    eventName: String
+): String =
+    "$eventName(source=$sourceEvent, raw='$sourceEventRaw')"

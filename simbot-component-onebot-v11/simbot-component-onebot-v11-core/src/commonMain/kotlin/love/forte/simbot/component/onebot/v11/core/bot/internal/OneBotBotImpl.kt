@@ -21,11 +21,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.client.request.bearerAuth
 import io.ktor.http.Url
 import io.ktor.http.takeFrom
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
+import io.ktor.websocket.closeExceptionally
 import io.ktor.websocket.readBytes
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
@@ -82,11 +84,21 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotDefaultMetaEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
+import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
+import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.event.Event
@@ -257,12 +269,14 @@ internal class OneBotBotImpl(
             launch { s.launch() }
         }
 
-        isStarted = true
-        launch {
-            eventProcessor
-                .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
-                .onEachErrorLog(logger)
-                .collect()
+        if (!isStarted) {
+            isStarted = true
+            launch {
+                eventProcessor
+                    .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
+                    .onEachErrorLog(logger)
+                    .collect()
+            }
         }
     }
 
@@ -284,7 +298,10 @@ internal class OneBotBotImpl(
 
         private suspend fun createSession(): DefaultWebSocketSession {
             return wsClient.webSocketSession {
-                url { takeFrom(eventServerHost) }
+                url {
+                    takeFrom(eventServerHost)
+                    accessToken?.also { bearerAuth(it) }
+                }
             }
         }
 
@@ -440,7 +457,24 @@ internal class OneBotBotImpl(
                         }
                     } ?: continue
 
-                    val event = resolveRawEvent(eventRaw)
+                    val event = kotlin.runCatching {
+                        resolveRawEvent(eventRaw)
+                    }.getOrElse { e ->
+                        val exMsg = "Failed to resolve raw event $eventRaw, " +
+                            "session and bot will be closed exceptionally"
+
+                        val ex = IllegalStateException(
+                            exMsg,
+                            e
+                        )
+                        // 接收的事件解析出现错误，
+                        // 这应该是预期外的情况，
+                        // 直接终止 session 和 Bot
+                        session.closeExceptionally(ex)
+                        job.cancel(exMsg, ex)
+
+                        throw ex
+                    }
 
                     pushEvent(resolveRawEventToEvent(eventRaw, event))
                 }
@@ -525,7 +559,42 @@ internal class OneBotBotImpl(
                     )
                 }
 
-                // TODO meta events
+                //region Meta events
+                is MetaEvent -> when (event) {
+                    is LifecycleEvent -> OneBotLifecycleEventImpl(
+                        raw,
+                        event,
+                        bot,
+                    )
+
+                    is HeartbeatEvent -> OneBotHeartbeatEventImpl(
+                        raw,
+                        event,
+                        bot,
+                    )
+
+                    else -> OneBotDefaultMetaEventImpl(
+                        raw,
+                        event,
+                        bot
+                    )
+                }
+                //endregion
+
+                //region 申请事件
+                is FriendRequestEvent -> OneBotFriendRequestEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+                is GroupRequestEvent -> OneBotGroupRequestEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+                // 其余未知的申请事件扔到 unsupported
+                //endregion
+
                 // TODO notice events
 
                 is UnknownEvent -> OneBotUnknownEvent(raw, event)

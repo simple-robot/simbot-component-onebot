@@ -25,6 +25,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
+import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotAnonymousGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGroupMessageEvent
@@ -101,6 +102,8 @@ internal class OneBotNormalGroupMessageEventImpl(
     override suspend fun author(): OneBotMember {
         return sourceEvent.sender.toMember(bot)
     }
+
+    override fun toString(): String = eventToString("OneBotNormalGroupMessageEvent")
 }
 
 
@@ -113,6 +116,8 @@ internal class OneBotAnonymousGroupMessageEventImpl(
     override suspend fun author(): OneBotMember {
         return sourceEvent.sender.toMember(bot)
     }
+
+    override fun toString(): String = eventToString("OneBotAnonymousGroupMessageEvent")
 }
 
 internal class OneBotNoticeGroupMessageEventImpl(
@@ -120,11 +125,15 @@ internal class OneBotNoticeGroupMessageEventImpl(
     override val sourceEvent: GroupMessageEvent,
     bot: OneBotBotImpl,
 ) : OneBotGroupMessageEventImpl(sourceEvent, bot),
-    OneBotNoticeGroupMessageEvent
+    OneBotNoticeGroupMessageEvent {
+    override fun toString(): String = eventToString("OneBotNoticeGroupMessageEvent")
+}
 
 
 internal class OneBotDefaultGroupMessageEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: GroupMessageEvent,
     bot: OneBotBotImpl,
-) : OneBotGroupMessageEventImpl(sourceEvent, bot)
+) : OneBotGroupMessageEventImpl(sourceEvent, bot) {
+    override fun toString(): String = eventToString("OneBotDefaultGroupMessageEvent")
+}

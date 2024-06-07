@@ -288,16 +288,25 @@ public class MyApp {
 
 目前可监听到的**组件事件**：
 
-- `OneBotMessageEvent`
-    - `OneBotGroupMessageEvent`
-        - `OneBotNormalGroupMessageEvent`
-        - `OneBotAnonymousGroupMessageEvent`
-        - `OneBotNoticeGroupMessageEvent`
-    - `OneBotPrivateMessageEvent`
-        - `OneBotFriendMessageEvent`
-        - `OneBotGroupPrivateMessageEvent`
-- `OneBotUnknownEvent`
-- `OneBotUnsupportedEvent`
+- `OneBotMessageEvent` 消息事件
+    - `OneBotGroupMessageEvent` 群消息事件
+        - `OneBotNormalGroupMessageEvent` 普通群消息事件
+        - `OneBotAnonymousGroupMessageEvent` 匿名群消息事件
+        - `OneBotNoticeGroupMessageEvent` 群系统通知消息事件
+    - `OneBotPrivateMessageEvent` 私聊消息事件
+        - `OneBotFriendMessageEvent` 好友私聊消息事件
+        - `OneBotGroupPrivateMessageEvent` 群成员临时会话私聊事件
+- `OneBotMetaEvent` 元事件
+    - `OneBotLifecycleEvent` 生命周期事件
+    - `OneBotHeartbeatEvent` 心跳事件
+- `OneBotRequestEvent` 请求事件
+  - `OneBotFriendRequestEvent` 好友添加请求事件
+  - `OneBotGroupRequestEvent` 群添加请求事件
+- `OneBotUnknownEvent` 未知事件
+- `OneBotUnsupportedEvent` 未支持事件
+- `OneBotBotStageEvent` 组件内Bot阶段事件
+  - `OneBotBotRegisteredEvent` Bot被注册了事件
+  - `OneBotBotStartedEvent` Bot被(首次)启动了事件
 
 其中，可以通过 `OneBotUnsupportedEvent` 和 `OneBotUnknownEvent`
 来间接地监听那些尚未提供组件事件类型的原始事件。
