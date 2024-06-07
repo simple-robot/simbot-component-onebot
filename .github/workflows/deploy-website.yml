@@ -10,7 +10,7 @@ on:
       - '.github/workflows/deploy-website.yml'
 
     tags-ignore:
-      - v*.**.**
+      - v**
   # Specify to run a workflow manually from the Actions tab on GitHub
   workflow_dispatch:
 
@@ -139,7 +139,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: algolia-indexes
-
 
       - name: Unzip artifact
         run: |
