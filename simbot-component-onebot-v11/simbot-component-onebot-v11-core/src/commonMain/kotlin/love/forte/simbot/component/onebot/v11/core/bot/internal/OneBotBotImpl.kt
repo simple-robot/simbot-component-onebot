@@ -87,6 +87,8 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotDefaultMetaEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
@@ -95,6 +97,8 @@ import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
 import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.event.Event
@@ -455,7 +459,7 @@ internal class OneBotBotImpl(
                         resolveRawEvent(eventRaw)
                     }.getOrElse { e ->
                         val exMsg = "Failed to resolve raw event $eventRaw, " +
-                                "session and bot will be closed exceptionally"
+                            "session and bot will be closed exceptionally"
 
                         val ex = IllegalStateException(
                             exMsg,
@@ -573,6 +577,20 @@ internal class OneBotBotImpl(
                         bot
                     )
                 }
+                //endregion
+
+                //region 申请事件
+                is FriendRequestEvent -> OneBotFriendRequestEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+                is GroupRequestEvent -> OneBotGroupRequestEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+                // 其余未知的申请事件扔到 unsupported
                 //endregion
 
                 // TODO notice events

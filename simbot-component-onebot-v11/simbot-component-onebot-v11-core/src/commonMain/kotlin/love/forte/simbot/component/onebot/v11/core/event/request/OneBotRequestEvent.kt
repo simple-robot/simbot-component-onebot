@@ -17,8 +17,15 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.request
 
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
+import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
+import love.forte.simbot.event.OrganizationJoinRequestEvent
 import love.forte.simbot.event.RequestEvent
+import love.forte.simbot.suspendrunner.STP
 
 public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.event.request.RequestEvent
 
@@ -30,4 +37,98 @@ public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.e
  */
 public interface OneBotRequestEvent : OneBotBotEvent, RequestEvent {
     override val sourceEvent: OBSourceRequestEvent
+}
+
+/**
+ * 好友添加申请事件
+ * @see FriendRequestEvent
+ */
+public interface OneBotFriendRequestEvent : OneBotRequestEvent {
+    override val sourceEvent: FriendRequestEvent
+
+    /**
+     * 好友添加申请始终是 [主动地][RequestEvent.Type.PROACTIVE]
+     */
+    override val type: RequestEvent.Type
+        get() = RequestEvent.Type.PROACTIVE
+
+    /**
+     * 验证信息。
+     *
+     * @see FriendRequestEvent.comment
+     */
+    override val message: String
+        get() = sourceEvent.comment
+
+    /**
+     * 请求 flag，在调用处理请求的 API 时需要传入
+     *
+     * @see FriendRequestEvent.flag
+     */
+    public val flag: String
+        get() = sourceEvent.flag
+
+    /**
+     * 发送请求的 QQ 号
+     *
+     * @see FriendRequestEvent.userId
+     */
+    public val requesterId: LongID
+        get() = sourceEvent.userId
+}
+
+/**
+ * 群添加申请事件
+ * @see GroupRequestEvent
+ */
+public interface OneBotGroupRequestEvent : OneBotRequestEvent, OrganizationJoinRequestEvent {
+    override val sourceEvent: GroupRequestEvent
+
+    /**
+     * 申请加入的群。
+     */
+    @STP
+    override suspend fun content(): OneBotGroup
+
+    /**
+     * 根据 [GroupRequestEvent.subType] 的值区分类型。
+     * 如果是 `invite` 则为被动，否则（包括 `add`）均视为主动。
+     *
+     */
+    override val type: RequestEvent.Type
+        get() = when (sourceEvent.subType) {
+            GroupRequestEvent.SUB_TYPE_INVITE -> RequestEvent.Type.PASSIVE
+            GroupRequestEvent.SUB_TYPE_ADD -> RequestEvent.Type.PROACTIVE
+            else -> RequestEvent.Type.PROACTIVE
+        }
+
+    /**
+     * 验证信息。
+     *
+     * @see GroupRequestEvent.comment
+     */
+    override val message: String
+        get() = sourceEvent.comment
+
+    /**
+     * 请求 flag，在调用处理请求的 API 时需要传入
+     *
+     * @see GroupRequestEvent.flag
+     */
+    public val flag: String
+        get() = sourceEvent.flag
+
+    /**
+     * 发送请求的 QQ 号
+     *
+     * @see GroupRequestEvent.userId
+     */
+    override val requesterId: LongID
+        get() = sourceEvent.userId
+
+    /**
+     * 申请者的部分信息。
+     */
+    @STP
+    override suspend fun requester(): OneBotStranger
 }
