@@ -1,0 +1,73 @@
+name: Test Branch
+on:
+  pull_request:
+    branches:
+      - 'dev/**'
+    paths:
+      - 'Writerside/**'
+      - '.github/workflows/deploy-website.yml'
+
+concurrency:
+  group: test-branch-website-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Name of module and id separated by a slash
+  INSTANCE: Writerside/ob
+  INSTANCE_NAME: ob
+  # Replace HI with the ID of the instance in capital letters
+  ARTIFACT: webHelpOB2-all.zip
+  # Writerside docker image version
+  DOCKER_VERSION: 241.16003
+
+jobs:
+  test-website-build:
+    runs-on: ubuntu-latest
+    outputs:
+      config_json: ${{ steps.output-config-json.outputs.config_json }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Writerside docs using Docker
+        uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          artifact: ${{ env.ARTIFACT }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: |
+            artifacts/${{ env.ARTIFACT }}
+            artifacts/report.json
+          retention-days: 7
+
+      - name: Unzip artifact
+        run: unzip -O UTF-8 -qq artifacts/${{ env.ARTIFACT }} -d dir
+
+      - name: Output documentation config.json
+        id: output-config-json
+        run: |
+          echo "config_json=$(cat dir/config.json)" >> $GITHUB_OUTPUT
+
+  # Add the job below and artifacts/report.json on Upload documentation step above if you want to fail the build when documentation contains errors
+  test-website-test:
+    # Requires build job results
+    needs: test-website-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: docs
+          path: artifacts
+
+      - name: Test documentation
+        uses: JetBrains/writerside-checker-action@v1
+        with:
+          instance: ${{ env.INSTANCE }}
