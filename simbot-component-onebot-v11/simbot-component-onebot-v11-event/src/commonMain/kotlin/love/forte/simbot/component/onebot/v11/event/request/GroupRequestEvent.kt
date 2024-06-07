@@ -53,4 +53,17 @@ public data class GroupRequestEvent(
     public val userId: LongID,
     public val comment: String = "",
     public val flag: String,
-) : RequestEvent
+) : RequestEvent {
+
+    public companion object {
+        /**
+         * @see GroupRequestEvent.subType
+         */
+        public const val SUB_TYPE_ADD: String = "add"
+
+        /**
+         * @see GroupRequestEvent.subType
+         */
+        public const val SUB_TYPE_INVITE: String = "invite"
+    }
+}
