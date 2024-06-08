@@ -515,111 +515,6 @@ internal class OneBotBotImpl(
             }
         }
 
-        @OptIn(FragileSimbotAPI::class)
-        private fun resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {
-            val bot = this@OneBotBotImpl
-
-            return when (event) {
-                //region 消息事件
-                // 群消息、匿名消息、系统消息
-                is GroupMessageEvent -> when (event.subType) {
-                    GroupMessageEvent.SUB_TYPE_NORMAL ->
-                        OneBotNormalGroupMessageEventImpl(
-                            raw,
-                            event,
-                            bot
-                        )
-
-                    GroupMessageEvent.SUB_TYPE_ANONYMOUS ->
-                        OneBotAnonymousGroupMessageEventImpl(
-                            raw,
-                            event,
-                            bot
-                        )
-
-                    GroupMessageEvent.SUB_TYPE_NOTICE ->
-                        OneBotNoticeGroupMessageEventImpl(
-                            raw,
-                            event,
-                            bot
-                        )
-
-                    else -> OneBotDefaultGroupMessageEventImpl(
-                        raw,
-                        event,
-                        bot
-                    )
-                }
-
-                // 好友私聊消息、成员临时会话
-                is PrivateMessageEvent -> when (event.subType) {
-                    PrivateMessageEvent.SUB_TYPE_FRIEND -> OneBotFriendMessageEventImpl(
-                        raw,
-                        event,
-                        bot
-                    )
-
-                    PrivateMessageEvent.SUB_TYPE_GROUP -> OneBotGroupPrivateMessageEventImpl(
-                        raw,
-                        event,
-                        bot
-                    )
-
-                    else -> OneBotDefaultPrivateMessageEventImpl(
-                        raw,
-                        event,
-                        bot
-                    )
-                }
-                //endregion
-
-                //region 元事件
-                is LifecycleEvent -> OneBotLifecycleEventImpl(
-                    raw,
-                    event,
-                    bot,
-                )
-
-                is HeartbeatEvent -> OneBotHeartbeatEventImpl(
-                    raw,
-                    event,
-                    bot,
-                )
-                //endregion
-
-                //region 申请事件
-                is FriendRequestEvent -> OneBotFriendRequestEventImpl(
-                    raw,
-                    event,
-                    bot
-                )
-
-                is GroupRequestEvent -> OneBotGroupRequestEventImpl(
-                    raw,
-                    event,
-                    bot
-                )
-                // 其余未知的申请事件扔到 unsupported
-                //endregion
-
-                //region notice events
-                is FriendAddEvent -> OneBotFriendAddEventImpl(raw, event, bot)
-                is FriendRecallEvent -> OneBotFriendRecallEventImpl(raw, event, bot)
-                is GroupAdminEvent -> OneBotGroupAdminEventImpl(raw, event, bot)
-                is GroupBanEvent -> OneBotGroupBanEventImpl(raw, event, bot)
-                is GroupIncreaseEvent -> OneBotGroupMemberIncreaseEventImpl(raw, event, bot)
-                is GroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
-                is GroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
-                is GroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
-                is NotifyEvent -> OneBotNotifyEventImpl(raw, event, bot)
-
-                //endregion
-
-
-                is UnknownEvent -> OneBotUnknownEvent(raw, event)
-                else -> OneBotUnsupportedEvent(raw, event)
-            }
-        }
 
         private fun pushEvent(event: Event): Job {
             return eventProcessor
@@ -685,3 +580,109 @@ internal class OneBotBotImpl(
 }
 
 
+
+@OptIn(FragileSimbotAPI::class)
+internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {
+    val bot = this
+
+    return when (event) {
+        //region 消息事件
+        // 群消息、匿名消息、系统消息
+        is GroupMessageEvent -> when (event.subType) {
+            GroupMessageEvent.SUB_TYPE_NORMAL ->
+                OneBotNormalGroupMessageEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+
+            GroupMessageEvent.SUB_TYPE_ANONYMOUS ->
+                OneBotAnonymousGroupMessageEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+
+            GroupMessageEvent.SUB_TYPE_NOTICE ->
+                OneBotNoticeGroupMessageEventImpl(
+                    raw,
+                    event,
+                    bot
+                )
+
+            else -> OneBotDefaultGroupMessageEventImpl(
+                raw,
+                event,
+                bot
+            )
+        }
+
+        // 好友私聊消息、成员临时会话
+        is PrivateMessageEvent -> when (event.subType) {
+            PrivateMessageEvent.SUB_TYPE_FRIEND -> OneBotFriendMessageEventImpl(
+                raw,
+                event,
+                bot
+            )
+
+            PrivateMessageEvent.SUB_TYPE_GROUP -> OneBotGroupPrivateMessageEventImpl(
+                raw,
+                event,
+                bot
+            )
+
+            else -> OneBotDefaultPrivateMessageEventImpl(
+                raw,
+                event,
+                bot
+            )
+        }
+        //endregion
+
+        //region 元事件
+        is LifecycleEvent -> OneBotLifecycleEventImpl(
+            raw,
+            event,
+            bot,
+        )
+
+        is HeartbeatEvent -> OneBotHeartbeatEventImpl(
+            raw,
+            event,
+            bot,
+        )
+        //endregion
+
+        //region 申请事件
+        is FriendRequestEvent -> OneBotFriendRequestEventImpl(
+            raw,
+            event,
+            bot
+        )
+
+        is GroupRequestEvent -> OneBotGroupRequestEventImpl(
+            raw,
+            event,
+            bot
+        )
+        // 其余未知的申请事件扔到 unsupported
+        //endregion
+
+        //region notice events
+        is FriendAddEvent -> OneBotFriendAddEventImpl(raw, event, bot)
+        is FriendRecallEvent -> OneBotFriendRecallEventImpl(raw, event, bot)
+        is GroupAdminEvent -> OneBotGroupAdminEventImpl(raw, event, bot)
+        is GroupBanEvent -> OneBotGroupBanEventImpl(raw, event, bot)
+        is GroupIncreaseEvent -> OneBotGroupMemberIncreaseEventImpl(raw, event, bot)
+        is GroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
+        is GroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
+        is GroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
+        is NotifyEvent -> OneBotNotifyEventImpl(raw, event, bot)
+
+        //endregion
+
+
+        is UnknownEvent -> OneBotUnknownEvent(raw, event)
+        else -> OneBotUnsupportedEvent(raw, event)
+    }
+}
