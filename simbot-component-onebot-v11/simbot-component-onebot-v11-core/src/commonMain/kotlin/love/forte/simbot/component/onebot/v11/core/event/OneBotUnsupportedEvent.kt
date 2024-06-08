@@ -20,8 +20,6 @@ package love.forte.simbot.component.onebot.v11.core.event
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
-import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 
 /**
@@ -72,10 +70,4 @@ public data class OneBotUnsupportedEvent(
      * 一个无意义的随机ID。
      */
     override val id: ID = UUID.random()
-
-    /**
-     * 事件时间。
-     */
-    override val time: Timestamp
-        get() = sourceEvent.timestamp()
 }

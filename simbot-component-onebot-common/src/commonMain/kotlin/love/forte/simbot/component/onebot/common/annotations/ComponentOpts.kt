@@ -15,19 +15,26 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event.notice
-
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.event.notice.NoticeEvent
-
+package love.forte.simbot.component.onebot.common.annotations
 
 /**
- * 通知事件
- *
- * @see NoticeEvent
- *
- * @author ForteScarlet
+ * 标记为仅用于OneBot组件内部使用的API，可能会随时变更、删除
  */
-public interface OneBotNoticeEvent : OneBotBotEvent {
-    override val sourceEvent: NoticeEvent
-}
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "仅用于OneBot组件内部使用的API，可能会随时变更、删除",
+    level = RequiresOptIn.Level.ERROR
+)
+@MustBeDocumented
+public annotation class InternalOneBotAPI
+
+/**
+ * 标记为OneBot组件中仍处于实验阶段的API，可能会随时变更、删除
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "OneBot组件中仍处于实验阶段的API，可能会随时变更、删除",
+    level = RequiresOptIn.Level.ERROR
+)
+@MustBeDocumented
+public annotation class ExperimentalOneBotAPI

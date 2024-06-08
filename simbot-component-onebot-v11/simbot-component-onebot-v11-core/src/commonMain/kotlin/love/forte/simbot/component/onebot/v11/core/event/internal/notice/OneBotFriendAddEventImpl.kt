@@ -15,30 +15,30 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event
+package love.forte.simbot.component.onebot.v11.core.event.internal.notice
 
-import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.UUID
-import love.forte.simbot.component.onebot.v11.event.UnknownEvent
+import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
+import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotFriendAddEvent
+import love.forte.simbot.component.onebot.v11.event.notice.FriendAddEvent
 
 
 /**
- * OneBot组件对一个未知事件 [UnknownEvent] 的包装。
- *
- * 与 [OneBotUnsupportedEvent] 不同的是，
- * [OneBotUnknownEvent] 的事件类型明确为 [UnknownEvent]，
- * 它是在 OneBot 协议本身上的“未知”，也就是指无法解析事件的报文。
  *
  * @author ForteScarlet
  */
-@FragileSimbotAPI
-public data class OneBotUnknownEvent(
+internal class OneBotFriendAddEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: UnknownEvent
-) : OneBotEvent {
-    /**
-     * 一个无意义的随机ID。
-     */
-    override val id: ID = UUID.random()
+    override val sourceEvent: FriendAddEvent,
+    override val bot: OneBotBot
+) : OneBotFriendAddEvent {
+    override val id: ID
+        get() = with(sourceEvent) {
+            "$postType-$noticeType-$userId-$time"
+        }.ID
+
+    override fun toString(): String =
+        eventToString("OneBotFriendAddEvent")
 }

@@ -19,7 +19,6 @@ package love.forte.simbot.component.onebot.v11.core.event.internal.request
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
-import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toStranger
@@ -33,16 +32,12 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.request.OneBotFriendRequestEvent
 import love.forte.simbot.component.onebot.v11.core.event.request.OneBotGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.core.event.request.OneBotRequestEvent
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
 import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
 import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
 
 
 internal abstract class OneBotRequestEventImpl : OneBotRequestEvent {
     override val id: ID = UUID.random()
-
-    override val time: Timestamp
-        get() = sourceEvent.timestamp()
 
     override suspend fun accept() {
         doSetRequest(true)

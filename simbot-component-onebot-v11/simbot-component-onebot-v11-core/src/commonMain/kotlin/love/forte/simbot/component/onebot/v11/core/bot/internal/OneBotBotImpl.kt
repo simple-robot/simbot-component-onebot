@@ -84,9 +84,17 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotDefaultMetaEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotFriendAddEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotFriendRecallEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupAdminEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupBanEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupMemberDecreaseEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupMemberIncreaseEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupRecallEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupUploadEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotNotifyEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
@@ -96,7 +104,15 @@ import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.component.onebot.v11.event.notice.FriendAddEvent
+import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.GroupAdminEvent
+import love.forte.simbot.component.onebot.v11.event.notice.GroupBanEvent
+import love.forte.simbot.component.onebot.v11.event.notice.GroupDecreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.GroupIncreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.GroupRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.GroupUploadEvent
+import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
 import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
 import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
@@ -133,7 +149,7 @@ internal class OneBotBotImpl(
         job.invokeOnCompletion { apiClient.close() }
     }
 
-    internal val subContext = coroutineContext.minusKey(Job)
+    override val subContext = coroutineContext.minusKey(Job)
 
     private val logger = LoggerFactory
         .getLogger(
@@ -504,6 +520,7 @@ internal class OneBotBotImpl(
             val bot = this@OneBotBotImpl
 
             return when (event) {
+                //region 消息事件
                 // 群消息、匿名消息、系统消息
                 is GroupMessageEvent -> when (event.subType) {
                     GroupMessageEvent.SUB_TYPE_NORMAL ->
@@ -554,27 +571,20 @@ internal class OneBotBotImpl(
                         bot
                     )
                 }
+                //endregion
 
-                //region Meta events
-                is MetaEvent -> when (event) {
-                    is LifecycleEvent -> OneBotLifecycleEventImpl(
-                        raw,
-                        event,
-                        bot,
-                    )
+                //region 元事件
+                is LifecycleEvent -> OneBotLifecycleEventImpl(
+                    raw,
+                    event,
+                    bot,
+                )
 
-                    is HeartbeatEvent -> OneBotHeartbeatEventImpl(
-                        raw,
-                        event,
-                        bot,
-                    )
-
-                    else -> OneBotDefaultMetaEventImpl(
-                        raw,
-                        event,
-                        bot
-                    )
-                }
+                is HeartbeatEvent -> OneBotHeartbeatEventImpl(
+                    raw,
+                    event,
+                    bot,
+                )
                 //endregion
 
                 //region 申请事件
@@ -583,6 +593,7 @@ internal class OneBotBotImpl(
                     event,
                     bot
                 )
+
                 is GroupRequestEvent -> OneBotGroupRequestEventImpl(
                     raw,
                     event,
@@ -591,7 +602,19 @@ internal class OneBotBotImpl(
                 // 其余未知的申请事件扔到 unsupported
                 //endregion
 
-                // TODO notice events
+                //region notice events
+                is FriendAddEvent -> OneBotFriendAddEventImpl(raw, event, bot)
+                is FriendRecallEvent -> OneBotFriendRecallEventImpl(raw, event, bot)
+                is GroupAdminEvent -> OneBotGroupAdminEventImpl(raw, event, bot)
+                is GroupBanEvent -> OneBotGroupBanEventImpl(raw, event, bot)
+                is GroupIncreaseEvent -> OneBotGroupMemberIncreaseEventImpl(raw, event, bot)
+                is GroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
+                is GroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
+                is GroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
+                is NotifyEvent -> OneBotNotifyEventImpl(raw, event, bot)
+
+                //endregion
+
 
                 is UnknownEvent -> OneBotUnknownEvent(raw, event)
                 else -> OneBotUnsupportedEvent(raw, event)
