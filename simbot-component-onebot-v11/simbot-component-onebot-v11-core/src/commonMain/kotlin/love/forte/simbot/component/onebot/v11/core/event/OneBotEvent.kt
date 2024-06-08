@@ -59,7 +59,7 @@ public interface OneBotEvent : OneBotCommonEvent {
     /**
      * 事件发生的时间戳
      */
-    public val timestamp: Timestamp
+    override val time: Timestamp
         get() = sourceEvent.timestamp()
 
     /**

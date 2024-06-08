@@ -15,30 +15,41 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.event
+package love.forte.simbot.component.onebot.v11.core.event.notice
 
-import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.UUID
-import love.forte.simbot.component.onebot.v11.event.UnknownEvent
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
+import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
+import love.forte.simbot.event.ContactEvent
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
- * OneBot组件对一个未知事件 [UnknownEvent] 的包装。
- *
- * 与 [OneBotUnsupportedEvent] 不同的是，
- * [OneBotUnknownEvent] 的事件类型明确为 [UnknownEvent]，
- * 它是在 OneBot 协议本身上的“未知”，也就是指无法解析事件的报文。
- *
+ * 好友消息撤回事件
+ * @see FriendRecallEvent
  * @author ForteScarlet
  */
-@FragileSimbotAPI
-public data class OneBotUnknownEvent(
-    override val sourceEventRaw: String?,
-    override val sourceEvent: UnknownEvent
-) : OneBotEvent {
+public interface OneBotFriendRecallEvent : OneBotNoticeEvent, ContactEvent {
+    override val sourceEvent: FriendRecallEvent
+
     /**
-     * 一个无意义的随机ID。
+     * 消息ID
      */
-    override val id: ID = UUID.random()
+    public val messageId: ID
+        get() = sourceEvent.messageId
+
+    /**
+     * 消息发送人的ID
+     */
+    public val authorId: LongID
+        get() = sourceEvent.userId
+
+    /**
+     * 好友
+     *
+     * @throws Exception
+     */
+    @STP
+    override suspend fun content(): OneBotFriend
 }

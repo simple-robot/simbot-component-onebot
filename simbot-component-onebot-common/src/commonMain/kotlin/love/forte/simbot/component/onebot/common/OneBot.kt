@@ -17,12 +17,12 @@
 
 package love.forte.simbot.component.onebot.common
 
-import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 
 /**
  * An OneBot object.
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public object OneBot
 
 // TODO 一些Opt注解放在这个模块？

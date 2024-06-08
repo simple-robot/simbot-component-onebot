@@ -125,6 +125,9 @@ apiValidation {
     // 实验性和内部API可能无法保证二进制兼容
     nonPublicMarkers.addAll(
         listOf(
+            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
+            "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI",
+
             "love.forte.simbot.annotations.ExperimentalSimbotAPI",
             "love.forte.simbot.annotations.InternalSimbotAPI",
             "love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor",

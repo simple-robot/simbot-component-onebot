@@ -27,6 +27,7 @@ import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
@@ -57,6 +58,13 @@ public interface OneBotBot : Bot {
      * 当前Bot的配置类。
      */
     public val configuration: OneBotBotConfiguration
+
+    /**
+     * 由 [OneBotBot] 衍生出的 actor 使用的 [CoroutineContext]。
+     * 源自 [coroutineContext], 但是不包含 [Job][kotlinx.coroutines.Job]。
+     */
+    @InternalOneBotAPI
+    public val subContext: CoroutineContext
 
     /**
      * [OneBotBot] 用于请求API的 [HttpClient]。

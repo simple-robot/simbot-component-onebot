@@ -1,0 +1,114 @@
+/*
+ * Copyright (c) 2024. ForteScarlet.
+ *
+ * This file is part of simbot-component-onebot.
+ *
+ * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU Lesser General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package love.forte.simbot.component.onebot.v11.core.event.notice
+
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
+import love.forte.simbot.component.onebot.v11.event.notice.GroupBanEvent
+import love.forte.simbot.event.MemberEvent
+import love.forte.simbot.suspendrunner.STP
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+
+
+/**
+ * 群禁言事件
+ *
+ * @see GroupBanEvent
+ *
+ * @author ForteScarlet
+ */
+public interface OneBotGroupBanEvent : OneBotNoticeEvent, MemberEvent {
+    override val sourceEvent: GroupBanEvent
+
+    /**
+     * 事件子类型，分别表示禁言、解除禁言。
+     * 可能的值: `ban`、`lift_ban`
+     *
+     * @see GroupBanEvent.subType
+     */
+    public val subType: String
+        get() = sourceEvent.subType
+
+    /**
+     * 是否为禁言。
+     * 即 [subType] == [GroupBanEvent.SUB_TYPE_BAN]
+     */
+    public val isBan: Boolean
+        get() = subType == GroupBanEvent.SUB_TYPE_BAN
+
+    /**
+     * 群号
+     */
+    public val groupId: LongID
+        get() = sourceEvent.groupId
+
+    /**
+     * 被操作群成员的ID
+     */
+    public val userId: LongID
+        get() = sourceEvent.userId
+
+    /**
+     * 操作者的ID
+     */
+    public val operatorId: LongID
+        get() = sourceEvent.operatorId
+
+    /**
+     * 禁言时长，单位秒。
+     *
+     * @see GroupBanEvent.duration
+     */
+    public val durationSeconds: Long
+        get() = sourceEvent.duration
+
+    /**
+     * 被禁言成员
+     *
+     * @throws Exception
+     */
+    @STP
+    override suspend fun content(): OneBotMember
+
+    /**
+     * 所在群
+     *
+     * @throws Exception
+     */
+    @STP
+    override suspend fun source(): OneBotGroup
+}
+
+/**
+ * 禁言时长
+ *
+ * @see OneBotGroupBanEvent.durationSeconds
+ */
+public inline val OneBotGroupBanEvent.duration: Duration
+    get() = durationSeconds.seconds
+
+/**
+ * 是否为解除禁言。
+ * 即 [OneBotGroupBanEvent.isBan] == `false`
+ *
+ * @see OneBotGroupBanEvent.isBan
+ */
+public inline val OneBotGroupBanEvent.isLeftBan: Boolean
+    get() = !isBan

@@ -15,27 +15,26 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("AvatarUtil")
-
-package love.forte.simbot.component.onebot.v11.common.utils
-
-import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
-import kotlin.jvm.JvmName
+package love.forte.simbot.component.onebot.common.annotations
 
 /**
- * 得到 `s=640` 的QQ头像。
- *
- * @param id QQ号
+ * 标记为仅用于OneBot组件内部使用的API，可能会随时变更、删除
  */
-@InternalOneBotAPI
-public fun qqAvatar640(id: String): String =
-    "https://q1.qlogo.cn/g?b=qq&nk=$id&s=640"
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "仅用于OneBot组件内部使用的API，可能会随时变更、删除",
+    level = RequiresOptIn.Level.ERROR
+)
+@MustBeDocumented
+public annotation class InternalOneBotAPI
 
 /**
- * 得到 `s=100` 的QQ头像。
- *
- * @param id QQ号
+ * 标记为OneBot组件中仍处于实验阶段的API，可能会随时变更、删除
  */
-@InternalOneBotAPI
-public fun qqAvatar100(id: String): String =
-    "https://q1.qlogo.cn/g?b=qq&nk=$id&s=100"
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "OneBot组件中仍处于实验阶段的API，可能会随时变更、删除",
+    level = RequiresOptIn.Level.ERROR
+)
+@MustBeDocumented
+public annotation class ExperimentalOneBotAPI

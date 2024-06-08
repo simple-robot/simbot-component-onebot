@@ -27,8 +27,16 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.STRING
+import com.squareup.kotlinpoet.WildcardTypeName
+import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.jvm.jvmMultifileClass
 import com.squareup.kotlinpoet.jvm.jvmName
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -80,7 +88,10 @@ private const val FUNCTION_RESOLVER_SUB_TYPE_NAME = "resolveEventSubTypeFieldNam
 private const val FILE_NAME = "EventResolver.generated"
 private const val FILE_JVM_NAME = "EventResolvers"
 
-private val InternalSimbotAPIClassName = ClassName("love.forte.simbot.annotations", "InternalSimbotAPI")
+private val InternalAPIClassName = ClassName(
+    "love.forte.simbot.component.onebot.common.annotations",
+    "InternalOneBotAPI"
+)
 
 private class EventTypeResolverProcessor(val environment: SymbolProcessorEnvironment) : SymbolProcessor {
     private val generated = AtomicBoolean(false)
@@ -201,7 +212,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         rootSubEventTypes: List<KSClassDeclaration>
     ): FunSpec {
         return FunSpec.builder(FUNCTION_RESOLVER_SERIALIZER_NAME).apply {
-            addAnnotation(InternalSimbotAPIClassName)
+            addAnnotation(InternalAPIClassName)
             addParameter(FUNCTION_EVENT_PARAM_NAME, EventClassName)
             returns(
                 KSerializerClassName.parameterizedBy(
@@ -365,7 +376,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         values: Map<String, Map<String, KSClassDeclaration>>
     ): FunSpec {
         return FunSpec.builder(FUNCTION_RESOLVER_SERIALIZER_NAME).apply {
-            addAnnotation(InternalSimbotAPIClassName)
+            addAnnotation(InternalAPIClassName)
             addParameter(FUNCTION_POST_TYPE_PARAM_NAME, STRING)
             addParameter(FUNCTION_SUB_TYPE_PARAM_NAME, STRING)
             returns(
@@ -399,7 +410,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         values: Map<String, Map<String, KSClassDeclaration>>
     ): FunSpec {
         return FunSpec.builder(FUNCTION_RESOLVER_TYPE_NAME).apply {
-            addAnnotation(InternalSimbotAPIClassName)
+            addAnnotation(InternalAPIClassName)
             addParameter(FUNCTION_POST_TYPE_PARAM_NAME, STRING)
             addParameter(FUNCTION_SUB_TYPE_PARAM_NAME, STRING)
             returns(
@@ -434,7 +445,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         rootSubEventTypes: List<KSClassDeclaration>
     ): FunSpec {
         return FunSpec.builder(FUNCTION_RESOLVER_SUB_TYPE_NAME).apply {
-            addAnnotation(InternalSimbotAPIClassName)
+            addAnnotation(InternalAPIClassName)
             addParameter(FUNCTION_POST_TYPE_PARAM_NAME, STRING)
 
             returns(STRING.copy(nullable = true))

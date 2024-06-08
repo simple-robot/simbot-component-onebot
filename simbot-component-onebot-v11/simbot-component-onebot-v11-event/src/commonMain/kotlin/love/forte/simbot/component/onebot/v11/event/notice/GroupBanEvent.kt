@@ -56,4 +56,16 @@ public data class GroupBanEvent(
     @SerialName("user_id")
     public val userId: LongID,
     public val duration: Long,
-) : NoticeEvent
+) : NoticeEvent {
+    public companion object {
+        /**
+         * @see GroupBanEvent.subType
+         */
+        public const val SUB_TYPE_BAN: String = "ban"
+
+        /**
+         * @see GroupBanEvent.subType
+         */
+        public const val SUB_TYPE_LIFT_BAN: String = "lift_ban"
+    }
+}

@@ -37,7 +37,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         optIn.addAll(
-            "love.forte.simbot.annotations.InternalSimbotAPI"
+            "love.forte.simbot.annotations.InternalSimbotAPI",
+            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI"
         )
     }
 
