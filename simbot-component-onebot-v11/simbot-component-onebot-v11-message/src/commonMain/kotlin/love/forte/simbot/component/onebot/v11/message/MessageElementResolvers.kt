@@ -20,27 +20,12 @@
 package love.forte.simbot.component.onebot.v11.message
 
 import kotlinx.coroutines.suspendCancellableCoroutine
-import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotAt
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotFace
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentElement
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
-import love.forte.simbot.component.onebot.v11.message.segment.toElement
-import love.forte.simbot.message.At
-import love.forte.simbot.message.AtAll
-import love.forte.simbot.message.Face
-import love.forte.simbot.message.Image
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.Messages
-import love.forte.simbot.message.OfflineImage
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
+import love.forte.simbot.component.onebot.v11.message.segment.*
+import love.forte.simbot.message.*
 import love.forte.simbot.message.OfflineImageResolver.Companion.resolve
-import love.forte.simbot.message.OfflineImageValueResolver
-import love.forte.simbot.message.RemoteImage
-import love.forte.simbot.message.Text
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.toResource
 import love.forte.simbot.resource.toStringResource
@@ -57,7 +42,7 @@ import kotlin.jvm.JvmName
  * | [OneBotFace] | [Face] |
  * | 其他 | 使用 [toElement] 转化 |
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
     return when (this) {
         is OneBotAt -> if (isAll) AtAll else At(data.qq.ID)
@@ -71,7 +56,7 @@ public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
  *
  * @see resolveToOneBotSegment
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public suspend fun Message.resolveToOneBotSegmentList(): List<OneBotMessageSegment> {
     return when (this) {
         is Message.Element -> resolveToOneBotSegment()
@@ -85,7 +70,7 @@ public suspend fun Message.resolveToOneBotSegmentList(): List<OneBotMessageSegme
 /**
  * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public suspend fun Message.Element.resolveToOneBotSegment(): OneBotMessageSegment? {
     return when (this) {
         // OB组件的 segment 类型，直接使用

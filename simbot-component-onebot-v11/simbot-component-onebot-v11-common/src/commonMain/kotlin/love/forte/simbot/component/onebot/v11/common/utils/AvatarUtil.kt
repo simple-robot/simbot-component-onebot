@@ -19,7 +19,7 @@
 
 package love.forte.simbot.component.onebot.v11.common.utils
 
-import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import kotlin.jvm.JvmName
 
 /**
@@ -27,7 +27,7 @@ import kotlin.jvm.JvmName
  *
  * @param id QQ号
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public fun qqAvatar640(id: String): String =
     "https://q1.qlogo.cn/g?b=qq&nk=$id&s=640"
 
@@ -36,6 +36,6 @@ public fun qqAvatar640(id: String): String =
  *
  * @param id QQ号
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public fun qqAvatar100(id: String): String =
     "https://q1.qlogo.cn/g?b=qq&nk=$id&s=100"

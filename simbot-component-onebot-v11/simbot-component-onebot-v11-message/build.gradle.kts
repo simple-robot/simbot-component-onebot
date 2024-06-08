@@ -21,6 +21,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -38,6 +39,13 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        optIn.addAll(
+            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI"
+        )
+    }
+
     configKotlinJvm()
 
     js(IR) {
@@ -50,6 +58,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":simbot-component-onebot-common"))
             implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
             api(libs.kotlinx.coroutines.core)
