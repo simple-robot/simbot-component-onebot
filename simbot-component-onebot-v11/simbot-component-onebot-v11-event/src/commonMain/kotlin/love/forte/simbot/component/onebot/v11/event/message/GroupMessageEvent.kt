@@ -55,7 +55,7 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
     @SerialName("message_id")
     override val messageId: ID,
     @SerialName("group_id")
-    public val groupId: ID,
+    public val groupId: LongID,
     @SerialName("message_type")
     override val messageType: String,
     @SerialName("sub_type")

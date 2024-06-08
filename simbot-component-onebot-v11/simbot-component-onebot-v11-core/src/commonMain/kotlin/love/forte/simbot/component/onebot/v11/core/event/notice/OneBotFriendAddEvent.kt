@@ -17,22 +17,23 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.notice
 
-import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
-import love.forte.simbot.component.onebot.v11.event.notice.NoticeEvent
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.event.notice.FriendAddEvent
 
 
 /**
- * 通知事件
+ * 好友新增事件。
  *
- * @see NoticeEvent
- *
- * @author ForteScarlet
+ * @see FriendAddEvent
  */
-public interface OneBotNoticeEvent : OneBotBotEvent {
-    override val sourceEvent: NoticeEvent
+public interface OneBotFriendAddEvent : OneBotNoticeEvent {
+    override val sourceEvent: FriendAddEvent
 
-    override val timestamp: Timestamp
-        get() = sourceEvent.timestamp()
+    /**
+     * 此好友的ID
+     */
+    public val userId: LongID
+        get() = sourceEvent.userId
+
+    // friend? or content()?
 }

@@ -51,4 +51,16 @@ public data class GroupAdminEvent(
     public val groupId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+) : NoticeEvent {
+    public companion object {
+        /**
+         * @see GroupAdminEvent.subType
+         */
+        public const val SUB_TYPE_SET: String = "set"
+
+        /**
+         * @see GroupAdminEvent.subType
+         */
+        public const val SUB_TYPE_UNSET: String = "unset"
+    }
+}

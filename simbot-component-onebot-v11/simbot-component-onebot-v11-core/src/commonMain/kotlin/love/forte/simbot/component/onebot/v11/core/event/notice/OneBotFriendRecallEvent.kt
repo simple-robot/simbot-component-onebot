@@ -17,22 +17,39 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.notice
 
-import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
-import love.forte.simbot.component.onebot.v11.event.notice.NoticeEvent
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
+import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
+import love.forte.simbot.event.ContactEvent
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
- * 通知事件
- *
- * @see NoticeEvent
- *
+ * 好友消息撤回事件
+ * @see FriendRecallEvent
  * @author ForteScarlet
  */
-public interface OneBotNoticeEvent : OneBotBotEvent {
-    override val sourceEvent: NoticeEvent
+public interface OneBotFriendRecallEvent : OneBotNoticeEvent, ContactEvent {
+    override val sourceEvent: FriendRecallEvent
 
-    override val timestamp: Timestamp
-        get() = sourceEvent.timestamp()
+    /**
+     * 消息ID
+     */
+    public val messageId: ID
+        get() = sourceEvent.messageId
+
+    /**
+     * 消息发送人的ID
+     */
+    public val authorId: LongID
+        get() = sourceEvent.userId
+
+    /**
+     * 好友
+     *
+     * @throws Exception
+     */
+    @STP
+    override suspend fun content(): OneBotFriend
 }
