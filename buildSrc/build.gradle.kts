@@ -34,7 +34,7 @@ dependencies {
     implementation(libs.bundles.dokka)
 
     // see https://github.com/gradle-nexus/publish-plugin
-    implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
+    implementation("io.github.gradle-nexus:publish-plugin:2.0.0")
 
     // simbot suspend transform gradle common
     implementation(libs.simbot.gradle)
@@ -45,9 +45,3 @@ dependencies {
     // gradle common
     implementation(libs.bundles.gradle.common)
 }
-
-//tasks.withType<KotlinCompile> {
-//    kotlinOptions {
-//        languageVersion = "2.0"
-//    }
-//}
