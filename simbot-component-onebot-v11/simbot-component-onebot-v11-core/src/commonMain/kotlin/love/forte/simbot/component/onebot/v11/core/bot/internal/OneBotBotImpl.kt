@@ -98,7 +98,6 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotG
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotHonorEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotLuckyKingEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotMemberPokeEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotNotifyEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
@@ -477,7 +476,7 @@ internal class OneBotBotImpl(
                         resolveRawEvent(eventRaw)
                     }.getOrElse { e ->
                         val exMsg = "Failed to resolve raw event $eventRaw, " +
-                                "session and bot will be closed exceptionally"
+                            "session and bot will be closed exceptionally"
 
                         val ex = IllegalStateException(
                             exMsg,
