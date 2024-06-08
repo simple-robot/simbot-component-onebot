@@ -26,9 +26,12 @@ import love.forte.simbot.suspendrunner.STP
 
 
 /**
- * 群成员荣誉变更事件
+ * 群成员荣誉变更事件、红包人气王事件或戳一戳事件。
  *
  * @see NotifyEvent
+ * @see OneBotHonorEvent
+ * @see OneBotLuckyKingEvent
+ * @see OneBotPokeEvent
  * @author ForteScarlet
  */
 public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
@@ -39,7 +42,7 @@ public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
      *
      * @see NotifyEvent.honorType
      */
-    public val honorType: String
+    public val honorType: String?
         get() = sourceEvent.honorType
 
     /**
@@ -71,3 +74,51 @@ public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
     override suspend fun content(): OneBotMember
 
 }
+
+/**
+ * 群成员荣誉变更事件
+ */
+public interface OneBotHonorEvent : OneBotNotifyEvent {
+    /**
+     * 荣誉类型.
+     *
+     * @see NotifyEvent.honorType
+     */
+    override val honorType: String
+        get() = sourceEvent.honorType!!
+}
+
+/**
+ * 群红包运气王事件
+ */
+public interface OneBotLuckyKingEvent : OneBotNotifyEvent {
+    /**
+     * 人气王用户ID
+     */
+    public val targetId: LongID
+        get() = sourceEvent.targetId!!
+}
+
+/**
+ * 群戳一戳事件
+ *
+ * @see OneBotMemberPokeEvent
+ * @see OneBotBotSelfPokeEvent
+ */
+public interface OneBotPokeEvent : OneBotNotifyEvent {
+    /**
+     * 被戳的用户ID
+     */
+    public val targetId: LongID
+        get() = sourceEvent.targetId!!
+}
+
+/**
+ * 群里Bot以外的群成员被戳一戳事件
+ */
+public interface OneBotMemberPokeEvent : OneBotPokeEvent
+
+/**
+ * 群里Bot被戳一戳事件，即 [targetId] == [selfId]。
+ */
+public interface OneBotBotSelfPokeEvent : OneBotPokeEvent

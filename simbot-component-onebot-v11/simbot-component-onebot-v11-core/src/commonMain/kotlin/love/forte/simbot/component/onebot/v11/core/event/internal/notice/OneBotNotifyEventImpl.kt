@@ -26,6 +26,10 @@ import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
+import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotBotSelfPokeEvent
+import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotHonorEvent
+import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotLuckyKingEvent
+import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotMemberPokeEvent
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotNotifyEvent
 import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
 
@@ -34,7 +38,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
  *
  * @author ForteScarlet
  */
-internal class OneBotNotifyEventImpl(
+internal abstract class OneBotNotifyEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: NotifyEvent,
     override val bot: OneBotBotImpl
@@ -56,7 +60,44 @@ internal class OneBotNotifyEventImpl(
             userId = sourceEvent.userId
         ).requestDataBy(bot).toMember(bot)
     }
+}
 
+internal class OneBotHonorEventImpl(
+    sourceEventRaw: String?,
+    sourceEvent: NotifyEvent,
+    bot: OneBotBotImpl
+) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+    OneBotHonorEvent {
     override fun toString(): String =
-        eventToString("OneBotNotifyEvent")
+        eventToString("OneBotHonorEvent")
+}
+
+internal class OneBotLuckyKingEventImpl(
+    sourceEventRaw: String?,
+    sourceEvent: NotifyEvent,
+    bot: OneBotBotImpl
+) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+    OneBotLuckyKingEvent {
+    override fun toString(): String =
+        eventToString("OneBotLuckyKingEvent")
+}
+
+internal class OneBotMemberPokeEventImpl(
+    sourceEventRaw: String?,
+    sourceEvent: NotifyEvent,
+    bot: OneBotBotImpl
+) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+    OneBotMemberPokeEvent {
+    override fun toString(): String =
+        eventToString("OneBotMemberPokeEvent")
+}
+
+internal class OneBotBotSelfPokeEventImpl(
+    sourceEventRaw: String?,
+    sourceEvent: NotifyEvent,
+    bot: OneBotBotImpl
+) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+    OneBotBotSelfPokeEvent {
+    override fun toString(): String =
+        eventToString("OneBotBotSelfPokeEvent")
 }

@@ -86,6 +86,7 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotBotSelfPokeEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotFriendAddEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotFriendRecallEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupAdminEventImpl
@@ -94,6 +95,9 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotG
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupMemberIncreaseEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupRecallEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupUploadEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotHonorEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotLuckyKingEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotMemberPokeEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotNotifyEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
@@ -473,7 +477,7 @@ internal class OneBotBotImpl(
                         resolveRawEvent(eventRaw)
                     }.getOrElse { e ->
                         val exMsg = "Failed to resolve raw event $eventRaw, " +
-                            "session and bot will be closed exceptionally"
+                                "session and bot will be closed exceptionally"
 
                         val ex = IllegalStateException(
                             exMsg,
@@ -580,92 +584,49 @@ internal class OneBotBotImpl(
 }
 
 
-
 @OptIn(FragileSimbotAPI::class)
 internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {
     val bot = this
+
+    fun unsupported(): OneBotUnsupportedEvent =
+        OneBotUnsupportedEvent(raw, event)
 
     return when (event) {
         //region 消息事件
         // 群消息、匿名消息、系统消息
         is GroupMessageEvent -> when (event.subType) {
             GroupMessageEvent.SUB_TYPE_NORMAL ->
-                OneBotNormalGroupMessageEventImpl(
-                    raw,
-                    event,
-                    bot
-                )
+                OneBotNormalGroupMessageEventImpl(raw, event, bot)
 
             GroupMessageEvent.SUB_TYPE_ANONYMOUS ->
-                OneBotAnonymousGroupMessageEventImpl(
-                    raw,
-                    event,
-                    bot
-                )
+                OneBotAnonymousGroupMessageEventImpl(raw, event, bot)
 
             GroupMessageEvent.SUB_TYPE_NOTICE ->
-                OneBotNoticeGroupMessageEventImpl(
-                    raw,
-                    event,
-                    bot
-                )
+                OneBotNoticeGroupMessageEventImpl(raw, event, bot)
 
-            else -> OneBotDefaultGroupMessageEventImpl(
-                raw,
-                event,
-                bot
-            )
+            else -> OneBotDefaultGroupMessageEventImpl(raw, event, bot)
         }
 
         // 好友私聊消息、成员临时会话
         is PrivateMessageEvent -> when (event.subType) {
-            PrivateMessageEvent.SUB_TYPE_FRIEND -> OneBotFriendMessageEventImpl(
-                raw,
-                event,
-                bot
-            )
+            PrivateMessageEvent.SUB_TYPE_FRIEND ->
+                OneBotFriendMessageEventImpl(raw, event, bot)
 
-            PrivateMessageEvent.SUB_TYPE_GROUP -> OneBotGroupPrivateMessageEventImpl(
-                raw,
-                event,
-                bot
-            )
+            PrivateMessageEvent.SUB_TYPE_GROUP ->
+                OneBotGroupPrivateMessageEventImpl(raw, event, bot)
 
-            else -> OneBotDefaultPrivateMessageEventImpl(
-                raw,
-                event,
-                bot
-            )
+            else -> OneBotDefaultPrivateMessageEventImpl(raw, event, bot)
         }
         //endregion
 
         //region 元事件
-        is LifecycleEvent -> OneBotLifecycleEventImpl(
-            raw,
-            event,
-            bot,
-        )
-
-        is HeartbeatEvent -> OneBotHeartbeatEventImpl(
-            raw,
-            event,
-            bot,
-        )
+        is LifecycleEvent -> OneBotLifecycleEventImpl(raw, event, bot,)
+        is HeartbeatEvent -> OneBotHeartbeatEventImpl(raw, event, bot,)
         //endregion
 
         //region 申请事件
-        is FriendRequestEvent -> OneBotFriendRequestEventImpl(
-            raw,
-            event,
-            bot
-        )
-
-        is GroupRequestEvent -> OneBotGroupRequestEventImpl(
-            raw,
-            event,
-            bot
-        )
-        // 其余未知的申请事件扔到 unsupported
+        is FriendRequestEvent -> OneBotFriendRequestEventImpl(raw, event, bot)
+        is GroupRequestEvent -> OneBotGroupRequestEventImpl(raw, event, bot)
         //endregion
 
         //region notice events
@@ -677,12 +638,22 @@ internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent
         is GroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
         is GroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
         is GroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
-        is NotifyEvent -> OneBotNotifyEventImpl(raw, event, bot)
+        is NotifyEvent -> when (event.subType) {
+            NotifyEvent.SUB_TYPE_HONOR -> OneBotHonorEventImpl(raw, event, bot)
+            NotifyEvent.SUB_TYPE_LUCKY_KING -> OneBotLuckyKingEventImpl(raw, event, bot)
+            NotifyEvent.SUB_TYPE_POKE -> when {
+                event.selfId.value == event.targetId?.value ->
+                    OneBotBotSelfPokeEventImpl(raw, event, bot)
+
+                else -> OneBotMemberPokeEventImpl(raw, event, bot)
+            }
+
+            // Unsupported
+            else -> unsupported()
+        }
 
         //endregion
-
-
         is UnknownEvent -> OneBotUnknownEvent(raw, event)
-        else -> OneBotUnsupportedEvent(raw, event)
+        else -> unsupported()
     }
 }
