@@ -35,7 +35,6 @@ import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
-import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -64,7 +63,6 @@ public val ApiLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.compon
  * @param actionSuffixes 会被拼接到 [OneBotApi.action] 的行为后缀，可参考 [OneBotApi.Actions].
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun OneBotApi<*>.request(
     client: HttpClient,
     host: Url,
@@ -153,7 +151,6 @@ public suspend fun OneBotApi<*>.request(
  * @param actionSuffixes 会被拼接到 [OneBotApi.action] 的行为后缀，可参考 [OneBotApi.Actions].
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun OneBotApi<*>.request(
     client: HttpClient,
     host: String,
@@ -171,7 +168,6 @@ public suspend fun OneBotApi<*>.request(
  *
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun OneBotApi<*>.requestRaw(
     client: HttpClient,
     host: Url,
@@ -207,7 +203,6 @@ public suspend fun OneBotApi<*>.requestRaw(
  *
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun OneBotApi<*>.requestRaw(
     client: HttpClient,
     host: String,
@@ -225,7 +220,6 @@ public suspend fun OneBotApi<*>.requestRaw(
  * @see OneBotApi.request
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun <T : Any> OneBotApi<T>.requestResult(
     client: HttpClient,
     host: Url,
@@ -246,7 +240,6 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
  * @see OneBotApi.request
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun <T : Any> OneBotApi<T>.requestResult(
     client: HttpClient,
     host: String,
@@ -266,7 +259,6 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
  * @see OneBotApi.request
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun <T : Any> OneBotApi<T>.requestData(
     client: HttpClient,
     host: Url,
@@ -289,7 +281,6 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
  * @see OneBotApi.request
  */
 @JvmSynthetic
-@JvmOverloads
 public suspend fun <T : Any> OneBotApi<T>.requestData(
     client: HttpClient,
     host: String,
