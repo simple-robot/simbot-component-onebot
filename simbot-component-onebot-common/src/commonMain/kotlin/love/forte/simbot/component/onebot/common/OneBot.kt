@@ -24,5 +24,3 @@ import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
  */
 @InternalOneBotAPI
 public object OneBot
-
-// TODO 一些Opt注解放在这个模块？

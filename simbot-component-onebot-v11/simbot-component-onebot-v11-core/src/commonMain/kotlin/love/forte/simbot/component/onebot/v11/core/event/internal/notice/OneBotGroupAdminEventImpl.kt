@@ -21,10 +21,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
-import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupAdminEvent
 import love.forte.simbot.component.onebot.v11.event.notice.GroupAdminEvent
@@ -32,7 +29,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.GroupAdminEvent
 internal class OneBotGroupAdminEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: GroupAdminEvent,
-    override val bot: OneBotBotImpl
+    override val bot: OneBotBot
 ) : OneBotGroupAdminEvent {
     override val id: ID
         get() = with(sourceEvent) {
@@ -40,16 +37,18 @@ internal class OneBotGroupAdminEventImpl(
         }.ID
 
     override suspend fun content(): OneBotMember {
-        // TODO 换成 groupRelation
-        return GetGroupMemberInfoApi.create(
+        return bot.groupRelation.member(
             groupId = sourceEvent.groupId,
-            userId = sourceEvent.userId
-        ).requestDataBy(bot).toMember(bot)
+            memberId = sourceEvent.userId
+        ) ?: error(
+            "Member with id ${sourceEvent.userId} " +
+                "in Group ${sourceEvent.groupId} is not found"
+        )
     }
 
     override suspend fun source(): OneBotGroup {
         return bot.groupRelation.group(sourceEvent.groupId)
-            ?: error("Group with id ${sourceEvent.groupId} not found")
+            ?: error("Group with id ${sourceEvent.groupId} is not found")
     }
 
     override fun toString(): String =

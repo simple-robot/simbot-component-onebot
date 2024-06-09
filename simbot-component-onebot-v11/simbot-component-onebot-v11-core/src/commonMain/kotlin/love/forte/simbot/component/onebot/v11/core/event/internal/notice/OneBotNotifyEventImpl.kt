@@ -21,16 +21,9 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
-import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotBotSelfPokeEvent
-import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotHonorEvent
-import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotLuckyKingEvent
-import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotMemberPokeEvent
-import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotNotifyEvent
+import love.forte.simbot.component.onebot.v11.core.event.notice.*
 import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
 
 
@@ -50,15 +43,17 @@ internal abstract class OneBotNotifyEventImpl(
 
     override suspend fun source(): OneBotGroup {
         return bot.groupRelation.group(groupId)
-            ?: error("Group with id $groupId not found")
+            ?: error("Group with id $groupId is not found")
     }
 
     override suspend fun content(): OneBotMember {
-        // TODO 换成 groupRelation
-        return GetGroupMemberInfoApi.create(
+        return bot.groupRelation.member(
             groupId = sourceEvent.groupId,
-            userId = sourceEvent.userId
-        ).requestDataBy(bot).toMember(bot)
+            memberId = sourceEvent.userId
+        ) ?: error(
+            "Member with id ${sourceEvent.userId} " +
+                "in Group ${sourceEvent.groupId} is not found"
+        )
     }
 }
 

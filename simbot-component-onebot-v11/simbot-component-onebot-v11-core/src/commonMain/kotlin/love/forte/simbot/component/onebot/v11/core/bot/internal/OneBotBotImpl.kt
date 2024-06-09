@@ -61,13 +61,11 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
-import love.forte.simbot.component.onebot.v11.core.api.GetFriendListApi
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoApi
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupListApi
-import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
-import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
+import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotFriendRelation
@@ -575,6 +573,12 @@ internal class OneBotBotImpl(
                 this@OneBotBotImpl,
                 // TODO owner?
             )
+        }
+
+        override suspend fun member(groupId: ID, memberId: ID): OneBotMember {
+            // TODO 如何检测不存在？
+            return GetGroupMemberInfoApi.create(groupId, userId)
+                .requestDataBy(this@OneBotBotImpl).toMember(this@OneBotBotImpl)
         }
     }
 
