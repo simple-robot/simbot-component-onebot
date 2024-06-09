@@ -17,8 +17,8 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
-import io.ktor.client.HttpClient
-import io.ktor.http.Url
+import io.ktor.client.*
+import io.ktor.http.*
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
 import love.forte.simbot.bot.Bot
@@ -27,8 +27,10 @@ import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.suspendrunner.ST
@@ -57,6 +59,13 @@ public interface OneBotBot : Bot {
      * 当前Bot的配置类。
      */
     public val configuration: OneBotBotConfiguration
+
+    /**
+     * 由 [OneBotBot] 衍生出的 actor 使用的 [CoroutineContext]。
+     * 源自 [coroutineContext], 但是不包含 [Job][kotlinx.coroutines.Job]。
+     */
+    @InternalOneBotAPI
+    public val subContext: CoroutineContext
 
     /**
      * [OneBotBot] 用于请求API的 [HttpClient]。
@@ -219,4 +228,16 @@ public interface OneBotBotGroupRelation : GroupRelation {
     @JvmSynthetic
     override suspend fun groupCount(): Int =
         groups.asFlow().count()
+
+    /**
+     * 根据ID查询某个群中的某个成员。
+     */
+    @ST(
+        blockingBaseName = "getMember",
+        blockingSuffix = "",
+        asyncBaseName = "getMember",
+        reserveBaseName = "getMember"
+    )
+    public suspend fun member(groupId: ID, memberId: ID): OneBotMember?
+
 }

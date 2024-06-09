@@ -18,12 +18,16 @@
 package love.forte.simbot.component.onebot.v11.core.event.notice
 
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
+import love.forte.simbot.component.onebot.v11.event.notice.NoticeEvent
 
 
 /**
+ * 通知事件
+ *
+ * @see NoticeEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotNoticeEvent : OneBotBotEvent {
-    // TODO
+    override val sourceEvent: NoticeEvent
 }

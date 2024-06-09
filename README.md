@@ -55,6 +55,7 @@ Simple Robot OneBot 组件是一个将
 
 ## 快速开始
 
+> [!warning]
 > 手册施工完成之前，此处临时提供快速开始。手册施工完成后会删除。
 
 > [!note]
@@ -64,10 +65,10 @@ Simple Robot OneBot 组件是一个将
 
 ### Ktor 客户端引擎
 
-OneBot组件默认使用 [Ktor](https://ktor.io/)
+首先，OneBot组件使用 [Ktor](https://ktor.io/)
 作为HTTP客户端与WS客户端，但是默认情况下依赖中不会有任何具体的引擎实现。
 
-你需要根据你的使用平台前往 [Ktor client Engines](https://ktor.io/docs/client-engines.html#limitations)
+因此你需要根据你的使用平台前往 [Ktor client Engines](https://ktor.io/docs/client-engines.html#limitations)
 选择一个合适的引擎使用。
 
 > [!tip]
@@ -286,27 +287,45 @@ public class MyApp {
 
 ## 事件监听
 
-目前可监听到的**组件事件**：
+简单列举一下原始事件与可能对应的组件事件之间的关系。
 
-- `OneBotMessageEvent` 消息事件
-    - `OneBotGroupMessageEvent` 群消息事件
-        - `OneBotNormalGroupMessageEvent` 普通群消息事件
-        - `OneBotAnonymousGroupMessageEvent` 匿名群消息事件
-        - `OneBotNoticeGroupMessageEvent` 群系统通知消息事件
-    - `OneBotPrivateMessageEvent` 私聊消息事件
-        - `OneBotFriendMessageEvent` 好友私聊消息事件
-        - `OneBotGroupPrivateMessageEvent` 群成员临时会话私聊事件
-- `OneBotMetaEvent` 元事件
-    - `OneBotLifecycleEvent` 生命周期事件
-    - `OneBotHeartbeatEvent` 心跳事件
-- `OneBotRequestEvent` 请求事件
-  - `OneBotFriendRequestEvent` 好友添加请求事件
-  - `OneBotGroupRequestEvent` 群添加请求事件
-- `OneBotUnknownEvent` 未知事件
-- `OneBotUnsupportedEvent` 未支持事件
-- `OneBotBotStageEvent` 组件内Bot阶段事件
-  - `OneBotBotRegisteredEvent` Bot被注册了事件
-  - `OneBotBotStartedEvent` Bot被(首次)启动了事件
+| 原始事件                                          | 组件事件                                   |
+|-----------------------------------------------|----------------------------------------|
+| `MetaEvent`                                   | `OneBotMetaEvent`                      |
+| > `LifecycleEvent`                            | > `OneBotLifecycleEvent`               |
+| > `HeartbeatEvent`                            | > `OneBotHeartbeatEvent`               |
+| `MessageEvent`                                | `OneBotMessageEvent`                   |
+| > `GroupMessageEvent`                         | > `OneBotGroupMessageEvent`            |
+| > `GroupMessageEvent`                         | > > `OneBotNormalGroupMessageEvent`    |
+| > `GroupMessageEvent`                         | > > `OneBotAnonymousGroupMessageEvent` |
+| > `GroupMessageEvent`                         | > > `OneBotNoticeGroupMessageEvent`    |
+| > `PrivateMessageEvent`                       | > `OneBotPrivateMessageEvent`          |
+| > `PrivateMessageEvent`                       | > > `OneBotFriendMessageEvent`         |
+| > `PrivateMessageEvent`                       | > > `OneBotGroupPrivateMessageEvent`   |
+| `RequestEvent`                                | `OneBotRequestEvent`                   |
+| > `FriendRequestEvent`                        | > `OneBotFriendRequestEvent`           |
+| > `GroupRequestEvent`                         | > `OneBotGroupRequestEvent`            |
+| `NoticeEvent`                                 | `OneBotNoticeEvent`                    |
+| > `FriendAddEvent`                            | > `OneBotFriendAddEvent`               |
+| > `FriendRecallEvent`                         | > `OneBotFriendRecallEvent`            |
+| > `GroupAdminEvent`                           | > `OneBotGroupAdminEvent`              |
+| > `GroupBanEvent`                             | > `OneBotGroupBanEvent`                |
+| > `GroupIncreaseEvent` 或 `GroupDecreaseEvent` | > `OneBotGroupChangeEvent`             |
+| > `GroupIncreaseEvent`                        | > > `OneBotGroupMemberIncreaseEvent`   |
+| > `GroupDecreaseEvent`                        | > > `OneBotGroupMemberDecreaseEvent`   |
+| > `GroupRecallEvent`                          | > `OneBotGroupRecallEvent`             |
+| > `GroupUploadEvent`                          | > `OneBotGroupUploadEvent`             |
+| > `NotifyEvent`                               | > `OneBotNotifyEvent`                  |
+| > `NotifyEvent`                               | > > `OneBotHonorEvent`                 |
+| > `NotifyEvent`                               | > > `OneBotLuckyKingEvent`             |
+| > `NotifyEvent`                               | > > `OneBotPokeEvent`                  |
+| > `NotifyEvent`                               | > > > `OneBotMemberPokeEvent`          |
+| > `NotifyEvent`                               | > > > `OneBotBotSelfPokeEvent`         |
+| `UnknownEvent`                                | > `UnknownEvent`                       |
+| 无                                             | `OneBotBotStageEvent`                  |
+| 无                                             | > `OneBotBotRegisteredEvent`           |
+| 无                                             | > `OneBotBotStartedEvent`              |
+| 任意未支持事件                                       | `OneBotUnsupportedEvent`               |
 
 其中，可以通过 `OneBotUnsupportedEvent` 和 `OneBotUnknownEvent`
 来间接地监听那些尚未提供组件事件类型的原始事件。

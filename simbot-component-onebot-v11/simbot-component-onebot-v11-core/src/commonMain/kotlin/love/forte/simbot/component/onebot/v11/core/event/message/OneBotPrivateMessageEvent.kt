@@ -30,6 +30,8 @@ import love.forte.simbot.suspendrunner.STP
  * [私聊消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#私聊消息)
  *
  * @see PrivateMessageEvent
+ * @see OneBotFriendMessageEvent
+ * @see OneBotGroupPrivateMessageEvent
  *
  * @author ForteScarlet
  */

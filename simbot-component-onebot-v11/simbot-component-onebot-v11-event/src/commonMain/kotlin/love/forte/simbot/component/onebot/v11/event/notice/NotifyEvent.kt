@@ -25,14 +25,21 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群成员荣誉变更](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员荣誉变更)
+ * [群成员荣誉变更](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员荣誉变更)、
+ * [群红包运气王](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群红包运气王)、
+ * [群内戳一戳](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群内戳一戳)。
+ *
+ * 其中，红包和戳一戳的 [subType] 分别为 `lucky_king` 和 `poke`
  *
  * @property subType 提示类型。
- * 可能的值: `honor`
+ * 可能的值: `honor`, `lucky_king`, `poke`
  * @property groupId 群号。
  * @property honorType 荣誉类型，分别表示龙王、群聊之火、快乐源泉。
- * 可能的值: `talkative`、`performer`、`emotion`
+ * 可能的值: `talkative`、`performer`、`emotion`。
+ * 当 [subType] 为 `honor` 时有值。
  * @property userId 成员 QQ 号。
+ * @property targetId 当 [subType] 为 `lucky_king` 时代表人气王用户ID，
+ * 为 `poke` 时代表被戳的人的ID，否则为 `null`。
  */
 @ExpectEventType(
     postType = NoticeEvent.POST_TYPE,
@@ -52,7 +59,27 @@ public data class NotifyEvent(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("honor_type")
-    public val honorType: String,
+    public val honorType: String? = null,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+    @SerialName("target_id")
+    public val targetId: LongID? = null
+) : NoticeEvent {
+    public companion object {
+        /**
+         * @see NotifyEvent.subType
+         */
+        public const val SUB_TYPE_HONOR: String = "honor"
+
+        /**
+         * @see NotifyEvent.subType
+         */
+        public const val SUB_TYPE_POKE: String = "poke"
+
+        /**
+         * @see NotifyEvent.subType
+         */
+        public const val SUB_TYPE_LUCKY_KING: String = "lucky_king"
+    }
+
+}

@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.event.message
 
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
@@ -30,6 +31,10 @@ import love.forte.simbot.suspendrunner.STP
  * [群消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#群消息)
  *
  * @see GroupMessageEvent
+ *
+ * @see OneBotNormalGroupMessageEvent
+ * @see OneBotAnonymousGroupMessageEvent
+ * @see OneBotNoticeGroupMessageEvent
  *
  * @author ForteScarlet
  */
@@ -58,13 +63,13 @@ public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
     /**
      * 群号
      */
-    public val groupId: ID
+    public val groupId: LongID
         get() = sourceEvent.groupId
 
     /**
      * 发送者 QQ 号
      */
-    public val userId: ID
+    public val userId: LongID
         get() = sourceEvent.userId
 
     /**

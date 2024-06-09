@@ -19,16 +19,13 @@ package love.forte.simbot.component.onebot.v11.core.event.internal.meta
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
-import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotHeartbeatEvent
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotLifecycleEvent
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotMetaEvent
-import love.forte.simbot.component.onebot.v11.core.utils.timestamp
 import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
 
 /**
  * OneBot中的元事件类型。
@@ -36,9 +33,6 @@ import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
  */
 internal abstract class OneBotMetaEventImpl : OneBotMetaEvent {
     override val id: ID = UUID.random()
-
-    override val time: Timestamp
-        get() = sourceEvent.timestamp()
 }
 
 internal class OneBotHeartbeatEventImpl(
@@ -59,11 +53,3 @@ internal class OneBotLifecycleEventImpl(
         eventToString("OneBotLifecycleEvent")
 }
 
-internal class OneBotDefaultMetaEventImpl(
-    override val sourceEventRaw: String?,
-    override val sourceEvent: MetaEvent,
-    override val bot: OneBotBot,
-) : OneBotMetaEventImpl() {
-    override fun toString(): String =
-        eventToString("OneBotDefaultMetaEvent")
-}

@@ -17,11 +17,11 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
-import io.ktor.http.Url
+import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.bot.SerializableBotConfiguration
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 
 
@@ -33,7 +33,7 @@ import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
  *
  * @author ForteScarlet
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 @Serializable
 @SerialName(OneBot11Component.ID_VALUE)
 public data class OneBotBotSerializableConfiguration(

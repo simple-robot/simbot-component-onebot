@@ -28,8 +28,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.utils.io.charsets.*
-import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.serialization.guessSerializer
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
@@ -41,7 +41,7 @@ import kotlin.jvm.JvmSynthetic
 /**
  * 用于在对 [OneBotApi] 发起请求时或得到想用后输出相关日志日志收集器。
  */
-@InternalSimbotAPI
+@InternalOneBotAPI
 public val ApiLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.API")
 
 /**

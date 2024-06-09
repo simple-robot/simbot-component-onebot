@@ -17,8 +17,8 @@
 
 package love.forte.simbot.component.onebot.v11.event
 
-import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 
 
 /**
@@ -98,7 +98,7 @@ public interface Event {
  *
  */
 @Retention(AnnotationRetention.SOURCE)
-@InternalSimbotAPI
+@InternalOneBotAPI
 public annotation class ExpectEventType(val postType: String, val subType: String)
 
 /**
@@ -109,5 +109,5 @@ public annotation class ExpectEventType(val postType: String, val subType: Strin
  * @suppress 用于项目内部代码生成器
  */
 @Retention(AnnotationRetention.SOURCE)
-@InternalSimbotAPI
+@InternalOneBotAPI
 public annotation class ExpectEventSubTypeProperty(val value: String, val postType: String, val name: String)

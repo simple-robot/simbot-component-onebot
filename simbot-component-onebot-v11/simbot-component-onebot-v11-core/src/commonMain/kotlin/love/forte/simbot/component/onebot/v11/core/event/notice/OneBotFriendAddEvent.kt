@@ -15,27 +15,25 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("AvatarUtil")
+package love.forte.simbot.component.onebot.v11.core.event.notice
 
-package love.forte.simbot.component.onebot.v11.common.utils
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.event.notice.FriendAddEvent
 
-import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
-import kotlin.jvm.JvmName
-
-/**
- * 得到 `s=640` 的QQ头像。
- *
- * @param id QQ号
- */
-@InternalOneBotAPI
-public fun qqAvatar640(id: String): String =
-    "https://q1.qlogo.cn/g?b=qq&nk=$id&s=640"
 
 /**
- * 得到 `s=100` 的QQ头像。
+ * 好友新增事件。
  *
- * @param id QQ号
+ * @see FriendAddEvent
  */
-@InternalOneBotAPI
-public fun qqAvatar100(id: String): String =
-    "https://q1.qlogo.cn/g?b=qq&nk=$id&s=100"
+public interface OneBotFriendAddEvent : OneBotNoticeEvent {
+    override val sourceEvent: FriendAddEvent
+
+    /**
+     * 此好友的ID
+     */
+    public val userId: LongID
+        get() = sourceEvent.userId
+
+    // friend? or content()?
+}
