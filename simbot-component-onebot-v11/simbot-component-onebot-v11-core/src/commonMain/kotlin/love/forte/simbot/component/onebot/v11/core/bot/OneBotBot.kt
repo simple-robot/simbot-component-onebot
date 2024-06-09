@@ -17,8 +17,8 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
-import io.ktor.client.HttpClient
-import io.ktor.http.Url
+import io.ktor.client.*
+import io.ktor.http.*
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
 import love.forte.simbot.bot.Bot
@@ -30,6 +30,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
 import love.forte.simbot.suspendrunner.ST
@@ -227,4 +228,16 @@ public interface OneBotBotGroupRelation : GroupRelation {
     @JvmSynthetic
     override suspend fun groupCount(): Int =
         groups.asFlow().count()
+
+    /**
+     * 根据ID查询某个群中的某个成员。
+     */
+    @ST(
+        blockingBaseName = "getMember",
+        blockingSuffix = "",
+        asyncBaseName = "getMember",
+        reserveBaseName = "getMember"
+    )
+    public suspend fun member(groupId: ID, memberId: ID): OneBotMember?
+
 }

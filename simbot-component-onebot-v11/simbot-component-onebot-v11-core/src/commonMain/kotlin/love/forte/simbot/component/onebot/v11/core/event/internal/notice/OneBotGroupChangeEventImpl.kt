@@ -21,10 +21,8 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupChangeEvent
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupMemberDecreaseEvent
@@ -45,26 +43,29 @@ internal abstract class OneBotGroupChangeEventImpl : OneBotGroupChangeEvent {
 
     override suspend fun content(): OneBotGroup {
         return bot.groupRelation.group(groupId)
-            ?: error("Group with id $groupId not found")
+            ?: error("Group with id $groupId is not found")
     }
 }
 
 internal class OneBotGroupMemberIncreaseEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: GroupIncreaseEvent,
-    override val bot: OneBotBotImpl
+    override val bot: OneBotBot
 ) : OneBotGroupChangeEventImpl(), OneBotGroupMemberIncreaseEvent {
     override suspend fun member(): OneBotMember {
-        // TODO 换成 groupRelation
-        return GetGroupMemberInfoApi.create(
+        return bot.groupRelation.member(
             groupId = sourceEvent.groupId,
-            userId = sourceEvent.userId
-        ).requestDataBy(bot).toMember(bot)
+            memberId = sourceEvent.userId
+        ) ?: error(
+            "Member with id ${sourceEvent.userId} " +
+                "in Group ${sourceEvent.groupId} is not found"
+        )
     }
 
     override fun toString(): String =
         eventToString("OneBotGroupMemberIncreaseEvent")
 }
+
 internal class OneBotGroupMemberDecreaseEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: GroupDecreaseEvent,
