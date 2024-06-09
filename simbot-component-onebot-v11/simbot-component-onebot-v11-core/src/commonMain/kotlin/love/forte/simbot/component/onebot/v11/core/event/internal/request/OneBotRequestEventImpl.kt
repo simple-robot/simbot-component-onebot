@@ -17,6 +17,8 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.internal.request
 
+import love.forte.simbot.ability.AcceptOption
+import love.forte.simbot.ability.RejectOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
@@ -29,9 +31,7 @@ import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
-import love.forte.simbot.component.onebot.v11.core.event.request.OneBotFriendRequestEvent
-import love.forte.simbot.component.onebot.v11.core.event.request.OneBotGroupRequestEvent
-import love.forte.simbot.component.onebot.v11.core.event.request.OneBotRequestEvent
+import love.forte.simbot.component.onebot.v11.core.event.request.*
 import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
 import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
 
@@ -40,14 +40,23 @@ internal abstract class OneBotRequestEventImpl : OneBotRequestEvent {
     override val id: ID = UUID.random()
 
     override suspend fun accept() {
-        doSetRequest(true)
+        doAccept(emptyArray())
+    }
+
+    override suspend fun accept(vararg options: AcceptOption) {
+        doAccept(options)
     }
 
     override suspend fun reject() {
-        doSetRequest(false)
+        doReject(emptyArray())
     }
 
-    protected abstract suspend fun doSetRequest(approve: Boolean)
+    override suspend fun reject(vararg options: RejectOption) {
+        doReject(options)
+    }
+
+    protected abstract suspend fun doAccept(options: Array<out AcceptOption>)
+    protected abstract suspend fun doReject(options: Array<out RejectOption>)
 }
 
 internal class OneBotFriendRequestEventImpl(
@@ -55,10 +64,23 @@ internal class OneBotFriendRequestEventImpl(
     override val sourceEvent: FriendRequestEvent,
     override val bot: OneBotBot,
 ) : OneBotRequestEventImpl(), OneBotFriendRequestEvent {
-    override suspend fun doSetRequest(approve: Boolean) {
+    override suspend fun doAccept(options: Array<out AcceptOption>) {
+        val remark: String? = (
+            options.firstOrNull { it is OneBotFriendRequestAcceptOption.Remark }
+                as? OneBotFriendRequestAcceptOption.Remark
+            )?.remark
+
         SetFriendAddRequestApi.create(
             flag = sourceEvent.flag,
-            approve = approve,
+            approve = true,
+            remark = remark
+        ).requestDataBy(bot)
+    }
+
+    override suspend fun doReject(options: Array<out RejectOption>) {
+        SetFriendAddRequestApi.create(
+            flag = sourceEvent.flag,
+            approve = false,
         ).requestDataBy(bot)
     }
 
@@ -71,11 +93,25 @@ internal class OneBotGroupRequestEventImpl(
     override val sourceEvent: GroupRequestEvent,
     override val bot: OneBotBotImpl,
 ) : OneBotRequestEventImpl(), OneBotGroupRequestEvent {
-    override suspend fun doSetRequest(approve: Boolean) {
+    override suspend fun doAccept(options: Array<out AcceptOption>) {
         SetGroupAddRequestApi.create(
             flag = sourceEvent.flag,
             subType = sourceEvent.subType,
-            approve = approve
+            approve = true
+        ).requestDataBy(bot)
+    }
+
+    override suspend fun doReject(options: Array<out RejectOption>) {
+        val reason = (
+            options.firstOrNull { it is OneBotGroupRequestRejectOption.Reason }
+                as? OneBotGroupRequestRejectOption.Reason
+            )?.reason
+
+        SetGroupAddRequestApi.create(
+            flag = sourceEvent.flag,
+            subType = sourceEvent.subType,
+            approve = false,
+            reason = reason
         ).requestDataBy(bot)
     }
 
