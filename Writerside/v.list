@@ -5,6 +5,6 @@
     <var name="api-doc" value="https://docs.simbot.forte.love"/>
     <var name="jb" value="阻塞"/>
     <var name="ja" value="异步"/>
-    <var name="version" value="0.0.3"/>
-    <var name="minimum-core-version" value="4.0.0-RC2"/>
+    <var name="version" value="0.1.0"/>
+    <var name="minimum-core-version" value="4.0.0-RC3"/>
 </vars>
