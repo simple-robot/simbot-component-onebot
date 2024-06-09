@@ -181,17 +181,20 @@ public suspend fun OneBotApi<*>.requestRaw(
 ): String {
     val response = request(client, host, accessToken, actionSuffixes)
     val status = response.status
+    val body = response.bodyAsText(charset)
+
     if (!status.isSuccess()) {
-        throw OneBotApiResponseNotSuccessException(status)
+        throw OneBotApiResponseNotSuccessException(status, "status: $status, body: $body")
     }
-    return response.bodyAsText(charset).also { raw ->
-        ApiLogger.debug(
-            "API [{}] RES <=== {}, raw: {}",
-            action,
-            response.request.url,
-            raw
-        )
-    }
+
+    ApiLogger.debug(
+        "API [{}] RES <=== {}, body: {}",
+        action,
+        response.request.url,
+        body
+    )
+
+    return body
 }
 
 /**
