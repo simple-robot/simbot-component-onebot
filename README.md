@@ -231,7 +231,7 @@ public class MyApp {
     }
 
     @Component
-    static class MyHandlers {
+    public static class MyHandlers {
 
         /**
          * 例如：监听OneBot的普通群消息
