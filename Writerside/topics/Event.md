@@ -42,7 +42,7 @@
 
 一个特殊的事件类型。
 它是当遇到无法被上述这些类型所解析时使用的兜底类型，
-它不可序列化，除 `time`、`selfId`、`postType` 
+它不可序列化，除 `time`、`selfId`、`postType`
 之外直接提供 `raw` 属性(也就是原始的JSON字符串)。
 
 </def>
@@ -52,8 +52,6 @@
 
 组件实现是基于simbot标准API中定义的事件类型、对上述**原始事件**的包装，
 并提供相对应的功能性API实现。
-
-### 消息事件
 
 <deflist>
 <def id="OneBotMessageEvent" title="OneBotMessageEvent">
@@ -114,7 +112,26 @@
 </def>
 </deflist>
 </def>
-
+<def id="OneBotNoticeEvent" title="OneBotNoticeEvent">
+通知相关的事件。
+<deflist>
+<def id="OneBotFriendAddEvent" title="OneBotFriendAddEvent">好友已添加事件</def>
+<def id="OneBotFriendRecallEvent" title="OneBotFriendRecallEvent">好友消息撤回事件</def>
+<def id="OneBotGroupAdminEvent" title="OneBotGroupAdminEvent">管理员变动事件</def>
+<def id="OneBotGroupBanEvent" title="OneBotGroupBanEvent">群禁言事件</def>
+<def id="OneBotGroupChangeEvent" title="OneBotGroupChangeEvent">群成员变动事件</def>
+<def id="OneBotGroupMemberIncreaseEvent" title="OneBotGroupMemberIncreaseEvent">群成员添加事件</def>
+<def id="OneBotGroupMemberDecreaseEvent" title="OneBotGroupMemberDecreaseEvent">群成员离开事件</def>
+<def id="OneBotGroupRecallEvent" title="OneBotGroupRecallEvent">群消息撤回事件</def>
+<def id="OneBotGroupUploadEvent" title="OneBotGroupUploadEvent">群文件上传事件</def>
+<def id="OneBotNotifyEvent" title="OneBotNotifyEvent">群荣耀事件、红包人气王事件或戳一戳事件</def>
+<def id="OneBotHonorEvent" title="OneBotHonorEvent">群荣耀事件</def>
+<def id="OneBotLuckyKingEvent" title="OneBotLuckyKingEvent">红包人气王事件</def>
+<def id="OneBotPokeEvent" title="OneBotPokeEvent">戳一戳事件</def>
+<def id="OneBotMemberPokeEvent" title="OneBotMemberPokeEvent">戳一戳(普通群成员被戳)事件</def>
+<def id="OneBotBotSelfPokeEvent" title="OneBotBotSelfPokeEvent">戳一戳(Bot被戳)事件</def>
+</deflist>
+</def>
 
 <def id="OneBotBotStageEvent" title="OneBotBotStageEvent">
 与OneBot协议本身无关的Bot的阶段事件。
@@ -128,7 +145,6 @@
 </deflist>
 </def>
 </deflist>
-
 
 ### 未知事件
 
@@ -144,3 +160,45 @@
 但是尚未提供对应的**组件事件**实现的事件类型时用来兜底的类型。
 
 这些原始事件类型会被统一装入此事件中。
+
+## 事件关系
+
+简单列举一下原始事件与可能对应的组件事件之间的关系。
+
+| 原始事件                                          | 组件事件                                   |
+|-----------------------------------------------|----------------------------------------|
+| `MetaEvent`                                   | `OneBotMetaEvent`                      |
+| > `LifecycleEvent`                            | > `OneBotLifecycleEvent`               |
+| > `HeartbeatEvent`                            | > `OneBotHeartbeatEvent`               |
+| `MessageEvent`                                | `OneBotMessageEvent`                   |
+| > `GroupMessageEvent`                         | > `OneBotGroupMessageEvent`            |
+| > `GroupMessageEvent`                         | > > `OneBotNormalGroupMessageEvent`    |
+| > `GroupMessageEvent`                         | > > `OneBotAnonymousGroupMessageEvent` |
+| > `GroupMessageEvent`                         | > > `OneBotNoticeGroupMessageEvent`    |
+| > `PrivateMessageEvent`                       | > `OneBotPrivateMessageEvent`          |
+| > `PrivateMessageEvent`                       | > > `OneBotFriendMessageEvent`         |
+| > `PrivateMessageEvent`                       | > > `OneBotGroupPrivateMessageEvent`   |
+| `RequestEvent`                                | `OneBotRequestEvent`                   |
+| > `FriendRequestEvent`                        | > `OneBotFriendRequestEvent`           |
+| > `GroupRequestEvent`                         | > `OneBotGroupRequestEvent`            |
+| `NoticeEvent`                                 | `OneBotNoticeEvent`                    |
+| > `FriendAddEvent`                            | > `OneBotFriendAddEvent`               |
+| > `FriendRecallEvent`                         | > `OneBotFriendRecallEvent`            |
+| > `GroupAdminEvent`                           | > `OneBotGroupAdminEvent`              |
+| > `GroupBanEvent`                             | > `OneBotGroupBanEvent`                |
+| > `GroupIncreaseEvent` 或 `GroupDecreaseEvent` | > `OneBotGroupChangeEvent`             |
+| > `GroupIncreaseEvent`                        | > > `OneBotGroupMemberIncreaseEvent`   |
+| > `GroupDecreaseEvent`                        | > > `OneBotGroupMemberDecreaseEvent`   |
+| > `GroupRecallEvent`                          | > `OneBotGroupRecallEvent`             |
+| > `GroupUploadEvent`                          | > `OneBotGroupUploadEvent`             |
+| > `NotifyEvent`                               | > `OneBotNotifyEvent`                  |
+| > `NotifyEvent`                               | > > `OneBotHonorEvent`                 |
+| > `NotifyEvent`                               | > > `OneBotLuckyKingEvent`             |
+| > `NotifyEvent`                               | > > `OneBotPokeEvent`                  |
+| > `NotifyEvent`                               | > > > `OneBotMemberPokeEvent`          |
+| > `NotifyEvent`                               | > > > `OneBotBotSelfPokeEvent`         |
+| `UnknownEvent`                                | > `UnknownEvent`                       |
+| 无                                             | `OneBotBotStageEvent`                  |
+| 无                                             | > `OneBotBotRegisteredEvent`           |
+| 无                                             | > `OneBotBotStartedEvent`              |
+| 任意未支持事件                                       | `OneBotUnsupportedEvent`               |

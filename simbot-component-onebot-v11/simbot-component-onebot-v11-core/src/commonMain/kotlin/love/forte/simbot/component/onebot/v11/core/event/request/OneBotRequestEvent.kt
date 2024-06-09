@@ -33,6 +33,10 @@ public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.e
  * OneBot组件中的 [事件请求][love.forte.simbot.component.onebot.v11.event.request.RequestEvent]
  * 的组件事件类型。
  *
+ * @see love.forte.simbot.component.onebot.v11.event.request.RequestEvent
+ * @see OneBotFriendRequestEvent
+ * @see OneBotGroupRequestEvent
+ *
  * @author ForteScarlet
  */
 public interface OneBotRequestEvent : OneBotBotEvent, RequestEvent {

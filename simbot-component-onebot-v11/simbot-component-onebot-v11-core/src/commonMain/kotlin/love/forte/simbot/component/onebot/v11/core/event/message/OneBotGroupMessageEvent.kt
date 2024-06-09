@@ -32,6 +32,10 @@ import love.forte.simbot.suspendrunner.STP
  *
  * @see GroupMessageEvent
  *
+ * @see OneBotNormalGroupMessageEvent
+ * @see OneBotAnonymousGroupMessageEvent
+ * @see OneBotNoticeGroupMessageEvent
+ *
  * @author ForteScarlet
  */
 @STP
