@@ -55,6 +55,7 @@ Simple Robot OneBot 组件是一个将
 
 ## 快速开始
 
+> [!warning]
 > 手册施工完成之前，此处临时提供快速开始。手册施工完成后会删除。
 
 > [!note]
@@ -64,10 +65,10 @@ Simple Robot OneBot 组件是一个将
 
 ### Ktor 客户端引擎
 
-OneBot组件默认使用 [Ktor](https://ktor.io/)
+首先，OneBot组件使用 [Ktor](https://ktor.io/)
 作为HTTP客户端与WS客户端，但是默认情况下依赖中不会有任何具体的引擎实现。
 
-你需要根据你的使用平台前往 [Ktor client Engines](https://ktor.io/docs/client-engines.html#limitations)
+因此你需要根据你的使用平台前往 [Ktor client Engines](https://ktor.io/docs/client-engines.html#limitations)
 选择一个合适的引擎使用。
 
 > [!tip]
