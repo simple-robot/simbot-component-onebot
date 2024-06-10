@@ -34,12 +34,9 @@ Simple Robot OneBot 组件是一个将
 序列化和网络请求相关分别基于 [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization)
 和 [Ktor](https://ktor.io/)。
 
-> [!caution]
-> WIP now.
-
 ## 文档与引导
 
-- OneBot组件手册: *待施工*
+- OneBot组件手册(🚧建设中): [OneBot组件手册](https://simple-robot.github.io/simbot-component-onebot/)
 - 了解simbot: [Simple Robot 应用手册](https://simbot.forte.love)
 - [文档引导站&API文档](https://docs.simbot.forte.love)
 - [**社群**](https://simbot.forte.love/communities.html) 文档中也有提供社群信息喔
@@ -269,7 +266,7 @@ public class MyApp {
   },
   // 额外的可选配置
   // config本身以及其内的各项属性绝大多数都可省略或null
-  config: { 
+  "config": { 
     // API请求中的超时请求配置。整数数字，单位毫秒，默认为 `null`。
     "apiHttpRequestTimeoutMillis": null,
     // API请求中的超时请求配置。整数数字，单位毫秒，默认为 `null`。

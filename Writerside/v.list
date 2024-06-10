@@ -3,8 +3,11 @@
 <vars>
     <var name="copyright-year" value="2024"/>
     <var name="api-doc" value="https://docs.simbot.forte.love"/>
+    <var name="simbot4-release" value="https://github.com/simple-robot/simpler-robot/releases"/>
     <var name="jb" value="阻塞"/>
     <var name="ja" value="异步"/>
     <var name="version" value="0.1.0"/>
+    <var name="d-group" value="love.forte.simbot.component"/>
+    <var name="d-ob11-id" value="simbot-component-onebot-v11"/>
     <var name="minimum-core-version" value="4.0.0-RC3"/>
 </vars>
