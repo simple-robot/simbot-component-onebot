@@ -25,6 +25,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoResult
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupAnonymousBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
@@ -47,6 +48,10 @@ import kotlin.time.Duration
 internal abstract class OneBotMemberImpl : OneBotMember {
     protected abstract val bot: OneBotBotImpl
     protected abstract val groupId: ID?
+
+    protected inline val groupIdOrFailure: ID
+        get() = groupId
+            ?: error("The group id for current member $this is unknown")
 
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendPrivateTextMsgApi(
@@ -153,9 +158,8 @@ internal abstract class OneBotMemberImpl : OneBotMember {
         doBan(0L)
     }
 
-    private suspend fun doBan(seconds: Long) {
-        val groupId = this.groupId
-            ?: error("The group id for current member $this is unknown")
+    protected open suspend fun doBan(seconds: Long) {
+        val groupId = groupIdOrFailure
 
         SetGroupBanApi.create(
             groupId = groupId,
@@ -186,6 +190,7 @@ internal class OneBotMemberPrivateMessageEventSenderImpl(
 internal class OneBotMemberGroupMessageEventSenderImpl(
     private val source: GroupMessageEvent.Sender,
     override val groupId: ID?,
+    private val anonymous: GroupMessageEvent.Anonymous?,
     override val bot: OneBotBotImpl,
 ) : OneBotMemberImpl() {
     override val coroutineContext: CoroutineContext = bot.subContext
@@ -202,6 +207,21 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
     override val role: OneBotMemberRole
         get() = OneBotMemberRole.valueOfLenient(source.role)
             ?: OneBotMemberRole.MEMBER
+
+    override suspend fun doBan(seconds: Long) {
+        val anonymous = this.anonymous
+        if (anonymous == null) {
+            super.doBan(seconds)
+        } else {
+            val groupId = groupIdOrFailure
+
+            SetGroupAnonymousBanApi.create(
+                groupId = groupId,
+                anonymousFlag = anonymous.flag,
+                duration = seconds
+            ).requestDataBy(bot)
+        }
+    }
 }
 
 internal fun PrivateMessageEvent.Sender.toMember(
@@ -221,10 +241,12 @@ internal fun PrivateMessageEvent.Sender.toMember(
 internal fun GroupMessageEvent.Sender.toMember(
     bot: OneBotBotImpl,
     groupId: ID,
+    anonymous: GroupMessageEvent.Anonymous?
 ): OneBotMemberGroupMessageEventSenderImpl =
     OneBotMemberGroupMessageEventSenderImpl(
         source = this,
         groupId = groupId,
+        anonymous = anonymous,
         bot = bot,
     )
 

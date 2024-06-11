@@ -20,6 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.actor.internal
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.api.GetFriendListResult
+import love.forte.simbot.component.onebot.v11.core.api.SendLikeApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
@@ -59,6 +60,13 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
             target = id,
             message = message.resolveToOneBotSegmentList()
         ).requestDataBy(bot).toReceipt(bot)
+    }
+
+    override suspend fun sendLike(times: Int) {
+        SendLikeApi.create(
+            userId = id,
+            times = times
+        ).requestDataBy(bot)
     }
 
     override fun toString(): String = "OneBotFriend(id=$id, bot=${bot.id})"

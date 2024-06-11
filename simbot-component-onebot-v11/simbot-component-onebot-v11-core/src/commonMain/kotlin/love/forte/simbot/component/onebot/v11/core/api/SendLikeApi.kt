@@ -57,7 +57,7 @@ public class SendLikeApi private constructor(
          */
         @JvmStatic
         @JvmOverloads
-        public fun create(userId: ID, times: Long? = null): SendLikeApi = SendLikeApi(
+        public fun create(userId: ID, times: Int? = null): SendLikeApi = SendLikeApi(
             Body(
                 userId,
                 times
@@ -73,6 +73,6 @@ public class SendLikeApi private constructor(
     internal data class Body(
         @SerialName("user_id")
         internal val userId: ID,
-        internal val times: Long? = null,
+        internal val times: Int? = null,
     )
 }

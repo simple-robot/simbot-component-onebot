@@ -100,7 +100,7 @@ internal class OneBotNormalGroupMessageEventImpl(
 ) : OneBotGroupMessageEventImpl(sourceEvent, bot),
     OneBotNormalGroupMessageEvent {
     override suspend fun author(): OneBotMember {
-        return sourceEvent.sender.toMember(bot, sourceEvent.groupId)
+        return sourceEvent.sender.toMember(bot, sourceEvent.groupId, sourceEvent.anonymous)
     }
 
     override fun toString(): String = eventToString("OneBotNormalGroupMessageEvent")
@@ -114,7 +114,7 @@ internal class OneBotAnonymousGroupMessageEventImpl(
 ) : OneBotGroupMessageEventImpl(sourceEvent, bot),
     OneBotAnonymousGroupMessageEvent {
     override suspend fun author(): OneBotMember {
-        return sourceEvent.sender.toMember(bot, sourceEvent.groupId)
+        return sourceEvent.sender.toMember(bot, sourceEvent.groupId, sourceEvent.anonymous)
     }
 
     override fun toString(): String = eventToString("OneBotAnonymousGroupMessageEvent")

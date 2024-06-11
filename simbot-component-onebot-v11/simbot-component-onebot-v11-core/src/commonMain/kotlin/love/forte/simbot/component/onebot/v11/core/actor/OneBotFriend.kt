@@ -39,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface OneBotFriend : Contact {
+public interface OneBotFriend : Contact, SendLikeSupport {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
      */
@@ -56,12 +56,28 @@ public interface OneBotFriend : Contact {
     override val avatar: String
         get() = qqAvatar640(id.literal)
 
+    /**
+     * 向此好友发送消息。
+     *
+     * @throws Throwable 任何请求API过程中可能产生的异常
+     */
     @ST
     override suspend fun send(message: Message): OneBotMessageReceipt
 
+    /**
+     * 向此好友发送消息。
+     *
+     * @throws Throwable 任何请求API过程中可能产生的异常
+     */
     @ST
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt
 
+    /**
+     * 向此好友发送消息。
+     *
+     * @throws Throwable 任何请求API过程中可能产生的异常
+     */
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
+
 }
