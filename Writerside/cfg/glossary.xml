@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE terms SYSTEM "https://resources.jetbrains.com/writerside/1.0/glossary.dtd">
 <terms>
+    <term name="simbot4">Simple Robot v4 的简称，通常用于统称"simbot4标准API"和"simbot4核心库"</term>
     <term name="组件">组件：针对一组一个或多个「组件标识」和「插件」的统称。</term>
 </terms>

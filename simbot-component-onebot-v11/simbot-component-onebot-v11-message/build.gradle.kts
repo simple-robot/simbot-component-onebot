@@ -27,6 +27,8 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     `simbot-onebot-dokka-partial-configure`
+    // 没用到
+    // `simbot-onebot-suspend-transform-configure`
 
     alias(libs.plugins.ksp)
 }
