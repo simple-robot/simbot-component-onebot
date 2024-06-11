@@ -17,9 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor
 
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.DeleteSupport
+import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.ChatGroup
@@ -28,6 +32,9 @@ import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -38,9 +45,15 @@ import kotlin.coroutines.CoroutineContext
  * - 来自 Bot relation API
  * ([OneBotBot.groupRelation][love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.groupRelation])
  *
+ * ## DeleteSupport
+ *
+ * [OneBotGroup] 实现 [DeleteSupport]，
+ * [delete] 代表使Bot退出此群或解散群聊。
+ *
+ *
  * @author ForteScarlet
  */
-public interface OneBotGroup : ChatGroup {
+public interface OneBotGroup : ChatGroup, DeleteSupport {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
      */
@@ -82,14 +95,70 @@ public interface OneBotGroup : ChatGroup {
     @STP
     override suspend fun botAsMember(): OneBotMember
 
-
+    /**
+     * 向此群内发送消息。
+     *
+     * @throws Throwable 任何可能在请求API时产生的异常
+     */
     @ST
     override suspend fun send(message: Message): OneBotMessageReceipt
 
+    /**
+     * 向此群内发送消息。
+     *
+     * @throws Throwable 任何可能在请求API时产生的异常
+     */
     @ST
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt
 
+    /**
+     * 向此群内发送消息。
+     *
+     * @throws Throwable 任何可能在请求API时产生的异常
+     */
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
 
+    /**
+     * 让当前bot退出/离开此群。
+     *
+     * @param options 进行删除行为时的额外属性。
+     * 支持：
+     * - [StandardDeleteOption.IGNORE_ON_FAILURE]
+     * - [OneBotGroupDeleteOption] 的所有子实现
+     *
+     * @throws Throwable 任何可能在请求API时产生的异常
+     */
+    @JvmSynthetic
+    override suspend fun delete(vararg options: DeleteOption)
+}
+
+/**
+ * 在 [OneBotGroup.delete] 中可选择使用的额外属性。
+ */
+public sealed class OneBotGroupDeleteOption : DeleteOption {
+    /**
+     * 是否为解散群。如果bot为群主，
+     * 则需要提供此参数来使 [OneBotGroup.delete] 解散群，
+     * 否则无法解散或退出。
+     *
+     * 更多参考：[SetGroupLeaveApi]
+     *
+     * @see SetGroupLeaveApi
+     */
+    public data object Dismiss : OneBotGroupDeleteOption()
+
+    public companion object {
+        /**
+         * 是否为解散群。
+         * 更多参考见 [Dismiss]。
+         *
+         * @see Dismiss
+         */
+        @get:JvmStatic
+        @get:JvmName("dismiss")
+        public val dismiss: Dismiss
+            get() = Dismiss
+
+    }
 }

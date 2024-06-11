@@ -17,14 +17,18 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.flowCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroupDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoResult
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberListApi
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
@@ -38,6 +42,7 @@ import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmInline
 
 
 internal abstract class OneBotGroupImpl : OneBotGroup {
@@ -90,6 +95,49 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
             target = id,
             message = message.resolveToOneBotSegmentList()
         ).requestDataBy(bot).toReceipt(bot)
+    }
+
+    override suspend fun delete(vararg options: DeleteOption) {
+        var mark = DeleteMark()
+        for (option in options) {
+            when {
+                mark.isFull -> break
+                option == StandardDeleteOption.IGNORE_ON_FAILURE -> mark = mark.ignoreFailure()
+                option == OneBotGroupDeleteOption.Dismiss -> mark = mark.dismiss()
+            }
+        }
+
+        doDelete(mark)
+    }
+
+    private suspend fun doDelete(mark: DeleteMark) {
+        kotlin.runCatching {
+            SetGroupLeaveApi.create(
+                groupId = id,
+                isDismiss = mark.isDismiss
+            ).requestDataBy(bot)
+        }.onFailure { err ->
+            if (!mark.isIgnoreFailure) {
+                throw err
+            }
+        }
+    }
+
+    @JvmInline
+    internal value class DeleteMark(private val mark: Int = 0) {
+        fun ignoreFailure(): DeleteMark = DeleteMark(mark or IGNORE_FAILURE_MARK)
+        fun dismiss(): DeleteMark = DeleteMark(mark or DISMISS_MARK)
+
+        val isIgnoreFailure: Boolean get() = mark and IGNORE_FAILURE_MARK != 0
+        val isDismiss: Boolean get() = mark and DISMISS_MARK != 0
+        val isFull: Boolean get() = mark == FULL
+
+        private companion object {
+            const val IGNORE_FAILURE_MARK = 0b01
+            const val DISMISS_MARK = 0b10
+
+            const val FULL = 0b11
+        }
     }
 
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
