@@ -25,10 +25,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroupDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoResult
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberListApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
@@ -138,6 +135,13 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
 
             const val FULL = 0b11
         }
+    }
+
+    override suspend fun ban(enable: Boolean) {
+        SetGroupWholeBanApi.create(
+            groupId = id,
+            enable = enable
+        ).requestDataBy(bot)
     }
 
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"

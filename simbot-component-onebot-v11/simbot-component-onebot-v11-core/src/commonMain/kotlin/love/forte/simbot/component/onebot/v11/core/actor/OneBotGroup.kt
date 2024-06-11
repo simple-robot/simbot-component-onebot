@@ -131,6 +131,16 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @JvmSynthetic
     override suspend fun delete(vararg options: DeleteOption)
+
+    /**
+     * 设置全群禁言。
+     *
+     * @param enable 是开启还是关闭全群禁言
+     *
+     * @throws Throwable 任何请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun ban(enable: Boolean)
 }
 
 /**
@@ -161,4 +171,20 @@ public sealed class OneBotGroupDeleteOption : DeleteOption {
             get() = Dismiss
 
     }
+}
+
+/**
+ * 开启全群禁言。
+ */
+@JvmSynthetic
+public suspend fun OneBotGroup.ban() {
+    ban(true)
+}
+
+/**
+ * 取消全群禁言。
+ */
+@JvmSynthetic
+public suspend fun OneBotGroup.unban() {
+    ban(false)
 }
