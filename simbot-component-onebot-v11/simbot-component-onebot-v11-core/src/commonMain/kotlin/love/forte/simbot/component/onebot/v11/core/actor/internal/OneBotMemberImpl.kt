@@ -17,10 +17,14 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoResult
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
@@ -34,10 +38,12 @@ import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmInline
 
 
 internal abstract class OneBotMemberImpl : OneBotMember {
     protected abstract val bot: OneBotBotImpl
+    protected abstract val groupId: ID?
 
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendPrivateTextMsgApi(
@@ -64,11 +70,63 @@ internal abstract class OneBotMemberImpl : OneBotMember {
         ).requestDataBy(bot).toReceipt(bot)
     }
 
+    override suspend fun delete(vararg options: DeleteOption) {
+        var mark = DeleteMark()
+        for (option in options) {
+            when {
+                mark.isFull -> break
+                option == StandardDeleteOption.IGNORE_ON_FAILURE -> mark = mark.ignoreFailure()
+                option == OneBotMemberDeleteOption.RejectRequest -> mark = mark.rejectRequest()
+            }
+        }
+
+        doDelete(mark)
+    }
+
+    private suspend fun doDelete(mark: DeleteMark) {
+        val groupId = this.groupId
+            ?: if (mark.isIgnoreFailure) {
+                return
+            } else {
+                error("The group id for current member $this is unknown")
+            }
+
+        kotlin.runCatching {
+            SetGroupKickApi.create(
+                groupId = groupId,
+                userId = id,
+                rejectAddRequest = mark.isRejectRequest
+            ).requestDataBy(bot)
+        }.onFailure { err ->
+            if (!mark.isIgnoreFailure) {
+                throw err
+            }
+        }
+    }
+
+    @JvmInline
+    internal value class DeleteMark(private val mark: Int = 0) {
+        fun ignoreFailure(): DeleteMark = DeleteMark(mark or IGNORE_FAILURE_MARK)
+        fun rejectRequest(): DeleteMark = DeleteMark(mark or REJECT_REQUEST)
+
+        val isIgnoreFailure: Boolean get() = mark and IGNORE_FAILURE_MARK != 0
+        val isRejectRequest: Boolean get() = mark and REJECT_REQUEST != 0
+        val isFull: Boolean get() = mark == FULL
+
+        private companion object {
+            const val IGNORE_FAILURE_MARK = 0b01
+            const val REJECT_REQUEST = 0b10
+
+            const val FULL = 0b11
+        }
+    }
+
     override fun toString(): String = "OneBotMember(id=$id, bot=${bot.id})"
 }
 
 internal class OneBotMemberPrivateMessageEventSenderImpl(
     private val source: PrivateMessageEvent.Sender,
+    override val groupId: ID?,
     override val bot: OneBotBotImpl,
     override val nick: String?,
     override val role: OneBotMemberRole?,
@@ -78,12 +136,14 @@ internal class OneBotMemberPrivateMessageEventSenderImpl(
     override val id: ID
         get() = source.userId
 
+
     override val name: String
         get() = source.nickname
 }
 
 internal class OneBotMemberGroupMessageEventSenderImpl(
     private val source: GroupMessageEvent.Sender,
+    override val groupId: ID?,
     override val bot: OneBotBotImpl,
 ) : OneBotMemberImpl() {
     override val coroutineContext: CoroutineContext = bot.subContext
@@ -104,11 +164,13 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
 
 internal fun PrivateMessageEvent.Sender.toMember(
     bot: OneBotBotImpl,
+    groupId: ID? = null,
     nick: String? = null,
     role: OneBotMemberRole? = null,
 ): OneBotMemberPrivateMessageEventSenderImpl =
     OneBotMemberPrivateMessageEventSenderImpl(
         source = this,
+        groupId = groupId,
         bot = bot,
         nick = nick,
         role = role
@@ -116,9 +178,11 @@ internal fun PrivateMessageEvent.Sender.toMember(
 
 internal fun GroupMessageEvent.Sender.toMember(
     bot: OneBotBotImpl,
+    groupId: ID,
 ): OneBotMemberGroupMessageEventSenderImpl =
     OneBotMemberGroupMessageEventSenderImpl(
         source = this,
+        groupId = groupId,
         bot = bot,
     )
 
@@ -130,6 +194,9 @@ internal class OneBotMemberApiResultImpl(
 
     override val id: ID
         get() = source.userId
+
+    override val groupId: ID
+        get() = source.groupId
 
     override val name: String
         get() = source.nickname
