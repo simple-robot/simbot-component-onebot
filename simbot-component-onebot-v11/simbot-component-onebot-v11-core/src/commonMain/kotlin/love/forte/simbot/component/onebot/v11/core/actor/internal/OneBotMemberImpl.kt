@@ -20,10 +20,12 @@ package love.forte.simbot.component.onebot.v11.core.actor.internal
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
 import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoResult
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
@@ -39,6 +41,7 @@ import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
+import kotlin.time.Duration
 
 
 internal abstract class OneBotMemberImpl : OneBotMember {
@@ -121,6 +124,46 @@ internal abstract class OneBotMemberImpl : OneBotMember {
         }
     }
 
+    override suspend fun ban(duration: Duration) {
+        if (duration == Duration.ZERO) {
+            doUnban()
+        }
+
+        val seconds = duration.inWholeSeconds
+        require(seconds >= 0) {
+            "The seconds for ban must >= 0, but $seconds"
+        }
+
+        doBan(seconds)
+    }
+
+    override suspend fun ban(duration: Long, unit: TimeUnit) {
+        require(duration >= 0) {
+            "The duration for ban must >= 0, but $duration in $unit"
+        }
+
+        if (duration == 0L) {
+            doUnban()
+        }
+
+        doBan(unit.toSeconds(duration))
+    }
+
+    private suspend fun doUnban() {
+        doBan(0L)
+    }
+
+    private suspend fun doBan(seconds: Long) {
+        val groupId = this.groupId
+            ?: error("The group id for current member $this is unknown")
+
+        SetGroupBanApi.create(
+            groupId = groupId,
+            userId = id,
+            duration = seconds
+        ).requestDataBy(bot)
+    }
+
     override fun toString(): String = "OneBotMember(id=$id, bot=${bot.id})"
 }
 
@@ -135,7 +178,6 @@ internal class OneBotMemberPrivateMessageEventSenderImpl(
 
     override val id: ID
         get() = source.userId
-
 
     override val name: String
         get() = source.nickname

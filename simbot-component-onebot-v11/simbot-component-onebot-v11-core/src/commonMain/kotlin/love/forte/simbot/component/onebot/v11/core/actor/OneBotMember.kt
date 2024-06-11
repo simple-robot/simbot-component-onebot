@@ -22,7 +22,9 @@ import love.forte.simbot.ability.DeleteSupport
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
@@ -34,6 +36,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
+import kotlin.time.Duration
 
 
 /**
@@ -107,11 +110,65 @@ public interface OneBotMember : Member, DeleteSupport {
      * - [OneBotMemberDeleteOption] 的所有实现
      *
      * @throws Throwable 任何可能在请求API时得到的异常
+     * @throws IllegalStateException 某些无法得知群号的情况下抛出的异常
      */
     @JvmSynthetic
-    override suspend fun delete(vararg options: DeleteOption) {
-        StandardDeleteOption
-        SetGroupKickApi
+    override suspend fun delete(vararg options: DeleteOption)
+
+    /**
+     * 禁言此成员。
+     * 禁言时长范围应当在 1m ~ 30d 之间，
+     * 不过 [duration] 最终会被转为秒值。
+     * 如果值为 [Duration.ZERO] 或最终秒值为 `0` 则等同于 [unban]，
+     * 如果转化后的秒值为负数，则会抛出 [IllegalArgumentException]。
+     *
+     * 不会在代码中校验时长的最大有效值，这会直接交给OneBot服务端处理。
+     *
+     * @param duration 禁言时长。
+     * 通常来讲，时间范围应当在 1m ~ 30d 之间。
+     * 如果值为 [Duration.ZERO] 则等同于 [unban]。
+     *
+     * @throws IllegalArgumentException 如果参数代表的秒值 **小于0**
+     * @throws IllegalStateException 某些无法得知群号的情况下抛出的异常
+     * @throws Throwable 任何请求API时可能得到的异常
+     *
+     * @see SetGroupBanApi
+     *
+     */
+    @JvmSynthetic
+    public suspend fun ban(duration: Duration)
+
+    /**
+     * 禁言此成员。
+     * 禁言时长范围应当在 1m ~ 30d 之间，
+     * 不过 [duration] 最终会根据 [unit] 被转为秒值。
+     * 如果最终秒值为 `0` 则等同于 [unban]，
+     * 如果 [duration] 为负数，则会抛出 [IllegalArgumentException]。
+     *
+     * 不会在代码中校验时长的最大有效值，这会直接交给OneBot服务端处理。
+     *
+     * @param duration 禁言时长
+     * @param unit [duration] 的时间单位
+     *
+     * @throws IllegalArgumentException 如果参数代表的秒值 **小于0**
+     * @throws IllegalStateException 某些无法得知群号的情况下抛出的异常
+     * @throws Throwable 任何请求API时可能得到的异常
+     *
+     * @see SetGroupBanApi
+     *
+     */
+    @ST
+    public suspend fun ban(duration: Long, unit: TimeUnit)
+
+    /**
+     * 取消此成员禁言。相当于 `ban(Duration.ZERO)`。
+     *
+     * @throws IllegalStateException 某些无法得知群号的情况下抛出的异常
+     * @throws Throwable 任何请求API时可能得到的异常
+     */
+    @ST
+    public suspend fun unban() {
+        ban(Duration.ZERO)
     }
 }
 
