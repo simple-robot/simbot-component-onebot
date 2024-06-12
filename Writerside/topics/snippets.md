@@ -17,9 +17,10 @@
 <tabs group="Platform">
 <tab title="JVM" group-key="JVM">
 
-在 Java11+ 的环境下，也可以选择 [Java](https://ktor.io/docs/http-client-engines.html#java) 引擎。
+<tabs>
+<tab title="Java">
 
-<br />
+在 Java11+ 的环境下，可以选择 [Java](https://ktor.io/docs/http-client-engines.html#java) 引擎。
 
 <tabs group="build">
 <tab title="Gradle Kotlin DSL" group-key="kts">
@@ -36,10 +37,6 @@ runtimeOnly("io.ktor:ktor-client-java:$ktor_version")
 runtimeOnly("io.ktor:ktor-client-java-jvm:$ktor_version")
 ```
 </tip>
-
-<br />
-
-> 引擎大部分情况下可以使用 `runtimeOnly`，除非你需要显式地定制化它。
 
 </tab>
 <tab title="Gradle Groovy" group-key="groovy">
@@ -59,8 +56,6 @@ runtimeOnly 'io.ktor:ktor-client-java-jvm:$ktor_version'
 
 <br />
 
-> 引擎大部分情况下可以使用 `runtimeOnly`，除非你需要显式地定制化它。
-
 </tab>
 <tab title="Maven" group-key="maven">
 
@@ -75,12 +70,64 @@ runtimeOnly 'io.ktor:ktor-client-java-jvm:$ktor_version'
 
 <br />
 
-> 引擎大部分情况下可以使用 `runtime` scope，除非你需要显式地定制化它。
+</tab>
+</tabs>
+
+</tab>
+<tab title="OkHttp">
+
+[OkHttp](https://ktor.io/docs/client-engines.html#okhttp)
+引擎基于 OkHttp，是一个不错的库。
+
+<tabs group="build">
+<tab title="Gradle Kotlin DSL" group-key="kts">
+
+```kotlin
+runtimeOnly("io.ktor:ktor-client-okhttp:$ktor_version")
+```
+
+<tip>
+
+如果不使用Kotlin的[Gradle插件](https://kotlinlang.org/docs/gradle-configure-project.html):
+
+```kotlin
+runtimeOnly("io.ktor:ktor-client-okhttp-jvm:$ktor_version")
+```
+</tip>
+
+</tab>
+<tab title="Gradle Groovy" group-key="groovy">
+
+```groovy
+runtimeOnly 'io.ktor:ktor-client-okhttp:$ktor_version'
+```
+
+<tip>
+
+如果不使用Kotlin的[Gradle插件](https://kotlinlang.org/docs/gradle-configure-project.html):
+
+```groovy
+runtimeOnly 'io.ktor:ktor-client-okhttp-jvm:$ktor_version'
+```
+</tip>
+
+</tab>
+<tab title="Maven" group-key="maven">
+
+```xml
+<dependency>
+    <groupId>io.ktor</groupId>
+    <artifactId>ktor-client-okhttp-jvm</artifactId>
+    <version>${ktor_version}</version>
+    <scope>runtime</scope>
+</dependency>
+```
 
 </tab>
 </tabs>
 
-<br />
+</tab>
+<tab title="CIO">
 
 [CIO](https://ktor.io/docs/http-client-engines.html#cio) 是一个比较通用的引擎。
 在不知道选什么的情况下，可以考虑使用它。
@@ -132,7 +179,10 @@ runtimeOnly 'io.ktor:ktor-client-cio-jvm:$ktor_version'
 </tab>
 </tabs>
 
-<br />
+</tab>
+</tabs>
+
+> 引擎大部分情况下可以 runtime only，除非你需要显式地定制化它。
 
 </tab>
 
