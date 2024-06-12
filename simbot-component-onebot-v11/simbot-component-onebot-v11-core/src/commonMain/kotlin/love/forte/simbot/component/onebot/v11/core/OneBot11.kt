@@ -22,13 +22,16 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.serializableBotConfigurationPolymorphic
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotSerializableConfiguration
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
 import love.forte.simbot.component.onebot.v11.message.includeAllComponentMessageElementImpls
 import love.forte.simbot.component.onebot.v11.message.includeAllOneBotSegmentImpls
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotUnknownSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotUnknownSegmentDeserializer
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotUnknownSegmentPolymorphicSerializer
 import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.jvm.JvmField
 
@@ -43,8 +46,8 @@ public object OneBot11 {
      * 和 [OneBotMessageSegment] 的多态序列化信息的
      * [SerializersModule]。
      */
+    @OptIn(FragileSimbotAPI::class)
     @JvmField
-    @OptIn(InternalSimbotAPI::class)
     public val serializersModule: SerializersModule = SerializersModule {
         messageElementPolymorphic {
             includeAllComponentMessageElementImpls()
@@ -54,6 +57,15 @@ public object OneBot11 {
         }
         polymorphic(OneBotMessageSegment::class) {
             includeAllOneBotSegmentImpls()
+
+            defaultDeserializer { OneBotUnknownSegmentDeserializer }
+        }
+        polymorphicDefaultSerializer(OneBotMessageSegment::class) { base ->
+            if (base is OneBotUnknownSegment) {
+                OneBotUnknownSegmentPolymorphicSerializer(base.type)
+            } else {
+                null
+            }
         }
         serializableBotConfigurationPolymorphic {
             subclass(OneBotBotSerializableConfiguration.serializer())
