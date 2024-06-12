@@ -24,6 +24,7 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult.Companion.RETCODE_SUCCESS
 
 
@@ -94,6 +95,17 @@ public data class OneBotApiResult<T : Any>(
     val status: String? = null,
     val data: T? = null,
 ) {
+    /**
+     * 当可以为其附加‘原始信息’（例如原始的JSON字符串）
+     * 时，在反序列化完成后可以为其赋值。
+     *
+     * 此属性的setter应当仅由**内部使用**，
+     * 且应当在反序列化完成后立刻使用。
+     */
+    @Transient
+    @set:InternalOneBotAPI
+    public var raw: String? = null
+
     public val isSuccess: Boolean
         get() = retcode == RETCODE_SUCCESS
 
@@ -103,12 +115,12 @@ public data class OneBotApiResult<T : Any>(
                 RETCODE_ASYNC -> throw IllegalStateException(
                     "`data` is null, " +
                         "this result may mean a failure or the request is asynchronous: " +
-                        "retcode=$retcode, status=$status"
+                        "retcode=$retcode, status=$status, raw=$raw"
                 )
 
                 else -> throw IllegalStateException(
                     "`data` is null, " +
-                        "this result may mean a failure: retcode=$retcode, status=$status"
+                        "this result may mean a failure: retcode=$retcode, status=$status, raw=$raw"
                 )
             }
 
@@ -171,10 +183,12 @@ private object EmptyOneBotApiResultSerializer : KSerializer<OneBotApiResult<Unit
                                 data = true
                             }
                         }
+
                         1 -> status = decodeNullableSerializableElement(descriptor, i, String.serializer())
                         2 -> {
                             decodeNullableSerializableElement(descriptor, i, Unit.serializer())
                         }
+
                         else -> throw SerializationException("Unexpected index $i")
                     }
                 }
