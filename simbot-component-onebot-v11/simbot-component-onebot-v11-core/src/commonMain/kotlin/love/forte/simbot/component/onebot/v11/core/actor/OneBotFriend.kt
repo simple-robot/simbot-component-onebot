@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.actor
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
@@ -39,6 +40,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotFriend : Contact, SendLikeSupport {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。

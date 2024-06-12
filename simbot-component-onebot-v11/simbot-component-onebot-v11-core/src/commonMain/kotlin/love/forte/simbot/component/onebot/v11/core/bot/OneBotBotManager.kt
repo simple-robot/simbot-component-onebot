@@ -32,6 +32,7 @@ import love.forte.simbot.common.services.Services
 import love.forte.simbot.common.services.addProviderExceptJvm
 import love.forte.simbot.component.NoSuchComponentException
 import love.forte.simbot.component.find
+import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotManagerImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.logger.LoggerFactory
@@ -46,6 +47,7 @@ import love.forte.simbot.plugin.PluginFactoryProvider
  *
  * @author ForteScarlet
  */
+@OneBotInternalImplementationsOnly
 public abstract class OneBotBotManager : BotManager, JobBasedBotManager() {
     abstract override fun all(): Sequence<OneBotBot>
     abstract override fun get(id: ID): OneBotBot

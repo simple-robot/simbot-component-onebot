@@ -23,6 +23,7 @@ import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
@@ -53,6 +54,7 @@ import kotlin.jvm.JvmSynthetic
  *
  * @author ForteScarlet
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotGroup : ChatGroup, DeleteSupport {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
@@ -141,6 +143,23 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST
     public suspend fun ban(enable: Boolean)
+
+    /**
+     * 设置群名。
+     *
+     * 当 [setName] 修改成功后会影响 [name] 的值，
+     * 但是仅会影响 **当前对象** 内的属性值。
+     *
+     * [name] 在内部的实现应当是 `Volatile` 的，
+     * 但是 [setName] 不保证并发安全也不会加锁，
+     * 如果并发请求 [setName]，无法保证 [name] 的最终结果。
+     *
+     * @param newName 要设置的新群名
+     *
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun setName(newName: String)
 }
 
 /**

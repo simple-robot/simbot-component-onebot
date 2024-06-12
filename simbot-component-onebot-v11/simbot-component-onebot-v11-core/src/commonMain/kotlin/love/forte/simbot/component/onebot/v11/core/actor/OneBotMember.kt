@@ -23,6 +23,7 @@ import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.common.time.TimeUnit
+import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
@@ -54,6 +55,7 @@ import kotlin.time.Duration
  *
  * @author ForteScarlet
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotMember : Member, DeleteSupport {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
