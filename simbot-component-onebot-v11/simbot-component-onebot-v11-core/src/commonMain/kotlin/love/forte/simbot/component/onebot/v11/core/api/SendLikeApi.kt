@@ -17,17 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.core.api
 
-import kotlin.Any
-import kotlin.Long
-import kotlin.String
-import kotlin.Unit
-import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.id.ID
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * [`send_like`-发送好友赞](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_like-发送好友赞)
@@ -57,7 +53,7 @@ public class SendLikeApi private constructor(
          */
         @JvmStatic
         @JvmOverloads
-        public fun create(userId: ID, times: Long? = null): SendLikeApi = SendLikeApi(
+        public fun create(userId: ID, times: Int? = null): SendLikeApi = SendLikeApi(
             Body(
                 userId,
                 times
@@ -73,6 +69,6 @@ public class SendLikeApi private constructor(
     internal data class Body(
         @SerialName("user_id")
         internal val userId: ID,
-        internal val times: Long? = null,
+        internal val times: Int? = null,
     )
 }

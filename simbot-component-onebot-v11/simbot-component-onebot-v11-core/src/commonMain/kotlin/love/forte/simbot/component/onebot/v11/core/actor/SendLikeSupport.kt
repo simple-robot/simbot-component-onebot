@@ -17,37 +17,24 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor
 
-import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
-import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
-import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
-import love.forte.simbot.definition.User
+import love.forte.simbot.suspendrunner.ST
 
 
 /**
- * 一个陌生人。
- * 通常是通过 [GetStrangerInfoApi]
- * 得到的信息。
+ *
+ * 支持发送好友赞行为的接口定义。
  *
  * @author ForteScarlet
  */
-@OneBotInternalImplementationsOnly
-public interface OneBotStranger : User {
-    override val id: ID
-    override val name: String
-
-    override val avatar: String
-        get() = qqAvatar640(id.literal)
-
+public interface SendLikeSupport {
     /**
-     * 年龄。
-     * 如果无法获取则有可能会被填充一个默认值。
+     * 发送好友赞。
+     *
+     * @param times 次数。
+     * 一般来说一人一天最多赞10次，
+     * 但是这将交由OneBot服务端进行校验和处理。
+     * @throws Throwable 任何请求API过程可能产生的异常
      */
-    public val age: Int
-
-    /**
-     * 性别。`male` 或 `female` 或 `unknown`
-     */
-    public val sex: String
+    @ST
+    public suspend fun sendLike(times: Int)
 }

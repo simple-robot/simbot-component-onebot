@@ -43,7 +43,8 @@ kotlin {
     compilerOptions {
         optIn.addAll(
             "love.forte.simbot.annotations.InternalSimbotAPI",
-            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI"
+            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
+            "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI",
         )
     }
 

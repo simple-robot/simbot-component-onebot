@@ -1,26 +1,10 @@
-# 使用OneBot11协议实现
+# 使用核心库或Spring
 
 ## 前期准备
 
-### Java
-
-如果你打算使用 Java，请确保你的Java版本至少为 **Java11**，因为
-<tooltip term="simbot4">simbot4</tooltip>
-在JVM平台上最低要求Java11。
-
-如果你打算配合使用Spring Boot v3.x版本，确保Java版本至少为 **Java17**。
-
-### Kotlin
-
-如果打算使用Kotlin，建议使用 Kotlin 2.0 以上版本。
-具体的最低推荐版本以最新的 [simbot4版本](%simbot4-release%) 中的Kotlin版本为准。
-
-### Kotlin multiplatform
-
-如果打算使用Kotlin的其他非JVM平台或多平台，需要注意组件库中由于引入了Ktor(v2.x)，
-因此暂时无法使用Ktor Client不支持的平台(例如 `wasm-js`)。
-
-> Ktor Client 支持平台可参考 [官方文档](https://ktor.io/docs/client-supported-platforms.html)
+参考
+<a href="onebot11-quick-start.md"/>
+。
 
 ## 安装
 ### 安装组件库

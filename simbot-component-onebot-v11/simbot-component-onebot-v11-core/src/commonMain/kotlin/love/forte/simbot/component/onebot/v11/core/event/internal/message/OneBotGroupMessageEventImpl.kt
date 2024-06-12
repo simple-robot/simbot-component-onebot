@@ -21,7 +21,6 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
@@ -59,7 +58,8 @@ internal abstract class OneBotGroupMessageEventImpl(
     )
 
     override suspend fun content(): OneBotGroup {
-        return sourceEvent.toGroup(bot)
+        return bot.groupRelation.group(sourceEvent.groupId)
+            ?: error("Group with id $groupId is not found")
     }
 
     override suspend fun reply(text: String): OneBotMessageReceipt {
@@ -100,7 +100,7 @@ internal class OneBotNormalGroupMessageEventImpl(
 ) : OneBotGroupMessageEventImpl(sourceEvent, bot),
     OneBotNormalGroupMessageEvent {
     override suspend fun author(): OneBotMember {
-        return sourceEvent.sender.toMember(bot)
+        return sourceEvent.sender.toMember(bot, sourceEvent.groupId, sourceEvent.anonymous)
     }
 
     override fun toString(): String = eventToString("OneBotNormalGroupMessageEvent")
@@ -114,7 +114,7 @@ internal class OneBotAnonymousGroupMessageEventImpl(
 ) : OneBotGroupMessageEventImpl(sourceEvent, bot),
     OneBotAnonymousGroupMessageEvent {
     override suspend fun author(): OneBotMember {
-        return sourceEvent.sender.toMember(bot)
+        return sourceEvent.sender.toMember(bot, sourceEvent.groupId, sourceEvent.anonymous)
     }
 
     override fun toString(): String = eventToString("OneBotAnonymousGroupMessageEvent")

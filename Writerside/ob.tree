@@ -6,12 +6,12 @@
                   name="Simple Robot | OneBot"
                   start-page="Home.md">
     <toc-element topic="Home.md"/>
-    <toc-element topic="quick-start.md">
-        <toc-element topic="use-onebot11.md"/>
-    </toc-element>
     <toc-element toc-title="基础内容">
         <toc-element topic="modules.md"/>
-        <toc-element toc-title="OneBot11">
+        <toc-element topic="OneBot11.md">
+            <toc-element topic="onebot11-quick-start.md">
+                <toc-element topic="use-onebot11.md"/>
+            </toc-element>
             <toc-element topic="onebot11-bot-config.md"/>
             <toc-element topic="onebot11-event.md">
             </toc-element>

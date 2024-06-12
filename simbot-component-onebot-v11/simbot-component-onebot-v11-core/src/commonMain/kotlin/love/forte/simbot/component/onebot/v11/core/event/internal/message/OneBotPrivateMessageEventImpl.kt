@@ -107,13 +107,12 @@ internal class OneBotGroupPrivateMessageEventImpl(
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotGroupPrivateMessageEvent {
     override suspend fun content(): OneBotMember {
-        return sourceEvent.sender.toMember(bot)
+        return sourceEvent.sender.toMember(bot, groupId = null) // group id is unknown.
     }
 
     override suspend fun source(): OneBotGroup {
         // TODO 额，怎么知道群号？
-        // 无法得知群号
-        throw UnsupportedOperationException("The way to get the group number from PrivateMessageEvent is unknown.")
+        throw UnsupportedOperationException("The way to get the group id from PrivateMessageEvent is unknown yet.")
     }
 
     override fun toString(): String =

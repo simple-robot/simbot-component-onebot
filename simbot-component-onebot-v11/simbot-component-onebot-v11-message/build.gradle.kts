@@ -44,7 +44,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         optIn.addAll(
-            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI"
+            "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
+            "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI"
         )
     }
 
@@ -64,6 +65,7 @@ kotlin {
             implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
             api(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
         }
 
         commonTest.dependencies {

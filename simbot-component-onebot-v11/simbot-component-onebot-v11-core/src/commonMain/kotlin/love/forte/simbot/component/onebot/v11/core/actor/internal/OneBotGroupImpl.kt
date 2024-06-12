@@ -17,31 +17,39 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.flowCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroupDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupInfoResult
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoApi
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberListApi
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
-import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmInline
 
 
-internal abstract class OneBotGroupImpl : OneBotGroup {
+internal abstract class OneBotGroupImpl(
+    initialName: String
+) : OneBotGroup {
     protected abstract val bot: OneBotBotImpl
+
+    @Volatile
+    override var name: String = initialName
+        protected set
 
     override val members: Collectable<OneBotMember>
         get() = flowCollectable {
@@ -92,42 +100,67 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
         ).requestDataBy(bot).toReceipt(bot)
     }
 
+    override suspend fun delete(vararg options: DeleteOption) {
+        var mark = DeleteMark()
+        for (option in options) {
+            when {
+                mark.isFull -> break
+                option == StandardDeleteOption.IGNORE_ON_FAILURE -> mark = mark.ignoreFailure()
+                option == OneBotGroupDeleteOption.Dismiss -> mark = mark.dismiss()
+            }
+        }
+
+        doDelete(mark)
+    }
+
+    private suspend fun doDelete(mark: DeleteMark) {
+        kotlin.runCatching {
+            SetGroupLeaveApi.create(
+                groupId = id,
+                isDismiss = mark.isDismiss
+            ).requestDataBy(bot)
+        }.onFailure { err ->
+            if (!mark.isIgnoreFailure) {
+                throw err
+            }
+        }
+    }
+
+    @JvmInline
+    internal value class DeleteMark(private val mark: Int = 0) {
+        fun ignoreFailure(): DeleteMark = DeleteMark(mark or IGNORE_FAILURE_MARK)
+        fun dismiss(): DeleteMark = DeleteMark(mark or DISMISS_MARK)
+
+        val isIgnoreFailure: Boolean get() = mark and IGNORE_FAILURE_MARK != 0
+        val isDismiss: Boolean get() = mark and DISMISS_MARK != 0
+        val isFull: Boolean get() = mark == FULL
+
+        private companion object {
+            const val IGNORE_FAILURE_MARK = 0b01
+            const val DISMISS_MARK = 0b10
+
+            const val FULL = 0b11
+        }
+    }
+
+    override suspend fun ban(enable: Boolean) {
+        SetGroupWholeBanApi.create(
+            groupId = id,
+            enable = enable
+        ).requestDataBy(bot)
+    }
+
+    override suspend fun setName(newName: String) {
+        SetGroupNameApi.create(
+            id,
+            newName
+        ).requestDataBy(bot)
+
+        this.name = newName
+    }
+
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }
-
-internal class OneBotGroupEventImpl(
-    private val source: GroupMessageEvent,
-    override val bot: OneBotBotImpl,
-
-    /**
-     * 群名称
-     */
-    override val name: String,
-
-    /**
-     * 群主ID
-     */
-    override val ownerId: ID?
-) : OneBotGroupImpl() {
-    override val coroutineContext: CoroutineContext = bot.subContext
-
-    override val id: ID
-        get() = source.groupId
-}
-
-// TODO 群名称, 可能需要使用缓存或API初始化,
-//  事件中似乎取不到
-internal fun GroupMessageEvent.toGroup(
-    bot: OneBotBotImpl,
-    name: String = "",
-    ownerId: ID? = null
-): OneBotGroupEventImpl =
-    OneBotGroupEventImpl(
-        source = this,
-        bot = bot,
-        name = name,
-        ownerId = ownerId,
-    )
 
 /**
  * 通过API查询得到的群信息。
@@ -136,13 +169,10 @@ internal class OneBotGroupApiResultImpl(
     private val source: GetGroupInfoResult,
     override val bot: OneBotBotImpl,
     override val ownerId: ID?,
-) : OneBotGroupImpl() {
+) : OneBotGroupImpl(source.groupName) {
     override val coroutineContext: CoroutineContext = bot.subContext
     override val id: ID
         get() = source.groupId
-
-    override val name: String
-        get() = source.groupName
 }
 
 internal fun GetGroupInfoResult.toGroup(
