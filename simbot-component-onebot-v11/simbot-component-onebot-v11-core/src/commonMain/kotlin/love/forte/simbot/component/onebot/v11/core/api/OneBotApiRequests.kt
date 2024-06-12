@@ -228,7 +228,9 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
     charset: Charset = Charsets.UTF_8,
 ): OneBotApiResult<T> {
     val raw = requestRaw(client, host, accessToken, actionSuffixes, charset)
-    return OneBot11.DefaultJson.decodeFromString(apiResultDeserializer, raw)
+    return OneBot11.DefaultJson
+        .decodeFromString(apiResultDeserializer, raw)
+        .withRaw(raw)
 }
 
 /**
@@ -296,3 +298,9 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
  * 其他平台始终得到 `true`。
  */
 internal expect val isContentNegotiationRuntimeAvailable: Boolean
+
+
+
+private fun <R : Any, T : OneBotApiResult<R>> T.withRaw(raw: String): T = apply {
+    this.raw = raw
+}
