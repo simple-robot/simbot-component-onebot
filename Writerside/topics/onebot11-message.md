@@ -39,7 +39,6 @@ var element = OneBotMessageSegments.toElement(segment);
 </tab>
 </tabs>
 
-
 ### 消息段定义
 
 <deflist>
@@ -98,6 +97,21 @@ var element = OneBotMessageSegments.toElement(segment);
 
 </def>
 <def id="OneBotXml" title="OneBotXml">
+
+</def>
+<def id="OneBotUnknownSegment" title="OneBotUnknownSegment">
+
+一个当出现了除上述其他已知类型以外的消息段类型时使用的包装类型。
+它通过对 `SerializersModule` 的配置增加了 `OneBotMessageSegment`
+类型的默认序列化/反序列化器来支持解析为此默认类型。
+
+它只支持JSON结构，因为它使用了 `JsonObject` 作为 `data` 属性的类型。
+
+<warning title="实验性">
+
+`OneBotUnknownSegment` 是实验性的。可能不稳定或在未来发生变更、移除。
+
+</warning>
 
 </def>
 </deflist>
