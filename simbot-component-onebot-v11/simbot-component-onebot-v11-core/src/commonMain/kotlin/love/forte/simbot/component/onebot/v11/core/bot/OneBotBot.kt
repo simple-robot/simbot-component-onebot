@@ -28,6 +28,7 @@ import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
+import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
@@ -52,6 +53,7 @@ import kotlin.jvm.JvmSynthetic
  *
  * @author ForteScarlet
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotBot : Bot {
     override val coroutineContext: CoroutineContext
 
@@ -163,6 +165,7 @@ public interface OneBotBot : Bot {
  *
  * @see OneBotBot.contactRelation
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotBotFriendRelation : ContactRelation {
     /**
      * 获取好友列表。
@@ -202,6 +205,7 @@ public interface OneBotBotFriendRelation : ContactRelation {
  *
  * @see OneBotBot.groupRelation
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotBotGroupRelation : GroupRelation {
     /**
      * 获取群列表

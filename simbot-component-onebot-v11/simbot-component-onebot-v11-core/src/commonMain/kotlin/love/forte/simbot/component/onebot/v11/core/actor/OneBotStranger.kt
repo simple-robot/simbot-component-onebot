@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.actor
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
 import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
 import love.forte.simbot.definition.User
@@ -31,6 +32,7 @@ import love.forte.simbot.definition.User
  *
  * @author ForteScarlet
  */
+@OneBotInternalImplementationsOnly
 public interface OneBotStranger : User {
     override val id: ID
     override val name: String

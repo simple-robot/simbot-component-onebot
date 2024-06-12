@@ -37,12 +37,19 @@ import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
 
 
-internal abstract class OneBotGroupImpl : OneBotGroup {
+internal abstract class OneBotGroupImpl(
+    initialName: String
+) : OneBotGroup {
     protected abstract val bot: OneBotBotImpl
+
+    @Volatile
+    override var name: String = initialName
+        protected set
 
     override val members: Collectable<OneBotMember>
         get() = flowCollectable {
@@ -143,6 +150,15 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
         ).requestDataBy(bot)
     }
 
+    override suspend fun setName(newName: String) {
+        SetGroupNameApi.create(
+            id,
+            newName
+        ).requestDataBy(bot)
+
+        this.name = newName
+    }
+
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }
 
@@ -153,13 +169,10 @@ internal class OneBotGroupApiResultImpl(
     private val source: GetGroupInfoResult,
     override val bot: OneBotBotImpl,
     override val ownerId: ID?,
-) : OneBotGroupImpl() {
+) : OneBotGroupImpl(source.groupName) {
     override val coroutineContext: CoroutineContext = bot.subContext
     override val id: ID
         get() = source.groupId
-
-    override val name: String
-        get() = source.groupName
 }
 
 internal fun GetGroupInfoResult.toGroup(
