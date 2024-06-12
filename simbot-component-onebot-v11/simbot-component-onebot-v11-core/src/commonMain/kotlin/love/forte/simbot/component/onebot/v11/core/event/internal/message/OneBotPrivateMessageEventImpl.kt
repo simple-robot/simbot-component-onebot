@@ -112,7 +112,7 @@ internal class OneBotGroupPrivateMessageEventImpl(
 
     override suspend fun source(): OneBotGroup {
         // TODO 额，怎么知道群号？
-        throw UnsupportedOperationException("The way to get the group number from PrivateMessageEvent is unknown.")
+        throw UnsupportedOperationException("The way to get the group id from PrivateMessageEvent is unknown yet.")
     }
 
     override fun toString(): String =

@@ -32,7 +32,6 @@ import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
-import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
@@ -146,40 +145,6 @@ internal abstract class OneBotGroupImpl : OneBotGroup {
 
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }
-
-internal class OneBotGroupEventImpl(
-    private val source: GroupMessageEvent,
-    override val bot: OneBotBotImpl,
-
-    /**
-     * 群名称
-     */
-    override val name: String,
-
-    /**
-     * 群主ID
-     */
-    override val ownerId: ID?
-) : OneBotGroupImpl() {
-    override val coroutineContext: CoroutineContext = bot.subContext
-
-    override val id: ID
-        get() = source.groupId
-}
-
-// TODO 群名称, 可能需要使用缓存或API初始化,
-//  事件中似乎取不到
-internal fun GroupMessageEvent.toGroup(
-    bot: OneBotBotImpl,
-    name: String = "",
-    ownerId: ID? = null
-): OneBotGroupEventImpl =
-    OneBotGroupEventImpl(
-        source = this,
-        bot = bot,
-        name = name,
-        ownerId = ownerId,
-    )
 
 /**
  * 通过API查询得到的群信息。
