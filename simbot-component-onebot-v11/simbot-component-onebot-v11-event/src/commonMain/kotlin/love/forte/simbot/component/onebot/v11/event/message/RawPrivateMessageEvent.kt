@@ -56,10 +56,10 @@ public data class RawPrivateMessageEvent @SourceEventConstructor constructor(
     override val subType: String,
     override val message: List<OneBotMessageSegment> = emptyList(),
     @SerialName("raw_message")
-    override val rawMessage: String,
+    override val rawMessage: String = "",
     @SerialName("user_id")
     override val userId: LongID,
-    override val font: Int?,
+    override val font: Int? = null,
     override val sender: Sender
 ) : RawMessageEvent {
     /**

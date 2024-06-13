@@ -52,10 +52,10 @@ public data class RawGroupBanEvent(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("operator_id")
-    public val operatorId: LongID,
+    public val operatorId: LongID? = null,
     @SerialName("user_id")
     public val userId: LongID,
-    public val duration: Long,
+    public val duration: Long = -1L,
 ) : RawNoticeEvent {
     public companion object {
         /**

@@ -56,7 +56,7 @@ public interface OneBotGroupRecallEvent : OneBotNoticeEvent, ChatGroupEvent {
     /**
      * 操作者ID
      */
-    public val operatorId: LongID
+    public val operatorId: LongID?
         get() = sourceEvent.operatorId
 
     /**

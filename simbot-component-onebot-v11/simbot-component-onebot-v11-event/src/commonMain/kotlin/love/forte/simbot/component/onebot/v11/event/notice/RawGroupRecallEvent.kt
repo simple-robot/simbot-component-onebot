@@ -50,7 +50,7 @@ public data class RawGroupRecallEvent(
     @SerialName("user_id")
     public val userId: LongID,
     @SerialName("operator_id")
-    public val operatorId: LongID,
+    public val operatorId: LongID?,
     @SerialName("message_id")
     public val messageId: LongID,
 ) : RawNoticeEvent

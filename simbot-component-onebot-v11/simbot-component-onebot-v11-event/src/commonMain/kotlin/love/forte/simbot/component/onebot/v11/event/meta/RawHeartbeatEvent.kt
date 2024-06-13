@@ -45,5 +45,5 @@ public data class RawHeartbeatEvent(
     @SerialName("post_type")
     override val postType: String,
     public val status: StatusResult,
-    public val interval: Long,
+    public val interval: Long = -1L,
 ) : RawMetaEvent

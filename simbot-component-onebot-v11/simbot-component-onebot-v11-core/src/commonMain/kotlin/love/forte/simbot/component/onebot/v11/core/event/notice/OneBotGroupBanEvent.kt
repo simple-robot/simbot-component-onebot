@@ -68,7 +68,7 @@ public interface OneBotGroupBanEvent : OneBotNoticeEvent, MemberEvent {
     /**
      * 操作者的ID
      */
-    public val operatorId: LongID
+    public val operatorId: LongID?
         get() = sourceEvent.operatorId
 
     /**
