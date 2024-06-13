@@ -51,7 +51,7 @@ public data class RawGroupIncreaseEvent(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("operator_id")
-    public val operatorId: LongID,
+    public val operatorId: LongID? = null,
     @SerialName("user_id")
     public val userId: LongID,
 ) : RawNoticeEvent

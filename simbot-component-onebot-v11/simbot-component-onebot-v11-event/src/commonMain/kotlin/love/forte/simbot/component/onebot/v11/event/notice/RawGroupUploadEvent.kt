@@ -62,7 +62,7 @@ public data class RawGroupUploadEvent(
     public data class FileInfo(
         val id: ID,
         val name: String,
-        val size: Long,
-        val busid: Long,
+        val size: Long = -1L,
+        val busid: Long = -1L,
     )
 }

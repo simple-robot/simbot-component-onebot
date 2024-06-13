@@ -63,10 +63,10 @@ public data class RawGroupMessageEvent @SourceEventConstructor constructor(
     public val anonymous: Anonymous? = null,
     override val message: List<OneBotMessageSegment> = emptyList(),
     @SerialName("raw_message")
-    override val rawMessage: String,
+    override val rawMessage: String = "",
     @SerialName("user_id")
     override val userId: LongID,
-    override val font: Int?,
+    override val font: Int? = null,
     override val sender: Sender
 ) : RawMessageEvent {
 
@@ -97,7 +97,7 @@ public data class RawGroupMessageEvent @SourceEventConstructor constructor(
         public val card: String = "",
         public val area: String? = null,
         public val level: Int? = null,
-        public val role: String,
+        public val role: String = "member",
         public val title: String? = null,
         override val sex: String = DEFAULT_SEX,
         override val age: Int = DEFAULT_AGE,
