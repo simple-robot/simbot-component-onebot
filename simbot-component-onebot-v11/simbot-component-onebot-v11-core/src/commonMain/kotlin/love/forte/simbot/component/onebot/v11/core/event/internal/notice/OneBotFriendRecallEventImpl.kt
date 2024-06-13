@@ -23,7 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotFriendRecallEvent
-import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawFriendRecallEvent
 
 
 /**
@@ -32,7 +32,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
  */
 internal class OneBotFriendRecallEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: FriendRecallEvent,
+    override val sourceEvent: RawFriendRecallEvent,
     override val bot: OneBotBot
 ) : OneBotFriendRecallEvent {
     override val id: ID

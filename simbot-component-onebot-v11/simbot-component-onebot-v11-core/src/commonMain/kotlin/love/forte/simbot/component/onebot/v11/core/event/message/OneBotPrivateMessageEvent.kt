@@ -20,7 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.event.message
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
 import love.forte.simbot.event.ContactMessageEvent
 import love.forte.simbot.event.MemberMessageEvent
 import love.forte.simbot.suspendrunner.STP
@@ -29,14 +29,14 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * [私聊消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#私聊消息)
  *
- * @see PrivateMessageEvent
+ * @see RawPrivateMessageEvent
  * @see OneBotFriendMessageEvent
  * @see OneBotGroupPrivateMessageEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
-    override val sourceEvent: PrivateMessageEvent
+    override val sourceEvent: RawPrivateMessageEvent
 
     /**
      * private 消息类型

@@ -25,20 +25,19 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群成员减少](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员减少)
+ * [群管理员变动](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群管理员变动)
  *
- * @property subType 事件子类型，分别表示主动退群、成员被踢、登录号被踢。
- * 可能的值: `leave`、`kick`、`kick_me`
+ * @property subType 事件子类型，分别表示设置和取消管理员。
+ * 可能的值: `set`、`unset`
  * @property groupId 群号。
- * @property operatorId 操作者 QQ 号（如果是主动退群，则和 `user_id` 相同）。
- * @property userId 离开者 QQ 号。
+ * @property userId 管理员 QQ 号。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_decrease",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_admin",
 )
 @Serializable
-public data class GroupDecreaseEvent(
+public data class RawGroupAdminEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -50,8 +49,18 @@ public data class GroupDecreaseEvent(
     public val subType: String,
     @SerialName("group_id")
     public val groupId: LongID,
-    @SerialName("operator_id")
-    public val operatorId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+) : RawNoticeEvent {
+    public companion object {
+        /**
+         * @see RawGroupAdminEvent.subType
+         */
+        public const val SUB_TYPE_SET: String = "set"
+
+        /**
+         * @see RawGroupAdminEvent.subType
+         */
+        public const val SUB_TYPE_UNSET: String = "unset"
+    }
+}

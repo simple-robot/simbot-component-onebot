@@ -15,35 +15,43 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.meta
+package love.forte.simbot.component.onebot.v11.event.notice
 
+import kotlin.Long
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.v11.common.api.StatusResult
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
-
 /**
- * [心跳](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#心跳)
+ * [群成员减少](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员减少)
  *
- * > 其中 `status` 字段的内容和 `get_status` 接口的快速操作相同。
- *
- * @property status 状态信息
- * @property interval 到下次心跳的间隔，单位毫秒
- *
- * @author ForteScarlet
+ * @property subType 事件子类型，分别表示主动退群、成员被踢、登录号被踢。
+ * 可能的值: `leave`、`kick`、`kick_me`
+ * @property groupId 群号。
+ * @property operatorId 操作者 QQ 号（如果是主动退群，则和 `user_id` 相同）。
+ * @property userId 离开者 QQ 号。
  */
+@ExpectEventType(
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_decrease",
+)
 @Serializable
-@ExpectEventType(postType = MetaEvent.POST_TYPE, subType = "heartbeat")
-public data class HeartbeatEvent(
+public data class RawGroupDecreaseEvent(
     override val time: Long,
-    @SerialName("meta_event_type")
-    override val metaEventType: String,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    public val status: StatusResult,
-    public val interval: Long,
-) : MetaEvent
+    @SerialName("notice_type")
+    override val noticeType: String,
+    @SerialName("sub_type")
+    public val subType: String,
+    @SerialName("group_id")
+    public val groupId: LongID,
+    @SerialName("operator_id")
+    public val operatorId: LongID,
+    @SerialName("user_id")
+    public val userId: LongID,
+) : RawNoticeEvent

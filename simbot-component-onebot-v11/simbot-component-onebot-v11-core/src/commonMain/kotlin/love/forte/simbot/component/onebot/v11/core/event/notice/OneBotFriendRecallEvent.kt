@@ -20,18 +20,18 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
-import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawFriendRecallEvent
 import love.forte.simbot.event.ContactEvent
 import love.forte.simbot.suspendrunner.STP
 
 
 /**
  * 好友消息撤回事件
- * @see FriendRecallEvent
+ * @see RawFriendRecallEvent
  * @author ForteScarlet
  */
 public interface OneBotFriendRecallEvent : OneBotNoticeEvent, ContactEvent {
-    override val sourceEvent: FriendRecallEvent
+    override val sourceEvent: RawFriendRecallEvent
 
     /**
      * 消息ID

@@ -17,18 +17,18 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.meta
 
-import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
 
 
 /**
  * [生命周期](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#生命周期)
  *
- * @see LifecycleEvent
+ * @see RawLifecycleEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotLifecycleEvent : OneBotMetaEvent {
-    override val sourceEvent: LifecycleEvent
+    override val sourceEvent: RawLifecycleEvent
 
     /**
      * 事件子类型，分别表示 OneBot 启用、停用、WebSocket 连接成功.

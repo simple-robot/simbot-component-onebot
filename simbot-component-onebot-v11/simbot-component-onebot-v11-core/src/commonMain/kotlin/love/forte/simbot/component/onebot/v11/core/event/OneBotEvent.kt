@@ -29,7 +29,7 @@ import love.forte.simbot.event.Event
 /**
  * OneBot11原始事件结构体类型。
  */
-public typealias OBSourceEvent = love.forte.simbot.component.onebot.v11.event.Event
+public typealias OBSourceEvent = love.forte.simbot.component.onebot.v11.event.RawEvent
 
 /**
  * 一个OneBot组件事件基类。

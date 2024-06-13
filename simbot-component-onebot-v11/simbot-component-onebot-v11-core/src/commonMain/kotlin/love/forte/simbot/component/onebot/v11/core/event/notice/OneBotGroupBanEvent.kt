@@ -20,7 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.event.notice.GroupBanEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupBanEvent
 import love.forte.simbot.event.MemberEvent
 import love.forte.simbot.suspendrunner.STP
 import kotlin.time.Duration
@@ -30,28 +30,28 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * 群禁言事件
  *
- * @see GroupBanEvent
+ * @see RawGroupBanEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotGroupBanEvent : OneBotNoticeEvent, MemberEvent {
-    override val sourceEvent: GroupBanEvent
+    override val sourceEvent: RawGroupBanEvent
 
     /**
      * 事件子类型，分别表示禁言、解除禁言。
      * 可能的值: `ban`、`lift_ban`
      *
-     * @see GroupBanEvent.subType
+     * @see RawGroupBanEvent.subType
      */
     public val subType: String
         get() = sourceEvent.subType
 
     /**
      * 是否为禁言。
-     * 即 [subType] == [GroupBanEvent.SUB_TYPE_BAN]
+     * 即 [subType] == [RawGroupBanEvent.SUB_TYPE_BAN]
      */
     public val isBan: Boolean
-        get() = subType == GroupBanEvent.SUB_TYPE_BAN
+        get() = subType == RawGroupBanEvent.SUB_TYPE_BAN
 
     /**
      * 群号
@@ -74,7 +74,7 @@ public interface OneBotGroupBanEvent : OneBotNoticeEvent, MemberEvent {
     /**
      * 禁言时长，单位秒。
      *
-     * @see GroupBanEvent.duration
+     * @see RawGroupBanEvent.duration
      */
     public val durationSeconds: Long
         get() = sourceEvent.duration

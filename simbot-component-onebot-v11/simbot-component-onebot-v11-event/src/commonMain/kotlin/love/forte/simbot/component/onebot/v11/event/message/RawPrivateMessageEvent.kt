@@ -21,32 +21,28 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
+import love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 
 /**
- * [群消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#群消息)
+ * [私聊消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#私聊消息)
+ *
  * @property time 事件发生的时间戳
  * @property selfId 收到事件的机器人 QQ 号
  * @property postType 上报类型
  * @property messageType 消息类型
- * @property subType 消息子类型，正常消息是 `normal`，匿名消息是 `anonymous`，
- * 系统提示（如「管理员已禁止群内匿名聊天」）是 `notice`
- * @property anonymous 匿名信息，如果不是匿名消息则为 `null`
+ * @property subType 消息子类型，如果是好友则是 `friend`，如果是群临时会话则是 `group`
  * @property messageId 消息 ID
- * @property groupId 群号
  * @property userId 发送者 QQ 号
  * @property message 消息内容
  * @property rawMessage 原始消息内容
  * @property font 字体
  * @property sender 发送人信息
- *
- *
  */
 @Serializable
-@ExpectEventType(postType = MessageEvent.POST_TYPE, subType = "group")
-public data class GroupMessageEvent @SourceEventConstructor constructor(
+@ExpectEventType(postType = RawMessageEvent.POST_TYPE, subType = "private")
+public data class RawPrivateMessageEvent @SourceEventConstructor constructor(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -54,13 +50,10 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
     override val postType: String,
     @SerialName("message_id")
     override val messageId: ID,
-    @SerialName("group_id")
-    public val groupId: LongID,
     @SerialName("message_type")
     override val messageType: String,
     @SerialName("sub_type")
     override val subType: String,
-    public val anonymous: Anonymous? = null,
     override val message: List<OneBotMessageSegment> = emptyList(),
     @SerialName("raw_message")
     override val rawMessage: String,
@@ -68,51 +61,29 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
     override val userId: LongID,
     override val font: Int?,
     override val sender: Sender
-) : MessageEvent {
-
+) : RawMessageEvent {
     /**
-     * 匿名信息
-     *
-     * @property id 匿名用户 ID
-     * @property name 匿名用户名称
-     * @property flag 匿名用户 `flag`，在调用禁言 API 时需要传入
-     */
-    @Serializable
-    public data class Anonymous @SourceEventConstructor constructor(
-        val id: LongID,
-        val name: String,
-        val flag: String,
-    )
-
-    /**
-     * 群消息的发送人信息
-     *
-     * @property role 角色，`owner` 或 `admin` 或 `member`
+     * 私聊事件的发送人信息
      */
     @Serializable
     public data class Sender @SourceEventConstructor constructor(
         @SerialName("user_id")
         override val userId: LongID,
         override val nickname: String,
-        public val card: String = "",
-        public val area: String? = null,
-        public val level: Int? = null,
-        public val role: String,
-        public val title: String? = null,
         override val sex: String = DEFAULT_SEX,
-        override val age: Int = DEFAULT_AGE,
-    ) : MessageEvent.Sender
-
+        override val age: Int = DEFAULT_AGE
+    ) : RawMessageEvent.Sender
 
     public companion object {
-        /** @see GroupMessageEvent.subType */
-        public const val SUB_TYPE_NORMAL: String = "normal"
+        /**
+         * @see RawPrivateMessageEvent.subType
+         */
+        public const val SUB_TYPE_FRIEND: String = "friend"
 
-        /** @see GroupMessageEvent.subType */
-        public const val SUB_TYPE_ANONYMOUS: String = "anonymous"
-
-        /** @see GroupMessageEvent.subType */
-        public const val SUB_TYPE_NOTICE: String = "notice"
+        /**
+         * @see RawPrivateMessageEvent.subType
+         */
+        public const val SUB_TYPE_GROUP: String = "group"
 
     }
 }

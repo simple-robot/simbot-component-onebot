@@ -34,7 +34,7 @@ import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessag
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
-import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
@@ -43,7 +43,7 @@ import love.forte.simbot.message.MessageContent
 
 
 internal abstract class OneBotPrivateMessageEventImpl(
-    final override val sourceEvent: PrivateMessageEvent,
+    final override val sourceEvent: RawPrivateMessageEvent,
     final override val bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEvent {
     override val id: ID
@@ -88,7 +88,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
 
 internal class OneBotFriendMessageEventImpl(
     override val sourceEventRaw: String?,
-    sourceEvent: PrivateMessageEvent,
+    sourceEvent: RawPrivateMessageEvent,
     bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotFriendMessageEvent {
@@ -102,7 +102,7 @@ internal class OneBotFriendMessageEventImpl(
 
 internal class OneBotGroupPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
-    sourceEvent: PrivateMessageEvent,
+    sourceEvent: RawPrivateMessageEvent,
     bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotGroupPrivateMessageEvent {
@@ -121,7 +121,7 @@ internal class OneBotGroupPrivateMessageEventImpl(
 
 internal class OneBotDefaultPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
-    sourceEvent: PrivateMessageEvent,
+    sourceEvent: RawPrivateMessageEvent,
     bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot) {
 

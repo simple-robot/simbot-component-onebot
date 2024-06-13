@@ -15,52 +15,32 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.notice
+package love.forte.simbot.component.onebot.v11.event.meta
 
-import kotlin.Long
-import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群管理员变动](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群管理员变动)
+ * [生命周期](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#生命周期)
  *
- * @property subType 事件子类型，分别表示设置和取消管理员。
- * 可能的值: `set`、`unset`
- * @property groupId 群号。
- * @property userId 管理员 QQ 号。
+ *
+ * @property subType 事件子类型，分别表示 OneBot 启用、停用、WebSocket 连接成功.
+ * 可能的值: `enable`、`disable`、`connect`.
+ * 注意，目前生命周期元事件中，只有 HTTP POST 的情况下可以收到 `enable` 和 `disable`，
+ * 只有正向 WebSocket 和反向 WebSocket 可以收到 `connect`。
  */
-@ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_admin",
-)
 @Serializable
-public data class GroupAdminEvent(
+@ExpectEventType(postType = RawMetaEvent.POST_TYPE, subType = "lifecycle")
+public data class RawLifecycleEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    @SerialName("notice_type")
-    override val noticeType: String,
+    @SerialName("meta_event_type")
+    override val metaEventType: String,
     @SerialName("sub_type")
     public val subType: String,
-    @SerialName("group_id")
-    public val groupId: LongID,
-    @SerialName("user_id")
-    public val userId: LongID,
-) : NoticeEvent {
-    public companion object {
-        /**
-         * @see GroupAdminEvent.subType
-         */
-        public const val SUB_TYPE_SET: String = "set"
-
-        /**
-         * @see GroupAdminEvent.subType
-         */
-        public const val SUB_TYPE_UNSET: String = "unset"
-    }
-}
+) : RawMetaEvent

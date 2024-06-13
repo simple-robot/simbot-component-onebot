@@ -24,8 +24,8 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotHeartbeatEvent
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotLifecycleEvent
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotMetaEvent
-import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
-import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
 
 /**
  * OneBot中的元事件类型。
@@ -37,7 +37,7 @@ internal abstract class OneBotMetaEventImpl : OneBotMetaEvent {
 
 internal class OneBotHeartbeatEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: HeartbeatEvent,
+    override val sourceEvent: RawHeartbeatEvent,
     override val bot: OneBotBot,
 ) : OneBotHeartbeatEvent, OneBotMetaEventImpl() {
     override fun toString(): String =
@@ -46,7 +46,7 @@ internal class OneBotHeartbeatEventImpl(
 
 internal class OneBotLifecycleEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: LifecycleEvent,
+    override val sourceEvent: RawLifecycleEvent,
     override val bot: OneBotBot,
 ) : OneBotLifecycleEvent, OneBotMetaEventImpl() {
     override fun toString(): String =

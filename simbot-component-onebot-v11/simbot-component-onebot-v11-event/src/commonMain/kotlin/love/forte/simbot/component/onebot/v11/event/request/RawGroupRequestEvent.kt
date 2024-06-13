@@ -15,34 +15,55 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.notice
+package love.forte.simbot.component.onebot.v11.event.request
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
+
 /**
- * [好友消息撤回](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#好友消息撤回)
+ * [加群请求／邀请](https://github.com/botuniverse/onebot-11/blob/master/event/request.md#加群请求邀请)
  *
- * @property userId 好友 QQ 号。
- * @property messageId 被撤回的消息 ID。
+ * @property subType 请求子类型，分别表示加群请求、邀请登录号入群。
+ * 可能：`add`、`invite`
+ * @property groupId 群号
+ * @property userId 发送请求的 QQ 号
+ * @property comment 验证信息
+ * @property flag 请求 flag，在调用处理请求的 API 时需要传入
+ *
+ * @author ForteScarlet
  */
-@ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "friend_recall",
-)
 @Serializable
-public data class FriendRecallEvent(
+@ExpectEventType(postType = RawRequestEvent.POST_TYPE, subType = "group")
+public data class RawGroupRequestEvent(
     override val time: Long,
+    @SerialName("request_type")
+    override val requestType: String,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    @SerialName("notice_type")
-    override val noticeType: String,
+    @SerialName("sub_type")
+    public val subType: String,
+    @SerialName("group_id")
+    public val groupId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-    @SerialName("message_id")
-    public val messageId: LongID,
-) : NoticeEvent
+    public val comment: String = "",
+    public val flag: String,
+) : RawRequestEvent {
+
+    public companion object {
+        /**
+         * @see RawGroupRequestEvent.subType
+         */
+        public const val SUB_TYPE_ADD: String = "add"
+
+        /**
+         * @see RawGroupRequestEvent.subType
+         */
+        public const val SUB_TYPE_INVITE: String = "invite"
+    }
+}
