@@ -24,7 +24,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupBanEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupBanEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupBanEvent
 
 
 /**
@@ -33,7 +33,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.GroupBanEvent
  */
 internal class OneBotGroupBanEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupBanEvent,
+    override val sourceEvent: RawGroupBanEvent,
     override val bot: OneBotBot
 ) : OneBotGroupBanEvent {
     override val id: ID

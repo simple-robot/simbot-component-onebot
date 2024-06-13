@@ -101,21 +101,21 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
-import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
-import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
-import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
-import love.forte.simbot.component.onebot.v11.event.meta.LifecycleEvent
-import love.forte.simbot.component.onebot.v11.event.notice.FriendAddEvent
-import love.forte.simbot.component.onebot.v11.event.notice.FriendRecallEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupAdminEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupBanEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupDecreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupIncreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupRecallEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupUploadEvent
-import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
-import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
-import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawFriendAddEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawFriendRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupAdminEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupBanEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupDecreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupIncreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawNotifyEvent
+import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.event.Event
@@ -126,7 +126,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
-import love.forte.simbot.component.onebot.v11.event.Event as OBRawEvent
+import love.forte.simbot.component.onebot.v11.event.RawEvent as OBRawEvent
 
 
 /**
@@ -597,25 +597,25 @@ internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent
     return when (event) {
         //region 消息事件
         // 群消息、匿名消息、系统消息
-        is GroupMessageEvent -> when (event.subType) {
-            GroupMessageEvent.SUB_TYPE_NORMAL ->
+        is RawGroupMessageEvent -> when (event.subType) {
+            RawGroupMessageEvent.SUB_TYPE_NORMAL ->
                 OneBotNormalGroupMessageEventImpl(raw, event, bot)
 
-            GroupMessageEvent.SUB_TYPE_ANONYMOUS ->
+            RawGroupMessageEvent.SUB_TYPE_ANONYMOUS ->
                 OneBotAnonymousGroupMessageEventImpl(raw, event, bot)
 
-            GroupMessageEvent.SUB_TYPE_NOTICE ->
+            RawGroupMessageEvent.SUB_TYPE_NOTICE ->
                 OneBotNoticeGroupMessageEventImpl(raw, event, bot)
 
             else -> OneBotDefaultGroupMessageEventImpl(raw, event, bot)
         }
 
         // 好友私聊消息、成员临时会话
-        is PrivateMessageEvent -> when (event.subType) {
-            PrivateMessageEvent.SUB_TYPE_FRIEND ->
+        is RawPrivateMessageEvent -> when (event.subType) {
+            RawPrivateMessageEvent.SUB_TYPE_FRIEND ->
                 OneBotFriendMessageEventImpl(raw, event, bot)
 
-            PrivateMessageEvent.SUB_TYPE_GROUP ->
+            RawPrivateMessageEvent.SUB_TYPE_GROUP ->
                 OneBotGroupPrivateMessageEventImpl(raw, event, bot)
 
             else -> OneBotDefaultPrivateMessageEventImpl(raw, event, bot)
@@ -623,28 +623,28 @@ internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent
         //endregion
 
         //region 元事件
-        is LifecycleEvent -> OneBotLifecycleEventImpl(raw, event, bot,)
-        is HeartbeatEvent -> OneBotHeartbeatEventImpl(raw, event, bot,)
+        is RawLifecycleEvent -> OneBotLifecycleEventImpl(raw, event, bot,)
+        is RawHeartbeatEvent -> OneBotHeartbeatEventImpl(raw, event, bot,)
         //endregion
 
         //region 申请事件
-        is FriendRequestEvent -> OneBotFriendRequestEventImpl(raw, event, bot)
-        is GroupRequestEvent -> OneBotGroupRequestEventImpl(raw, event, bot)
+        is RawFriendRequestEvent -> OneBotFriendRequestEventImpl(raw, event, bot)
+        is RawGroupRequestEvent -> OneBotGroupRequestEventImpl(raw, event, bot)
         //endregion
 
         //region notice events
-        is FriendAddEvent -> OneBotFriendAddEventImpl(raw, event, bot)
-        is FriendRecallEvent -> OneBotFriendRecallEventImpl(raw, event, bot)
-        is GroupAdminEvent -> OneBotGroupAdminEventImpl(raw, event, bot)
-        is GroupBanEvent -> OneBotGroupBanEventImpl(raw, event, bot)
-        is GroupIncreaseEvent -> OneBotGroupMemberIncreaseEventImpl(raw, event, bot)
-        is GroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
-        is GroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
-        is GroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
-        is NotifyEvent -> when (event.subType) {
-            NotifyEvent.SUB_TYPE_HONOR -> OneBotHonorEventImpl(raw, event, bot)
-            NotifyEvent.SUB_TYPE_LUCKY_KING -> OneBotLuckyKingEventImpl(raw, event, bot)
-            NotifyEvent.SUB_TYPE_POKE -> when {
+        is RawFriendAddEvent -> OneBotFriendAddEventImpl(raw, event, bot)
+        is RawFriendRecallEvent -> OneBotFriendRecallEventImpl(raw, event, bot)
+        is RawGroupAdminEvent -> OneBotGroupAdminEventImpl(raw, event, bot)
+        is RawGroupBanEvent -> OneBotGroupBanEventImpl(raw, event, bot)
+        is RawGroupIncreaseEvent -> OneBotGroupMemberIncreaseEventImpl(raw, event, bot)
+        is RawGroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
+        is RawGroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
+        is RawGroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
+        is RawNotifyEvent -> when (event.subType) {
+            RawNotifyEvent.SUB_TYPE_HONOR -> OneBotHonorEventImpl(raw, event, bot)
+            RawNotifyEvent.SUB_TYPE_LUCKY_KING -> OneBotLuckyKingEventImpl(raw, event, bot)
+            RawNotifyEvent.SUB_TYPE_POKE -> when {
                 event.selfId.value == event.targetId?.value ->
                     OneBotBotSelfPokeEventImpl(raw, event, bot)
 

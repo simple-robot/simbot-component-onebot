@@ -24,7 +24,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.*
-import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawNotifyEvent
 
 
 /**
@@ -33,7 +33,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
  */
 internal abstract class OneBotNotifyEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: NotifyEvent,
+    override val sourceEvent: RawNotifyEvent,
     override val bot: OneBotBotImpl
 ) : OneBotNotifyEvent {
     override val id: ID
@@ -59,7 +59,7 @@ internal abstract class OneBotNotifyEventImpl(
 
 internal class OneBotHonorEventImpl(
     sourceEventRaw: String?,
-    sourceEvent: NotifyEvent,
+    sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
 ) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
     OneBotHonorEvent {
@@ -69,7 +69,7 @@ internal class OneBotHonorEventImpl(
 
 internal class OneBotLuckyKingEventImpl(
     sourceEventRaw: String?,
-    sourceEvent: NotifyEvent,
+    sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
 ) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
     OneBotLuckyKingEvent {
@@ -79,7 +79,7 @@ internal class OneBotLuckyKingEventImpl(
 
 internal class OneBotMemberPokeEventImpl(
     sourceEventRaw: String?,
-    sourceEvent: NotifyEvent,
+    sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
 ) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
     OneBotMemberPokeEvent {
@@ -89,7 +89,7 @@ internal class OneBotMemberPokeEventImpl(
 
 internal class OneBotBotSelfPokeEventImpl(
     sourceEventRaw: String?,
-    sourceEvent: NotifyEvent,
+    sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
 ) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
     OneBotBotSelfPokeEvent {

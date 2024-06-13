@@ -19,7 +19,7 @@ package love.forte.simbot.component.onebot.v11.event.message
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.v11.event.Event
+import love.forte.simbot.component.onebot.v11.event.RawEvent
 import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 
@@ -27,14 +27,14 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegme
 /**
  * [消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#消息事件)
  *
- * [MessageEvent] 中定义的属性为针对私聊消息和群消息事件属性中人为抽取的 _可能公共_ 属性，
+ * [RawMessageEvent] 中定义的属性为针对私聊消息和群消息事件属性中人为抽取的 _可能公共_ 属性，
  * 并非协议中明确定义一定相同的公共属性。
  * 此处只做最低限度的公共抽取。
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty(value = "messageType", postType = MessageEvent.POST_TYPE, name = "message_type")
-public interface MessageEvent : Event {
+@ExpectEventSubTypeProperty(value = "messageType", postType = RawMessageEvent.POST_TYPE, name = "message_type")
+public interface RawMessageEvent : RawEvent {
     /**
      * 消息 ID
      */

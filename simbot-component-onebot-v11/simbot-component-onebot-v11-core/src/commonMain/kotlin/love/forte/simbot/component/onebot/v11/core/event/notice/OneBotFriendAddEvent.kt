@@ -18,16 +18,16 @@
 package love.forte.simbot.component.onebot.v11.core.event.notice
 
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.v11.event.notice.FriendAddEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawFriendAddEvent
 
 
 /**
  * 好友新增事件。
  *
- * @see FriendAddEvent
+ * @see RawFriendAddEvent
  */
 public interface OneBotFriendAddEvent : OneBotNoticeEvent {
-    override val sourceEvent: FriendAddEvent
+    override val sourceEvent: RawFriendAddEvent
 
     /**
      * 此好友的ID

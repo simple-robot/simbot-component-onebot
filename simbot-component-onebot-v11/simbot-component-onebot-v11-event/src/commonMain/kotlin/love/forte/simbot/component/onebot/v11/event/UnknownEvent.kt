@@ -22,7 +22,7 @@ import love.forte.simbot.common.id.LongID
 
 
 /**
- * 用于“兜底”的 [Event] 类型实现。
+ * 用于“兜底”的 [RawEvent] 类型实现。
  * 当出现了尚未支持或某种未知的事件体，无法对应到任何现有的已定义结构时，
  * 则应当将其解析并包装为 [UnknownEvent]。
  *
@@ -43,4 +43,4 @@ public data class UnknownEvent(
      * 原始的JSON字符串
      */
     public val raw: String,
-) : Event
+) : RawEvent

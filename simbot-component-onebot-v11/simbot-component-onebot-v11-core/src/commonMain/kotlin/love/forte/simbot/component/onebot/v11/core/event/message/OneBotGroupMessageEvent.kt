@@ -21,7 +21,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.ChatGroupMessageEvent
 import love.forte.simbot.suspendrunner.STP
@@ -30,7 +30,7 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * [群消息事件](https://github.com/botuniverse/onebot-11/blob/master/event/message.md#群消息)
  *
- * @see GroupMessageEvent
+ * @see RawGroupMessageEvent
  *
  * @see OneBotNormalGroupMessageEvent
  * @see OneBotAnonymousGroupMessageEvent
@@ -40,7 +40,7 @@ import love.forte.simbot.suspendrunner.STP
  */
 @STP
 public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
-    override val sourceEvent: GroupMessageEvent
+    override val sourceEvent: RawGroupMessageEvent
 
     /**
      * 事件发生所在群

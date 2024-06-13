@@ -24,11 +24,8 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 
 /**
- * [加群请求／邀请](https://github.com/botuniverse/onebot-11/blob/master/event/request.md#加群请求邀请)
+ * [加好友请求](https://github.com/botuniverse/onebot-11/blob/master/event/request.md#加好友请求)
  *
- * @property subType 请求子类型，分别表示加群请求、邀请登录号入群。
- * 可能：`add`、`invite`
- * @property groupId 群号
  * @property userId 发送请求的 QQ 号
  * @property comment 验证信息
  * @property flag 请求 flag，在调用处理请求的 API 时需要传入
@@ -36,8 +33,8 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventType
  * @author ForteScarlet
  */
 @Serializable
-@ExpectEventType(postType = RequestEvent.POST_TYPE, subType = "group")
-public data class GroupRequestEvent(
+@ExpectEventType(postType = RawRequestEvent.POST_TYPE, subType = "friend")
+public data class RawFriendRequestEvent(
     override val time: Long,
     @SerialName("request_type")
     override val requestType: String,
@@ -45,25 +42,8 @@ public data class GroupRequestEvent(
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    @SerialName("sub_type")
-    public val subType: String,
-    @SerialName("group_id")
-    public val groupId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
     public val comment: String = "",
     public val flag: String,
-) : RequestEvent {
-
-    public companion object {
-        /**
-         * @see GroupRequestEvent.subType
-         */
-        public const val SUB_TYPE_ADD: String = "add"
-
-        /**
-         * @see GroupRequestEvent.subType
-         */
-        public const val SUB_TYPE_INVITE: String = "invite"
-    }
-}
+) : RawRequestEvent

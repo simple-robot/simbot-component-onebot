@@ -23,16 +23,17 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [好友添加](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#好友添加)
+ * [好友消息撤回](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#好友消息撤回)
  *
- * @property userId 新添加好友 QQ 号。
+ * @property userId 好友 QQ 号。
+ * @property messageId 被撤回的消息 ID。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "friend_add",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "friend_recall",
 )
 @Serializable
-public data class FriendAddEvent(
+public data class RawFriendRecallEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -42,4 +43,6 @@ public data class FriendAddEvent(
     override val noticeType: String,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+    @SerialName("message_id")
+    public val messageId: LongID,
+) : RawNoticeEvent

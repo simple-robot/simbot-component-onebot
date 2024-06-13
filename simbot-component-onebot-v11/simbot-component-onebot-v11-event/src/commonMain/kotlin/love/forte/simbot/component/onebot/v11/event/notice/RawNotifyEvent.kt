@@ -25,20 +25,28 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群成员增加](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员增加)
+ * [群成员荣誉变更](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员荣誉变更)、
+ * [群红包运气王](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群红包运气王)、
+ * [群内戳一戳](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群内戳一戳)。
  *
- * @property subType 事件子类型，分别表示管理员已同意入群、管理员邀请入群。
- * 可能的值: `approve`、`invite`
+ * 其中，红包和戳一戳的 [subType] 分别为 `lucky_king` 和 `poke`
+ *
+ * @property subType 提示类型。
+ * 可能的值: `honor`, `lucky_king`, `poke`
  * @property groupId 群号。
- * @property operatorId 操作者 QQ 号。
- * @property userId 加入者 QQ 号。
+ * @property honorType 荣誉类型，分别表示龙王、群聊之火、快乐源泉。
+ * 可能的值: `talkative`、`performer`、`emotion`。
+ * 当 [subType] 为 `honor` 时有值。
+ * @property userId 成员 QQ 号。
+ * @property targetId 当 [subType] 为 `lucky_king` 时代表人气王用户ID，
+ * 为 `poke` 时代表被戳的人的ID，否则为 `null`。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_increase",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "notify",
 )
 @Serializable
-public data class GroupIncreaseEvent(
+public data class RawNotifyEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -50,8 +58,28 @@ public data class GroupIncreaseEvent(
     public val subType: String,
     @SerialName("group_id")
     public val groupId: LongID,
-    @SerialName("operator_id")
-    public val operatorId: LongID,
+    @SerialName("honor_type")
+    public val honorType: String? = null,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+    @SerialName("target_id")
+    public val targetId: LongID? = null
+) : RawNoticeEvent {
+    public companion object {
+        /**
+         * @see RawNotifyEvent.subType
+         */
+        public const val SUB_TYPE_HONOR: String = "honor"
+
+        /**
+         * @see RawNotifyEvent.subType
+         */
+        public const val SUB_TYPE_POKE: String = "poke"
+
+        /**
+         * @see RawNotifyEvent.subType
+         */
+        public const val SUB_TYPE_LUCKY_KING: String = "lucky_king"
+    }
+
+}

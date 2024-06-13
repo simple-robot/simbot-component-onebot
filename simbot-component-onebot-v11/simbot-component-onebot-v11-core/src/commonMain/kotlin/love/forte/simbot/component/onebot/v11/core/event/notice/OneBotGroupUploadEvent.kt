@@ -19,7 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
-import love.forte.simbot.component.onebot.v11.event.notice.GroupUploadEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.suspendrunner.STP
 
@@ -27,11 +27,11 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * 群文件上传事件
  *
- * @see GroupUploadEvent
+ * @see RawGroupUploadEvent
  * @author ForteScarlet
  */
 public interface OneBotGroupUploadEvent : OneBotNoticeEvent, ChatGroupEvent {
-    override val sourceEvent: GroupUploadEvent
+    override val sourceEvent: RawGroupUploadEvent
 
     /**
      * 群号
@@ -46,11 +46,11 @@ public interface OneBotGroupUploadEvent : OneBotNoticeEvent, ChatGroupEvent {
         get() = sourceEvent.userId
 
     /**
-     * [GroupUploadEvent] 原始事件中的 [文件信息][GroupUploadEvent.file]
+     * [RawGroupUploadEvent] 原始事件中的 [文件信息][RawGroupUploadEvent.file]
      *
-     * @see GroupUploadEvent.file
+     * @see RawGroupUploadEvent.file
      */
-    public val fileInfo: GroupUploadEvent.FileInfo
+    public val fileInfo: RawGroupUploadEvent.FileInfo
         get() = sourceEvent.file
 
     /**

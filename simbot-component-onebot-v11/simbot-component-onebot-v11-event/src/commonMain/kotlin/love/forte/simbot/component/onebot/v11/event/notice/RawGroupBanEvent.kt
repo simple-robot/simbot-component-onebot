@@ -17,25 +17,29 @@
 
 package love.forte.simbot.component.onebot.v11.event.notice
 
+import kotlin.Long
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群文件上传](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群文件上传)
+ * [群禁言](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群禁言)
  *
+ * @property subType 事件子类型，分别表示禁言、解除禁言。
+ * 可能的值: `ban`、`lift_ban`
  * @property groupId 群号。
- * @property userId 发送者 QQ 号。
- * @property file 文件信息。
+ * @property operatorId 操作者 QQ 号。
+ * @property userId 被禁言 QQ 号。
+ * @property duration 禁言时长，单位秒。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_upload",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_ban",
 )
 @Serializable
-public data class GroupUploadEvent(
+public data class RawGroupBanEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -43,26 +47,25 @@ public data class GroupUploadEvent(
     override val postType: String,
     @SerialName("notice_type")
     override val noticeType: String,
+    @SerialName("sub_type")
+    public val subType: String,
     @SerialName("group_id")
     public val groupId: LongID,
+    @SerialName("operator_id")
+    public val operatorId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-    public val file: FileInfo,
-) : NoticeEvent {
+    public val duration: Long,
+) : RawNoticeEvent {
+    public companion object {
+        /**
+         * @see RawGroupBanEvent.subType
+         */
+        public const val SUB_TYPE_BAN: String = "ban"
 
-    /**
-     * [GroupUploadEvent] 中的 [文件信息][GroupUploadEvent.file]
-     *
-     * @property id 文件 ID
-     * @property name 文件名
-     * @property size 文件大小（字节数）
-     * @property busid busid（目前不清楚有什么作用）
-     */
-    @Serializable
-    public data class FileInfo(
-        val id: ID,
-        val name: String,
-        val size: Long,
-        val busid: Long,
-    )
+        /**
+         * @see RawGroupBanEvent.subType
+         */
+        public const val SUB_TYPE_LIFT_BAN: String = "lift_ban"
+    }
 }
