@@ -24,11 +24,11 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupAdminEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupAdminEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupAdminEvent
 
 internal class OneBotGroupAdminEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupAdminEvent,
+    override val sourceEvent: RawGroupAdminEvent,
     override val bot: OneBotBot
 ) : OneBotGroupAdminEvent {
     override val id: ID

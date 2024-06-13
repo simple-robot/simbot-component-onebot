@@ -15,32 +15,25 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.meta
+package love.forte.simbot.component.onebot.v11.event.notice
 
-import love.forte.simbot.component.onebot.v11.event.Event
+import love.forte.simbot.component.onebot.v11.event.RawEvent
 import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
 
 
 /**
- *
- * [元事件](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md)
- *
- * > 消息、通知、请求三大类事件是与聊天软件直接相关的、机器人真实接收到的事件，
- * 除了这些，OneBot 自己还会产生一类事件，这里称之为「元事件」，
- * 例如生命周期事件、心跳事件等，这类事件与 OneBot 本身的运行状态有关，
- * 而与聊天软件无关。元事件的上报方式和普通事件完全一样。
+ * [通知事件](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md)
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty(value = "metaEventType", postType = MetaEvent.POST_TYPE, name = "meta_event_type")
-public interface MetaEvent : Event {
+@ExpectEventSubTypeProperty(value = "noticeType", postType = RawNoticeEvent.POST_TYPE, name = "notice_type")
+public interface RawNoticeEvent : RawEvent {
     /**
-     * 元事件类型
+     * 通知类型
      */
-    public val metaEventType: String
+    public val noticeType: String
 
     public companion object {
-        public const val POST_TYPE: String = "meta_event"
+        public const val POST_TYPE: String = "notice"
     }
 }
-

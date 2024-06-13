@@ -23,7 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupUploadEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupUploadEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent
 
 
 /**
@@ -32,7 +32,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.GroupUploadEvent
  */
 internal class OneBotGroupUploadEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupUploadEvent,
+    override val sourceEvent: RawGroupUploadEvent,
     override val bot: OneBotBot
 ) : OneBotGroupUploadEvent {
     override val id: ID

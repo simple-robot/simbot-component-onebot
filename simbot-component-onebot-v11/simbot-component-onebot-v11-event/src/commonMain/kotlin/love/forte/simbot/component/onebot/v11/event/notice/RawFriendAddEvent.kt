@@ -17,27 +17,22 @@
 
 package love.forte.simbot.component.onebot.v11.event.notice
 
-import kotlin.Long
-import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群管理员变动](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群管理员变动)
+ * [好友添加](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#好友添加)
  *
- * @property subType 事件子类型，分别表示设置和取消管理员。
- * 可能的值: `set`、`unset`
- * @property groupId 群号。
- * @property userId 管理员 QQ 号。
+ * @property userId 新添加好友 QQ 号。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_admin",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "friend_add",
 )
 @Serializable
-public data class GroupAdminEvent(
+public data class RawFriendAddEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -45,22 +40,6 @@ public data class GroupAdminEvent(
     override val postType: String,
     @SerialName("notice_type")
     override val noticeType: String,
-    @SerialName("sub_type")
-    public val subType: String,
-    @SerialName("group_id")
-    public val groupId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent {
-    public companion object {
-        /**
-         * @see GroupAdminEvent.subType
-         */
-        public const val SUB_TYPE_SET: String = "set"
-
-        /**
-         * @see GroupAdminEvent.subType
-         */
-        public const val SUB_TYPE_UNSET: String = "unset"
-    }
-}
+) : RawNoticeEvent

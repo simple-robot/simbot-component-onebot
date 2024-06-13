@@ -2,8 +2,8 @@ package love.forte.simbot.component.onebot.v11.core.event
 
 import kotlinx.serialization.KSerializer
 import love.forte.simbot.component.onebot.v11.core.OneBot11
-import love.forte.simbot.component.onebot.v11.event.Event
-import love.forte.simbot.component.onebot.v11.event.message.GroupMessageEvent
+import love.forte.simbot.component.onebot.v11.event.RawEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 
 
 /**
@@ -15,14 +15,14 @@ class ResolveRawEventToEventTests {
     // @Test // TODO
     fun resolveGroupMessageEventTest() {
         val event = decodeEvent(
-            GroupMessageEvent.serializer(),
+            RawGroupMessageEvent.serializer(),
             ""
         )
 
     }
 }
 
-private fun <T : Event> decodeEvent(
+private fun <T : RawEvent> decodeEvent(
     serializer: KSerializer<out T>,
     raw: String
 ): T {

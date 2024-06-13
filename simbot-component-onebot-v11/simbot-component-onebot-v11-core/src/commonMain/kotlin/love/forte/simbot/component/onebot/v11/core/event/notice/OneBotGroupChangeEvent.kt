@@ -20,8 +20,8 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.event.notice.GroupDecreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupIncreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupDecreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupIncreaseEvent
 import love.forte.simbot.event.MemberDecreaseEvent
 import love.forte.simbot.event.MemberIncreaseEvent
 import love.forte.simbot.event.MemberIncreaseOrDecreaseEvent
@@ -64,10 +64,10 @@ public interface OneBotGroupChangeEvent : OneBotNoticeEvent, MemberIncreaseOrDec
 /**
  * 群成员增加事件
  *
- * @see GroupIncreaseEvent
+ * @see RawGroupIncreaseEvent
  */
 public interface OneBotGroupMemberIncreaseEvent : OneBotGroupChangeEvent, MemberIncreaseEvent {
-    override val sourceEvent: GroupIncreaseEvent
+    override val sourceEvent: RawGroupIncreaseEvent
 
     /**
      * 群号
@@ -99,10 +99,10 @@ public interface OneBotGroupMemberIncreaseEvent : OneBotGroupChangeEvent, Member
 /**
  * 群成员减少事件
  *
- * @see GroupDecreaseEvent
+ * @see RawGroupDecreaseEvent
  */
 public interface OneBotGroupMemberDecreaseEvent : OneBotGroupChangeEvent, MemberDecreaseEvent {
-    override val sourceEvent: GroupDecreaseEvent
+    override val sourceEvent: RawGroupDecreaseEvent
 
     /**
      * 群号

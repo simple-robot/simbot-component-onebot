@@ -20,7 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.event.notice.NotifyEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawNotifyEvent
 import love.forte.simbot.event.MemberEvent
 import love.forte.simbot.suspendrunner.STP
 
@@ -28,19 +28,19 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * 群成员荣誉变更事件、红包人气王事件或戳一戳事件。
  *
- * @see NotifyEvent
+ * @see RawNotifyEvent
  * @see OneBotHonorEvent
  * @see OneBotLuckyKingEvent
  * @see OneBotPokeEvent
  * @author ForteScarlet
  */
 public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
-    override val sourceEvent: NotifyEvent
+    override val sourceEvent: RawNotifyEvent
 
     /**
      * 荣誉类型.
      *
-     * @see NotifyEvent.honorType
+     * @see RawNotifyEvent.honorType
      */
     public val honorType: String?
         get() = sourceEvent.honorType
@@ -82,7 +82,7 @@ public interface OneBotHonorEvent : OneBotNotifyEvent {
     /**
      * 荣誉类型.
      *
-     * @see NotifyEvent.honorType
+     * @see RawNotifyEvent.honorType
      */
     override val honorType: String
         get() = sourceEvent.honorType!!

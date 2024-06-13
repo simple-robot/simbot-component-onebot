@@ -15,32 +15,43 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.meta
+package love.forte.simbot.component.onebot.v11.event.notice
 
+import kotlin.Long
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [生命周期](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#生命周期)
+ * [群成员增加](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员增加)
  *
- *
- * @property subType 事件子类型，分别表示 OneBot 启用、停用、WebSocket 连接成功.
- * 可能的值: `enable`、`disable`、`connect`.
- * 注意，目前生命周期元事件中，只有 HTTP POST 的情况下可以收到 `enable` 和 `disable`，
- * 只有正向 WebSocket 和反向 WebSocket 可以收到 `connect`。
+ * @property subType 事件子类型，分别表示管理员已同意入群、管理员邀请入群。
+ * 可能的值: `approve`、`invite`
+ * @property groupId 群号。
+ * @property operatorId 操作者 QQ 号。
+ * @property userId 加入者 QQ 号。
  */
+@ExpectEventType(
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_increase",
+)
 @Serializable
-@ExpectEventType(postType = MetaEvent.POST_TYPE, subType = "lifecycle")
-public data class LifecycleEvent(
+public data class RawGroupIncreaseEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    @SerialName("meta_event_type")
-    override val metaEventType: String,
+    @SerialName("notice_type")
+    override val noticeType: String,
     @SerialName("sub_type")
     public val subType: String,
-) : MetaEvent
+    @SerialName("group_id")
+    public val groupId: LongID,
+    @SerialName("operator_id")
+    public val operatorId: LongID? = null,
+    @SerialName("user_id")
+    public val userId: LongID,
+) : RawNoticeEvent

@@ -18,7 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.event.meta
 
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawMetaEvent
 
 
 /**
@@ -26,5 +26,5 @@ import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
  * @author ForteScarlet
  */
 public interface OneBotMetaEvent : OneBotBotEvent {
-    override val sourceEvent: MetaEvent
+    override val sourceEvent: RawMetaEvent
 }

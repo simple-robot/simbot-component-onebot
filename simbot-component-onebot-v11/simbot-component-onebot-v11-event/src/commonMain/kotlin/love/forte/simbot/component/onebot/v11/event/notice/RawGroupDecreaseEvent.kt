@@ -15,35 +15,43 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.request
+package love.forte.simbot.component.onebot.v11.event.notice
 
+import kotlin.Long
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
-
 /**
- * [加好友请求](https://github.com/botuniverse/onebot-11/blob/master/event/request.md#加好友请求)
+ * [群成员减少](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员减少)
  *
- * @property userId 发送请求的 QQ 号
- * @property comment 验证信息
- * @property flag 请求 flag，在调用处理请求的 API 时需要传入
- *
- * @author ForteScarlet
+ * @property subType 事件子类型，分别表示主动退群、成员被踢、登录号被踢。
+ * 可能的值: `leave`、`kick`、`kick_me`
+ * @property groupId 群号。
+ * @property operatorId 操作者 QQ 号（如果是主动退群，则和 `user_id` 相同）。
+ * @property userId 离开者 QQ 号。
  */
+@ExpectEventType(
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_decrease",
+)
 @Serializable
-@ExpectEventType(postType = RequestEvent.POST_TYPE, subType = "friend")
-public data class FriendRequestEvent(
+public data class RawGroupDecreaseEvent(
     override val time: Long,
-    @SerialName("request_type")
-    override val requestType: String,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
+    @SerialName("notice_type")
+    override val noticeType: String,
+    @SerialName("sub_type")
+    public val subType: String,
+    @SerialName("group_id")
+    public val groupId: LongID,
+    @SerialName("operator_id")
+    public val operatorId: LongID? = null,
     @SerialName("user_id")
     public val userId: LongID,
-    public val comment: String = "",
-    public val flag: String,
-) : RequestEvent
+) : RawNoticeEvent

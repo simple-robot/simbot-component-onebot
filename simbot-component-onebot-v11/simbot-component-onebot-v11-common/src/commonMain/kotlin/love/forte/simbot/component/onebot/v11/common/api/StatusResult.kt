@@ -43,5 +43,5 @@ public data class StatusResult
 @SourceEventConstructor
 constructor(
     public val online: Boolean? = null,
-    public val good: Boolean,
+    public val good: Boolean = false,
 )

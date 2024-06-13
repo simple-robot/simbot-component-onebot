@@ -17,28 +17,25 @@
 
 package love.forte.simbot.component.onebot.v11.event.notice
 
-import kotlin.Long
-import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [群成员增加](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群成员增加)
+ * [群文件上传](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群文件上传)
  *
- * @property subType 事件子类型，分别表示管理员已同意入群、管理员邀请入群。
- * 可能的值: `approve`、`invite`
  * @property groupId 群号。
- * @property operatorId 操作者 QQ 号。
- * @property userId 加入者 QQ 号。
+ * @property userId 发送者 QQ 号。
+ * @property file 文件信息。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_increase",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_upload",
 )
 @Serializable
-public data class GroupIncreaseEvent(
+public data class RawGroupUploadEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -46,12 +43,26 @@ public data class GroupIncreaseEvent(
     override val postType: String,
     @SerialName("notice_type")
     override val noticeType: String,
-    @SerialName("sub_type")
-    public val subType: String,
     @SerialName("group_id")
     public val groupId: LongID,
-    @SerialName("operator_id")
-    public val operatorId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+    public val file: FileInfo,
+) : RawNoticeEvent {
+
+    /**
+     * [RawGroupUploadEvent] 中的 [文件信息][RawGroupUploadEvent.file]
+     *
+     * @property id 文件 ID
+     * @property name 文件名
+     * @property size 文件大小（字节数）
+     * @property busid busid（目前不清楚有什么作用）
+     */
+    @Serializable
+    public data class FileInfo(
+        val id: ID,
+        val name: String,
+        val size: Long = -1L,
+        val busid: Long = -1L,
+    )
+}

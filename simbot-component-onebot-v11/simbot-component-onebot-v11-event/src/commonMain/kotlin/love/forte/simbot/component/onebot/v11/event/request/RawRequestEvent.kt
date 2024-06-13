@@ -17,7 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.event.request
 
-import love.forte.simbot.component.onebot.v11.event.Event
+import love.forte.simbot.component.onebot.v11.event.RawEvent
 import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
 
 
@@ -26,8 +26,8 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventSubTypeProperty
  *
  * @author ForteScarlet
  */
-@ExpectEventSubTypeProperty(value = "requestType", postType = RequestEvent.POST_TYPE, name = "request_type")
-public interface RequestEvent : Event {
+@ExpectEventSubTypeProperty(value = "requestType", postType = RawRequestEvent.POST_TYPE, name = "request_type")
+public interface RawRequestEvent : RawEvent {
     /**
      * 请求类型
      */

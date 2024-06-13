@@ -18,8 +18,8 @@
 package love.forte.simbot.component.onebot.v11.core.event.meta
 
 import love.forte.simbot.component.onebot.v11.common.api.StatusResult
-import love.forte.simbot.component.onebot.v11.event.meta.HeartbeatEvent
-import love.forte.simbot.component.onebot.v11.event.meta.MetaEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
+import love.forte.simbot.component.onebot.v11.event.meta.RawMetaEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -27,12 +27,12 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * [心跳事件](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#心跳)
  *
- * @see MetaEvent
+ * @see RawMetaEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotHeartbeatEvent : OneBotMetaEvent {
-    override val sourceEvent: HeartbeatEvent
+    override val sourceEvent: RawHeartbeatEvent
 
     /**
      * 状态信息

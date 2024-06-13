@@ -23,21 +23,21 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
-import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
-import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.event.OrganizationJoinRequestEvent
 import love.forte.simbot.event.RequestEvent
 import love.forte.simbot.suspendrunner.STP
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
-public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.event.request.RequestEvent
+public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.event.request.RawRequestEvent
 
 /**
- * OneBot组件中的 [事件请求][love.forte.simbot.component.onebot.v11.event.request.RequestEvent]
+ * OneBot组件中的 [事件请求][love.forte.simbot.component.onebot.v11.event.request.RawRequestEvent]
  * 的组件事件类型。
  *
- * @see love.forte.simbot.component.onebot.v11.event.request.RequestEvent
+ * @see love.forte.simbot.component.onebot.v11.event.request.RawRequestEvent
  * @see OneBotFriendRequestEvent
  * @see OneBotGroupRequestEvent
  *
@@ -73,10 +73,10 @@ public interface OneBotRequestEvent : OneBotBotEvent, RequestEvent {
 
 /**
  * 好友添加申请事件
- * @see FriendRequestEvent
+ * @see RawFriendRequestEvent
  */
 public interface OneBotFriendRequestEvent : OneBotRequestEvent {
-    override val sourceEvent: FriendRequestEvent
+    override val sourceEvent: RawFriendRequestEvent
 
     /**
      * 好友添加申请始终是 [主动地][RequestEvent.Type.PROACTIVE]
@@ -87,7 +87,7 @@ public interface OneBotFriendRequestEvent : OneBotRequestEvent {
     /**
      * 验证信息。
      *
-     * @see FriendRequestEvent.comment
+     * @see RawFriendRequestEvent.comment
      */
     override val message: String
         get() = sourceEvent.comment
@@ -95,7 +95,7 @@ public interface OneBotFriendRequestEvent : OneBotRequestEvent {
     /**
      * 请求 flag，在调用处理请求的 API 时需要传入
      *
-     * @see FriendRequestEvent.flag
+     * @see RawFriendRequestEvent.flag
      */
     public val flag: String
         get() = sourceEvent.flag
@@ -103,7 +103,7 @@ public interface OneBotFriendRequestEvent : OneBotRequestEvent {
     /**
      * 发送请求的 QQ 号
      *
-     * @see FriendRequestEvent.userId
+     * @see RawFriendRequestEvent.userId
      */
     public val requesterId: LongID
         get() = sourceEvent.userId
@@ -144,10 +144,10 @@ public sealed class OneBotFriendRequestAcceptOption : AcceptOption {
 
 /**
  * 群添加申请事件
- * @see GroupRequestEvent
+ * @see RawGroupRequestEvent
  */
 public interface OneBotGroupRequestEvent : OneBotRequestEvent, OrganizationJoinRequestEvent {
-    override val sourceEvent: GroupRequestEvent
+    override val sourceEvent: RawGroupRequestEvent
 
     /**
      * 申请加入的群。
@@ -156,21 +156,21 @@ public interface OneBotGroupRequestEvent : OneBotRequestEvent, OrganizationJoinR
     override suspend fun content(): OneBotGroup
 
     /**
-     * 根据 [GroupRequestEvent.subType] 的值区分类型。
+     * 根据 [RawGroupRequestEvent.subType] 的值区分类型。
      * 如果是 `invite` 则为被动，否则（包括 `add`）均视为主动。
      *
      */
     override val type: RequestEvent.Type
         get() = when (sourceEvent.subType) {
-            GroupRequestEvent.SUB_TYPE_INVITE -> RequestEvent.Type.PASSIVE
-            GroupRequestEvent.SUB_TYPE_ADD -> RequestEvent.Type.PROACTIVE
+            RawGroupRequestEvent.SUB_TYPE_INVITE -> RequestEvent.Type.PASSIVE
+            RawGroupRequestEvent.SUB_TYPE_ADD -> RequestEvent.Type.PROACTIVE
             else -> RequestEvent.Type.PROACTIVE
         }
 
     /**
      * 验证信息。
      *
-     * @see GroupRequestEvent.comment
+     * @see RawGroupRequestEvent.comment
      */
     override val message: String
         get() = sourceEvent.comment
@@ -178,7 +178,7 @@ public interface OneBotGroupRequestEvent : OneBotRequestEvent, OrganizationJoinR
     /**
      * 请求 flag，在调用处理请求的 API 时需要传入
      *
-     * @see GroupRequestEvent.flag
+     * @see RawGroupRequestEvent.flag
      */
     public val flag: String
         get() = sourceEvent.flag
@@ -186,7 +186,7 @@ public interface OneBotGroupRequestEvent : OneBotRequestEvent, OrganizationJoinR
     /**
      * 发送请求的 QQ 号
      *
-     * @see GroupRequestEvent.userId
+     * @see RawGroupRequestEvent.userId
      */
     override val requesterId: LongID
         get() = sourceEvent.userId

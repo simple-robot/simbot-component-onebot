@@ -42,11 +42,11 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventType
  * 为 `poke` 时代表被戳的人的ID，否则为 `null`。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
+    postType = RawNoticeEvent.POST_TYPE,
     subType = "notify",
 )
 @Serializable
-public data class NotifyEvent(
+public data class RawNotifyEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -64,20 +64,20 @@ public data class NotifyEvent(
     public val userId: LongID,
     @SerialName("target_id")
     public val targetId: LongID? = null
-) : NoticeEvent {
+) : RawNoticeEvent {
     public companion object {
         /**
-         * @see NotifyEvent.subType
+         * @see RawNotifyEvent.subType
          */
         public const val SUB_TYPE_HONOR: String = "honor"
 
         /**
-         * @see NotifyEvent.subType
+         * @see RawNotifyEvent.subType
          */
         public const val SUB_TYPE_POKE: String = "poke"
 
         /**
-         * @see NotifyEvent.subType
+         * @see RawNotifyEvent.subType
          */
         public const val SUB_TYPE_LUCKY_KING: String = "lucky_king"
     }

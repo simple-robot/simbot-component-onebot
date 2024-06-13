@@ -27,8 +27,8 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupChangeEvent
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupMemberDecreaseEvent
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupMemberIncreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupDecreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupIncreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupDecreaseEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupIncreaseEvent
 
 
 /**
@@ -49,7 +49,7 @@ internal abstract class OneBotGroupChangeEventImpl : OneBotGroupChangeEvent {
 
 internal class OneBotGroupMemberIncreaseEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupIncreaseEvent,
+    override val sourceEvent: RawGroupIncreaseEvent,
     override val bot: OneBotBot
 ) : OneBotGroupChangeEventImpl(), OneBotGroupMemberIncreaseEvent {
     override suspend fun member(): OneBotMember {
@@ -68,7 +68,7 @@ internal class OneBotGroupMemberIncreaseEventImpl(
 
 internal class OneBotGroupMemberDecreaseEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupDecreaseEvent,
+    override val sourceEvent: RawGroupDecreaseEvent,
     override val bot: OneBotBotImpl
 ) : OneBotGroupChangeEventImpl(), OneBotGroupMemberDecreaseEvent {
 

@@ -23,7 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.notice.OneBotGroupRecallEvent
-import love.forte.simbot.component.onebot.v11.event.notice.GroupRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupRecallEvent
 
 
 /**
@@ -32,7 +32,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.GroupRecallEvent
  */
 internal class OneBotGroupRecallEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupRecallEvent,
+    override val sourceEvent: RawGroupRecallEvent,
     override val bot: OneBotBot
 ) : OneBotGroupRecallEvent {
     override val id: ID

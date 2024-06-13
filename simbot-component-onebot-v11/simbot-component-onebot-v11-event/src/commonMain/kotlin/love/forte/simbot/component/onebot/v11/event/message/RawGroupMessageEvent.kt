@@ -45,8 +45,8 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegme
  *
  */
 @Serializable
-@ExpectEventType(postType = MessageEvent.POST_TYPE, subType = "group")
-public data class GroupMessageEvent @SourceEventConstructor constructor(
+@ExpectEventType(postType = RawMessageEvent.POST_TYPE, subType = "group")
+public data class RawGroupMessageEvent @SourceEventConstructor constructor(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -63,12 +63,12 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
     public val anonymous: Anonymous? = null,
     override val message: List<OneBotMessageSegment> = emptyList(),
     @SerialName("raw_message")
-    override val rawMessage: String,
+    override val rawMessage: String = "",
     @SerialName("user_id")
     override val userId: LongID,
-    override val font: Int?,
+    override val font: Int? = null,
     override val sender: Sender
-) : MessageEvent {
+) : RawMessageEvent {
 
     /**
      * 匿名信息
@@ -97,21 +97,21 @@ public data class GroupMessageEvent @SourceEventConstructor constructor(
         public val card: String = "",
         public val area: String? = null,
         public val level: Int? = null,
-        public val role: String,
+        public val role: String = "member",
         public val title: String? = null,
         override val sex: String = DEFAULT_SEX,
         override val age: Int = DEFAULT_AGE,
-    ) : MessageEvent.Sender
+    ) : RawMessageEvent.Sender
 
 
     public companion object {
-        /** @see GroupMessageEvent.subType */
+        /** @see RawGroupMessageEvent.subType */
         public const val SUB_TYPE_NORMAL: String = "normal"
 
-        /** @see GroupMessageEvent.subType */
+        /** @see RawGroupMessageEvent.subType */
         public const val SUB_TYPE_ANONYMOUS: String = "anonymous"
 
-        /** @see GroupMessageEvent.subType */
+        /** @see RawGroupMessageEvent.subType */
         public const val SUB_TYPE_NOTICE: String = "notice"
 
     }

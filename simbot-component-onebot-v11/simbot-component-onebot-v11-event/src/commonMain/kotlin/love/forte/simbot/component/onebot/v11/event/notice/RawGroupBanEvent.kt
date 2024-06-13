@@ -35,11 +35,11 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventType
  * @property duration 禁言时长，单位秒。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
+    postType = RawNoticeEvent.POST_TYPE,
     subType = "group_ban",
 )
 @Serializable
-public data class GroupBanEvent(
+public data class RawGroupBanEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -52,19 +52,19 @@ public data class GroupBanEvent(
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("operator_id")
-    public val operatorId: LongID,
+    public val operatorId: LongID? = null,
     @SerialName("user_id")
     public val userId: LongID,
-    public val duration: Long,
-) : NoticeEvent {
+    public val duration: Long = -1L,
+) : RawNoticeEvent {
     public companion object {
         /**
-         * @see GroupBanEvent.subType
+         * @see RawGroupBanEvent.subType
          */
         public const val SUB_TYPE_BAN: String = "ban"
 
         /**
-         * @see GroupBanEvent.subType
+         * @see RawGroupBanEvent.subType
          */
         public const val SUB_TYPE_LIFT_BAN: String = "lift_ban"
     }

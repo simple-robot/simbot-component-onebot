@@ -20,7 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
-import love.forte.simbot.component.onebot.v11.event.notice.GroupRecallEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupRecallEvent
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.suspendrunner.STP
 
@@ -28,12 +28,12 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * 群消息撤回事件
  *
- * @see GroupRecallEvent
+ * @see RawGroupRecallEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotGroupRecallEvent : OneBotNoticeEvent, ChatGroupEvent {
-    override val sourceEvent: GroupRecallEvent
+    override val sourceEvent: RawGroupRecallEvent
 
     /**
      * 消息ID
@@ -56,7 +56,7 @@ public interface OneBotGroupRecallEvent : OneBotNoticeEvent, ChatGroupEvent {
     /**
      * 操作者ID
      */
-    public val operatorId: LongID
+    public val operatorId: LongID?
         get() = sourceEvent.operatorId
 
     /**

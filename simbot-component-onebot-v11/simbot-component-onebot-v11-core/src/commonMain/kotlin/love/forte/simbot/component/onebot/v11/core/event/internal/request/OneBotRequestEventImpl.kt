@@ -32,8 +32,8 @@ import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.request.*
-import love.forte.simbot.component.onebot.v11.event.request.FriendRequestEvent
-import love.forte.simbot.component.onebot.v11.event.request.GroupRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
+import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 
 
 internal abstract class OneBotRequestEventImpl : OneBotRequestEvent {
@@ -61,7 +61,7 @@ internal abstract class OneBotRequestEventImpl : OneBotRequestEvent {
 
 internal class OneBotFriendRequestEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: FriendRequestEvent,
+    override val sourceEvent: RawFriendRequestEvent,
     override val bot: OneBotBot,
 ) : OneBotRequestEventImpl(), OneBotFriendRequestEvent {
     override suspend fun doAccept(options: Array<out AcceptOption>) {
@@ -90,7 +90,7 @@ internal class OneBotFriendRequestEventImpl(
 
 internal class OneBotGroupRequestEventImpl(
     override val sourceEventRaw: String?,
-    override val sourceEvent: GroupRequestEvent,
+    override val sourceEvent: RawGroupRequestEvent,
     override val bot: OneBotBotImpl,
 ) : OneBotRequestEventImpl(), OneBotGroupRequestEvent {
     override suspend fun doAccept(options: Array<out AcceptOption>) {

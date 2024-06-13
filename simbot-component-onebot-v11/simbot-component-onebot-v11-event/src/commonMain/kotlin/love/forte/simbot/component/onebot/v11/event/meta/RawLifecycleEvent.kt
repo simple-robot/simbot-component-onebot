@@ -20,30 +20,27 @@ package love.forte.simbot.component.onebot.v11.event.meta
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
-import love.forte.simbot.component.onebot.v11.common.api.StatusResult
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
-
 /**
- * [心跳](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#心跳)
+ * [生命周期](https://github.com/botuniverse/onebot-11/blob/master/event/meta.md#生命周期)
  *
- * > 其中 `status` 字段的内容和 `get_status` 接口的快速操作相同。
  *
- * @property status 状态信息
- * @property interval 到下次心跳的间隔，单位毫秒
- *
- * @author ForteScarlet
+ * @property subType 事件子类型，分别表示 OneBot 启用、停用、WebSocket 连接成功.
+ * 可能的值: `enable`、`disable`、`connect`.
+ * 注意，目前生命周期元事件中，只有 HTTP POST 的情况下可以收到 `enable` 和 `disable`，
+ * 只有正向 WebSocket 和反向 WebSocket 可以收到 `connect`。
  */
 @Serializable
-@ExpectEventType(postType = MetaEvent.POST_TYPE, subType = "heartbeat")
-public data class HeartbeatEvent(
+@ExpectEventType(postType = RawMetaEvent.POST_TYPE, subType = "lifecycle")
+public data class RawLifecycleEvent(
     override val time: Long,
-    @SerialName("meta_event_type")
-    override val metaEventType: String,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    public val status: StatusResult,
-    public val interval: Long,
-) : MetaEvent
+    @SerialName("meta_event_type")
+    override val metaEventType: String,
+    @SerialName("sub_type")
+    public val subType: String,
+) : RawMetaEvent

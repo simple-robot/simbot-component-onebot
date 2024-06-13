@@ -41,8 +41,8 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegme
  * @property sender 发送人信息
  */
 @Serializable
-@ExpectEventType(postType = MessageEvent.POST_TYPE, subType = "private")
-public data class PrivateMessageEvent @SourceEventConstructor constructor(
+@ExpectEventType(postType = RawMessageEvent.POST_TYPE, subType = "private")
+public data class RawPrivateMessageEvent @SourceEventConstructor constructor(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -56,12 +56,12 @@ public data class PrivateMessageEvent @SourceEventConstructor constructor(
     override val subType: String,
     override val message: List<OneBotMessageSegment> = emptyList(),
     @SerialName("raw_message")
-    override val rawMessage: String,
+    override val rawMessage: String = "",
     @SerialName("user_id")
     override val userId: LongID,
-    override val font: Int?,
+    override val font: Int? = null,
     override val sender: Sender
-) : MessageEvent {
+) : RawMessageEvent {
     /**
      * 私聊事件的发送人信息
      */
@@ -72,16 +72,16 @@ public data class PrivateMessageEvent @SourceEventConstructor constructor(
         override val nickname: String,
         override val sex: String = DEFAULT_SEX,
         override val age: Int = DEFAULT_AGE
-    ) : MessageEvent.Sender
+    ) : RawMessageEvent.Sender
 
     public companion object {
         /**
-         * @see PrivateMessageEvent.subType
+         * @see RawPrivateMessageEvent.subType
          */
         public const val SUB_TYPE_FRIEND: String = "friend"
 
         /**
-         * @see PrivateMessageEvent.subType
+         * @see RawPrivateMessageEvent.subType
          */
         public const val SUB_TYPE_GROUP: String = "group"
 

@@ -60,7 +60,7 @@ private val KSerializerClassName =
 private const val EVENT_BASE_PACKAGE = "love.forte.simbot.component.onebot.v11.event"
 
 private val EventClassName =
-    ClassName(EVENT_BASE_PACKAGE, "Event")
+    ClassName(EVENT_BASE_PACKAGE, "RawEvent")
 
 private val ExpectEventTypeAnnotationClassName =
     ClassName(EVENT_BASE_PACKAGE, "ExpectEventType")

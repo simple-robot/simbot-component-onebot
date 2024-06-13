@@ -30,7 +30,7 @@ import love.forte.simbot.suspendrunner.ST
 /**
  * OneBot11原始的消息事件结构体定义类型。
  */
-public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.event.message.MessageEvent
+public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.event.message.RawMessageEvent
 
 /**
  * OneBot组件中的消息相关事件。

@@ -86,7 +86,7 @@ public fun OneBotMessageSegment.toElement(): OneBotMessageSegmentElement =
  * 消息段 [OneBotMessageSegment] 作为 [OneBotMessageElement] 的实现。
  *
  * [OneBotMessageSegment] 不能直接实现 [Message.Element]，
- * 因为消息段的多态序列化鸣潮很可能会与其他序列化信息产生冲突（比如 `at`，没有特殊的前缀，容易引发歧义）。
+ * 因为消息段的多态序列化信息很可能会与其他序列化信息产生冲突（比如 `at`，没有特殊的前缀，容易引发歧义）。
  *
  * 因此需要使用 [OneBotMessageSegmentElement] 作为其包装。
  * 可以使用 [OneBotMessageSegment.toElement] 或此类的构造函数构建它。

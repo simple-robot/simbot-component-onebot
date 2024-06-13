@@ -20,19 +20,19 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.event.notice.GroupAdminEvent
+import love.forte.simbot.component.onebot.v11.event.notice.RawGroupAdminEvent
 import love.forte.simbot.event.MemberEvent
 import love.forte.simbot.suspendrunner.STP
 
 
 /**
  * 群管理员变动事件
- * @see GroupAdminEvent
+ * @see RawGroupAdminEvent
  *
  * @author ForteScarlet
  */
 public interface OneBotGroupAdminEvent : OneBotNoticeEvent, MemberEvent {
-    override val sourceEvent: GroupAdminEvent
+    override val sourceEvent: RawGroupAdminEvent
 
     /**
      * 群号
@@ -50,17 +50,17 @@ public interface OneBotGroupAdminEvent : OneBotNoticeEvent, MemberEvent {
      * 事件子类型，分别表示设置和取消管理员。
      * 可能的值: `set`、`unset`
      *
-     * @see GroupAdminEvent.subType
+     * @see RawGroupAdminEvent.subType
      */
     public val subType: String
         get() = sourceEvent.subType
 
     /**
      * 是被 _任职_ 为管理，
-     * 即 [subType] == [GroupAdminEvent.SUB_TYPE_SET].
+     * 即 [subType] == [RawGroupAdminEvent.SUB_TYPE_SET].
      */
     public val isSet: Boolean
-        get() = subType == GroupAdminEvent.SUB_TYPE_SET
+        get() = subType == RawGroupAdminEvent.SUB_TYPE_SET
 
     /**
      * 群

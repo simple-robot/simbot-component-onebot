@@ -15,54 +15,55 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.event.notice
+package love.forte.simbot.component.onebot.v11.event.request
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
+
 /**
- * [群文件上传](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群文件上传)
+ * [加群请求／邀请](https://github.com/botuniverse/onebot-11/blob/master/event/request.md#加群请求邀请)
  *
- * @property groupId 群号。
- * @property userId 发送者 QQ 号。
- * @property file 文件信息。
+ * @property subType 请求子类型，分别表示加群请求、邀请登录号入群。
+ * 可能：`add`、`invite`
+ * @property groupId 群号
+ * @property userId 发送请求的 QQ 号
+ * @property comment 验证信息
+ * @property flag 请求 flag，在调用处理请求的 API 时需要传入
+ *
+ * @author ForteScarlet
  */
-@ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "group_upload",
-)
 @Serializable
-public data class GroupUploadEvent(
+@ExpectEventType(postType = RawRequestEvent.POST_TYPE, subType = "group")
+public data class RawGroupRequestEvent(
     override val time: Long,
+    @SerialName("request_type")
+    override val requestType: String,
     @SerialName("self_id")
     override val selfId: LongID,
     @SerialName("post_type")
     override val postType: String,
-    @SerialName("notice_type")
-    override val noticeType: String,
+    @SerialName("sub_type")
+    public val subType: String,
     @SerialName("group_id")
     public val groupId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-    public val file: FileInfo,
-) : NoticeEvent {
+    public val comment: String = "",
+    public val flag: String,
+) : RawRequestEvent {
 
-    /**
-     * [GroupUploadEvent] 中的 [文件信息][GroupUploadEvent.file]
-     *
-     * @property id 文件 ID
-     * @property name 文件名
-     * @property size 文件大小（字节数）
-     * @property busid busid（目前不清楚有什么作用）
-     */
-    @Serializable
-    public data class FileInfo(
-        val id: ID,
-        val name: String,
-        val size: Long,
-        val busid: Long,
-    )
+    public companion object {
+        /**
+         * @see RawGroupRequestEvent.subType
+         */
+        public const val SUB_TYPE_ADD: String = "add"
+
+        /**
+         * @see RawGroupRequestEvent.subType
+         */
+        public const val SUB_TYPE_INVITE: String = "invite"
+    }
 }

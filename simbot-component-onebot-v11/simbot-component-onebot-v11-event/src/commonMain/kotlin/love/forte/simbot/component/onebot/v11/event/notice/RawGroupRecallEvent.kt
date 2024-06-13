@@ -17,22 +17,27 @@
 
 package love.forte.simbot.component.onebot.v11.event.notice
 
+import kotlin.Long
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.ExpectEventType
 
 /**
- * [好友添加](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#好友添加)
+ * [群消息撤回](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md#群消息撤回)
  *
- * @property userId 新添加好友 QQ 号。
+ * @property groupId 群号。
+ * @property userId 消息发送者 QQ 号。
+ * @property operatorId 操作者 QQ 号。
+ * @property messageId 被撤回的消息 ID。
  */
 @ExpectEventType(
-    postType = NoticeEvent.POST_TYPE,
-    subType = "friend_add",
+    postType = RawNoticeEvent.POST_TYPE,
+    subType = "group_recall",
 )
 @Serializable
-public data class FriendAddEvent(
+public data class RawGroupRecallEvent(
     override val time: Long,
     @SerialName("self_id")
     override val selfId: LongID,
@@ -40,6 +45,12 @@ public data class FriendAddEvent(
     override val postType: String,
     @SerialName("notice_type")
     override val noticeType: String,
+    @SerialName("group_id")
+    public val groupId: LongID,
     @SerialName("user_id")
     public val userId: LongID,
-) : NoticeEvent
+    @SerialName("operator_id")
+    public val operatorId: LongID?,
+    @SerialName("message_id")
+    public val messageId: LongID,
+) : RawNoticeEvent

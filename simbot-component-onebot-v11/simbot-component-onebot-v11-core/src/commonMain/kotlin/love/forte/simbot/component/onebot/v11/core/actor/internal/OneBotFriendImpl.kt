@@ -26,7 +26,7 @@ import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
-import love.forte.simbot.component.onebot.v11.event.message.PrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
@@ -73,11 +73,11 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
 }
 
 /**
- * 基于 [PrivateMessageEvent.Sender] 的 [OneBotFriend] 实现
+ * 基于 [RawPrivateMessageEvent.Sender] 的 [OneBotFriend] 实现
  *
  */
 internal class OneBotFriendEventSenderImpl(
-    private val sender: PrivateMessageEvent.Sender,
+    private val sender: RawPrivateMessageEvent.Sender,
     override val bot: OneBotBotImpl,
 ) : OneBotFriendImpl(), OneBotFriend {
     override val coroutineContext: CoroutineContext = bot.subContext
@@ -89,7 +89,7 @@ internal class OneBotFriendEventSenderImpl(
         get() = sender.nickname
 }
 
-internal fun PrivateMessageEvent.Sender.toFriend(bot: OneBotBotImpl): OneBotFriendEventSenderImpl =
+internal fun RawPrivateMessageEvent.Sender.toFriend(bot: OneBotBotImpl): OneBotFriendEventSenderImpl =
     OneBotFriendEventSenderImpl(this, bot)
 
 internal class OneBotFriendApiResultImpl(
