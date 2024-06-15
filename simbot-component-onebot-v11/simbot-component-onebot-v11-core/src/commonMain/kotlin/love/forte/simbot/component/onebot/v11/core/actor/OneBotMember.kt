@@ -80,6 +80,37 @@ public interface OneBotMember : Member, DeleteSupport {
         get() = qqAvatar640(id.literal)
 
     /**
+     * 群成员的QQ名。
+     */
+    override val name: String
+
+    /**
+     * 群成员在群内的昵称，
+     * 即群成员在群里的群备注，也就是 `card`。
+     * 如果备注为空字符串，则会被视为 `null`，也就是没有备注。
+     *
+     * 不支持获取的情况下也会得到 `null`，例如在临时会话中。
+     */
+    override val nick: String?
+
+    /**
+     * 设置成员在此群内的群备注。
+     *
+     * 当 [setNick] 修改成功后会影响 [nick] 的值，
+     * 但是仅会影响 **当前对象** 内的属性值。
+     *
+     * [setNick] 不保证并发安全也不会加锁，
+     * 如果并发请求 [setNick]，无法保证 [nick] 的最终结果。
+     *
+     * @see nick
+     *
+     * @param newNick 要设置的新备注, `null` 或空字符串代表删除备注
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun setNick(newNick: String?)
+
+    /**
      * 向此成员发送消息。
      *
      * @throws Throwable 任何可能在请求API时得到的异常

@@ -150,8 +150,7 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      * 当 [setName] 修改成功后会影响 [name] 的值，
      * 但是仅会影响 **当前对象** 内的属性值。
      *
-     * [name] 在内部的实现应当是 `Volatile` 的，
-     * 但是 [setName] 不保证并发安全也不会加锁，
+     * [setName] 不保证并发安全也不会加锁，
      * 如果并发请求 [setName]，无法保证 [name] 的最终结果。
      *
      * @param newName 要设置的新群名
@@ -160,6 +159,17 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST
     public suspend fun setName(newName: String)
+
+    /**
+     * 设置 bot 在此群内的群备注。
+     *
+     * @see OneBotMember.nick
+     *
+     * @param newNick 要设置的新备注, `null` 或空字符串代表删除备注
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun setBotGroupNick(newNick: String?)
 }
 
 /**
