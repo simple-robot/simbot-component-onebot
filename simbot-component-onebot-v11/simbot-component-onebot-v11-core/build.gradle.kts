@@ -98,6 +98,7 @@ kotlin {
             implementation(libs.log4j.core)
             implementation(libs.log4j.slf4j2)
             implementation(libs.kotlinPoet)
+            implementation(libs.kotlinx.coroutines.reactor)
             api(libs.ktor.client.java)
         }
     }
