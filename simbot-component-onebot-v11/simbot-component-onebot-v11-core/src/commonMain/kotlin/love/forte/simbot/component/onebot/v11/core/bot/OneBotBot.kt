@@ -32,8 +32,7 @@ import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImple
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
-import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoApi
-import love.forte.simbot.component.onebot.v11.core.api.GetLoginInfoResult
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmSynthetic
@@ -156,6 +155,30 @@ public interface OneBotBot : Bot {
      */
     override val guildRelation: GuildRelation?
         get() = null
+
+    /**
+     * 获取 Cookies
+     * @see GetCookiesApi
+     * @throws Throwable 任何API请求过程中可能产生的异常
+     */
+    @ST
+    public suspend fun getCookies(domain: String? = null): GetCookiesResult
+
+    /**
+     * 获取 QQ 相关接口凭证
+     * @see GetCredentialsApi
+     * @throws Throwable 任何API请求过程中可能产生的异常
+     */
+    @ST
+    public suspend fun getCredentials(domain: String? = null): GetCredentialsResult
+
+    /**
+     * 获取 CSRF Token
+     * @see GetCsrfTokenApi
+     * @throws Throwable 任何API请求过程中可能产生的异常
+     */
+    @ST
+    public suspend fun getCsrfToken(): GetCsrfTokenResult
 
 
 }
