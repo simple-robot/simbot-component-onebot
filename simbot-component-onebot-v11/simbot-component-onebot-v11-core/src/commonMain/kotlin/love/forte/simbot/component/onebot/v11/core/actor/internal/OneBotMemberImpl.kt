@@ -24,10 +24,7 @@ import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoResult
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupAnonymousBanApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
@@ -166,6 +163,14 @@ internal abstract class OneBotMemberImpl : OneBotMember {
             userId = id,
             duration = seconds
         ).requestDataBy(bot)
+    }
+
+    override suspend fun setNick(newNick: String?) {
+        SetGroupCardApi.create(
+            groupId = groupIdOrFailure,
+            userId = id,
+            card = newNick
+        )
     }
 
     override fun toString(): String = "OneBotMember(id=$id, bot=${bot.id})"
