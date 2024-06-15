@@ -25,6 +25,7 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupAdminApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
@@ -70,6 +71,10 @@ public interface OneBotMember : Member, DeleteSupport {
     /**
      * 此成员所属角色。
      * 如果无法获取（例如是在群临时会话的私聊中）则得到 `null`
+     *
+     * 值有可能被 [setAdmin] 所影响。
+     *
+     * @see setAdmin
      */
     public val role: OneBotMemberRole?
 
@@ -203,6 +208,24 @@ public interface OneBotMember : Member, DeleteSupport {
     public suspend fun unban() {
         ban(Duration.ZERO)
     }
+
+    /**
+     * 设置当前群成员为管理员/撤销其管理员。
+     *
+     * 会根据 [enable] 在请求成功后影响 [role] 的值，
+     * 但是仅会影响 **当前对象** 内的属性值。
+     *
+     * [setAdmin] 不保证并发安全也不会加锁，
+     * 如果并发请求 [setAdmin]，无法保证 [role] 的最终结果。
+     *
+     * @see OneBotGroup.setAdmin
+     * @see SetGroupAdminApi
+     * @param enable 为 `true` 则为设置管理，`false` 则为取消管理。
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     * @throws IllegalStateException 无法获取到所属群时抛出，例如在临时会话中。
+     */
+    @ST
+    public suspend fun setAdmin(enable: Boolean)
 }
 
 /**

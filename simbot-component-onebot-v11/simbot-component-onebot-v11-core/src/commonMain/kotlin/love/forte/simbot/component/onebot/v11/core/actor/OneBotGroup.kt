@@ -24,6 +24,7 @@ import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupAdminApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
@@ -170,6 +171,19 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST
     public suspend fun setBotGroupNick(newNick: String?)
+
+    /**
+     * 设置指定的群成员为管理员/撤销其管理员。
+     *
+     * @see OneBotMember.setAdmin
+     * @see SetGroupAdminApi
+     * @param memberId 目标成员的ID
+     * @param enable 为 `true` 则为设置管理，`false` 则为取消管理。
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun setAdmin(memberId: ID, enable: Boolean)
+
 }
 
 /**
