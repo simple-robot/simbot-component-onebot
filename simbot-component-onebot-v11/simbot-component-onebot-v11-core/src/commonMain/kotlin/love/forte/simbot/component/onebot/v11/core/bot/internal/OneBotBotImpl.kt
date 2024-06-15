@@ -582,6 +582,15 @@ internal class OneBotBotImpl(
         }
     }
 
+    override suspend fun getCookies(domain: String?): GetCookiesResult =
+        GetCookiesApi.create(domain).requestDataBy(this)
+
+    override suspend fun getCredentials(domain: String?): GetCredentialsResult =
+        GetCredentialsApi.create(domain).requestDataBy(this)
+
+    override suspend fun getCsrfToken(): GetCsrfTokenResult =
+        GetCsrfTokenApi.create().requestDataBy(this)
+
     override fun toString(): String =
         "OneBotBot(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"
 }
