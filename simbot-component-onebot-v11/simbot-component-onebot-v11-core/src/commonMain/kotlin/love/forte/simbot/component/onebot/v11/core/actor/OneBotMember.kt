@@ -25,6 +25,7 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
+import love.forte.simbot.component.onebot.v11.core.api.SetGroupAdminApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
@@ -70,6 +71,10 @@ public interface OneBotMember : Member, DeleteSupport {
     /**
      * 此成员所属角色。
      * 如果无法获取（例如是在群临时会话的私聊中）则得到 `null`
+     *
+     * 值有可能被 [setAdmin] 所影响。
+     *
+     * @see setAdmin
      */
     public val role: OneBotMemberRole?
 
@@ -78,6 +83,37 @@ public interface OneBotMember : Member, DeleteSupport {
      */
     override val avatar: String
         get() = qqAvatar640(id.literal)
+
+    /**
+     * 群成员的QQ名。
+     */
+    override val name: String
+
+    /**
+     * 群成员在群内的昵称，
+     * 即群成员在群里的群备注，也就是 `card`。
+     * 如果备注为空字符串，则会被视为 `null`，也就是没有备注。
+     *
+     * 不支持获取的情况下也会得到 `null`，例如在临时会话中。
+     */
+    override val nick: String?
+
+    /**
+     * 设置成员在此群内的群备注。
+     *
+     * 当 [setNick] 修改成功后会影响 [nick] 的值，
+     * 但是仅会影响 **当前对象** 内的属性值。
+     *
+     * [setNick] 不保证并发安全也不会加锁，
+     * 如果并发请求 [setNick]，无法保证 [nick] 的最终结果。
+     *
+     * @see nick
+     *
+     * @param newNick 要设置的新备注, `null` 或空字符串代表删除备注
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun setNick(newNick: String?)
 
     /**
      * 向此成员发送消息。
@@ -172,6 +208,24 @@ public interface OneBotMember : Member, DeleteSupport {
     public suspend fun unban() {
         ban(Duration.ZERO)
     }
+
+    /**
+     * 设置当前群成员为管理员/撤销其管理员。
+     *
+     * 会根据 [enable] 在请求成功后影响 [role] 的值，
+     * 但是仅会影响 **当前对象** 内的属性值。
+     *
+     * [setAdmin] 不保证并发安全也不会加锁，
+     * 如果并发请求 [setAdmin]，无法保证 [role] 的最终结果。
+     *
+     * @see OneBotGroup.setAdmin
+     * @see SetGroupAdminApi
+     * @param enable 为 `true` 则为设置管理，`false` 则为取消管理。
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     * @throws IllegalStateException 无法获取到所属群时抛出，例如在临时会话中。
+     */
+    @ST
+    public suspend fun setAdmin(enable: Boolean)
 }
 
 /**

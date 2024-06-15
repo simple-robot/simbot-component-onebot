@@ -159,6 +159,22 @@ internal abstract class OneBotGroupImpl(
         this.name = newName
     }
 
+    override suspend fun setBotGroupNick(newNick: String?) {
+        SetGroupCardApi.create(
+            groupId = id,
+            userId = bot.userId,
+            card = newNick
+        ).requestDataBy(bot)
+    }
+
+    override suspend fun setAdmin(memberId: ID, enable: Boolean) {
+        SetGroupAdminApi.create(
+            groupId = id,
+            userId = memberId,
+            enable = enable,
+        ).requestDataBy(bot)
+    }
+
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }
 

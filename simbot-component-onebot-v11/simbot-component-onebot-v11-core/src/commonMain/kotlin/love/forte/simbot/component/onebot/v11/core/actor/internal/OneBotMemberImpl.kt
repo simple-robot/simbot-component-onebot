@@ -24,10 +24,7 @@ import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupMemberInfoResult
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupAnonymousBanApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
@@ -40,18 +37,28 @@ import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 
 
-internal abstract class OneBotMemberImpl : OneBotMember {
+internal abstract class OneBotMemberImpl(
+    initialRole: OneBotMemberRole?,
+    initialNick: String?
+) : OneBotMember {
     protected abstract val bot: OneBotBotImpl
     protected abstract val groupId: ID?
 
     protected inline val groupIdOrFailure: ID
         get() = groupId
             ?: error("The group id for current member $this is unknown")
+
+    @Volatile
+    override var role: OneBotMemberRole? = initialRole
+
+    @Volatile
+    override var nick: String? = initialNick
 
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendPrivateTextMsgApi(
@@ -168,6 +175,30 @@ internal abstract class OneBotMemberImpl : OneBotMember {
         ).requestDataBy(bot)
     }
 
+    override suspend fun setNick(newNick: String?) {
+        SetGroupCardApi.create(
+            groupId = groupIdOrFailure,
+            userId = id,
+            card = newNick
+        ).requestDataBy(bot)
+
+        this.nick = newNick
+    }
+
+    override suspend fun setAdmin(enable: Boolean) {
+        SetGroupAdminApi.create(
+            groupId = groupIdOrFailure,
+            userId = id,
+            enable = enable
+        ).requestDataBy(bot)
+
+        this.role = if (enable) {
+            OneBotMemberRole.ADMIN
+        } else {
+            OneBotMemberRole.MEMBER
+        }
+    }
+
     override fun toString(): String = "OneBotMember(id=$id, bot=${bot.id})"
 }
 
@@ -175,9 +206,12 @@ internal class OneBotMemberPrivateMessageEventSenderImpl(
     private val source: RawPrivateMessageEvent.Sender,
     override val groupId: ID?,
     override val bot: OneBotBotImpl,
-    override val nick: String?,
-    override val role: OneBotMemberRole?,
-) : OneBotMemberImpl() {
+    nick: String?,
+    role: OneBotMemberRole?,
+) : OneBotMemberImpl(
+    initialRole = role,
+    initialNick = nick
+) {
     override val coroutineContext: CoroutineContext = bot.subContext
 
     override val id: ID
@@ -192,7 +226,11 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
     override val groupId: ID?,
     private val anonymous: RawGroupMessageEvent.Anonymous?,
     override val bot: OneBotBotImpl,
-) : OneBotMemberImpl() {
+) : OneBotMemberImpl(
+    initialRole = OneBotMemberRole.valueOfLenient(source.role)
+        ?: OneBotMemberRole.MEMBER,
+    initialNick = source.card.takeIf { it.isNotEmpty() }
+) {
     override val coroutineContext: CoroutineContext = bot.subContext
 
     override val id: ID
@@ -200,13 +238,6 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
 
     override val name: String
         get() = source.nickname
-
-    override val nick: String?
-        get() = source.card.takeIf { it.isNotEmpty() }
-
-    override val role: OneBotMemberRole
-        get() = OneBotMemberRole.valueOfLenient(source.role)
-            ?: OneBotMemberRole.MEMBER
 
     override suspend fun doBan(seconds: Long) {
         val anonymous = this.anonymous
@@ -253,7 +284,11 @@ internal fun RawGroupMessageEvent.Sender.toMember(
 internal class OneBotMemberApiResultImpl(
     private val source: GetGroupMemberInfoResult,
     override val bot: OneBotBotImpl,
-) : OneBotMemberImpl() {
+) : OneBotMemberImpl(
+    initialRole = OneBotMemberRole.valueOfLenient(source.role)
+        ?: OneBotMemberRole.MEMBER,
+    initialNick = source.card.takeIf { it.isNotEmpty() }
+) {
     override val coroutineContext: CoroutineContext = bot.subContext
 
     override val id: ID
@@ -264,13 +299,6 @@ internal class OneBotMemberApiResultImpl(
 
     override val name: String
         get() = source.nickname
-
-    override val nick: String?
-        get() = source.card.takeIf { it.isNotEmpty() }
-
-    override val role: OneBotMemberRole
-        get() = OneBotMemberRole.valueOfLenient(source.role)
-            ?: OneBotMemberRole.MEMBER
 }
 
 internal fun GetGroupMemberInfoResult.toMember(

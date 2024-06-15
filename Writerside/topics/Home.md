@@ -1,5 +1,9 @@
 # 欢迎！
 
+<a href="https://github.com/simple-robot/simbot-component-onebot/releases/latest">
+<img alt="release" src="https://img.shields.io/github/v/release/simple-robot/simbot-component-onebot" />
+</a>
+
 这里是
 [**Simple Robot v4**](https://github.com/simple-robot/simpler-robot/tree/v4-dev)
 的
