@@ -25,9 +25,7 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupAdminApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupBanApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupKickApi
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.Member
@@ -114,6 +112,21 @@ public interface OneBotMember : Member, DeleteSupport {
      */
     @ST
     public suspend fun setNick(newNick: String?)
+
+    /**
+     * 获取当前成员在API [GetGroupMemberInfoApi] 中的响应结果。
+     * 根据 [OneBotMember] 具体实现的不同，可能会发起API请求
+     * （例如 [OneBotMember] 来自事件），
+     * 也可能会直接获取缓存信息（例如 [OneBotMember] 来自 [OneBotGroup.member]）。
+     *
+     * 如果会发起API请求，那么每次调用**都会**发起请求，不会进行缓存。
+     *
+     * @see GetGroupMemberInfoApi
+     *
+     * @throws Throwable 如果会发起请求，则任何可能在请求API时得到的异常
+     */
+    @ST
+    public suspend fun getSourceMemberInfo(): GetGroupMemberInfoResult
 
     /**
      * 向此成员发送消息。

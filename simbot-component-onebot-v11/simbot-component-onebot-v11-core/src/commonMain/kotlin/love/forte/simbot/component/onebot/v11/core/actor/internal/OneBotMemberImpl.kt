@@ -175,6 +175,13 @@ internal abstract class OneBotMemberImpl(
         ).requestDataBy(bot)
     }
 
+    override suspend fun getSourceMemberInfo(): GetGroupMemberInfoResult {
+        return GetGroupMemberInfoApi.create(
+            groupId = groupIdOrFailure,
+            userId = id,
+        ).requestDataBy(bot)
+    }
+
     override suspend fun setNick(newNick: String?) {
         SetGroupCardApi.create(
             groupId = groupIdOrFailure,
