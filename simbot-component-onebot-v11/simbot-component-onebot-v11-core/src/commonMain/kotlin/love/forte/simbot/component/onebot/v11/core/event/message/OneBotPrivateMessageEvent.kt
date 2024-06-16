@@ -21,8 +21,10 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.ContactMessageEvent
 import love.forte.simbot.event.MemberMessageEvent
+import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.STP
 
 
@@ -37,6 +39,7 @@ import love.forte.simbot.suspendrunner.STP
  */
 public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
     override val sourceEvent: RawPrivateMessageEvent
+    override val messageContent: OneBotMessageContent
 
     /**
      * private 消息类型
@@ -50,6 +53,7 @@ public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
      */
     public val subType: String
         get() = sourceEvent.subType
+
 }
 
 /**
@@ -58,6 +62,7 @@ public interface OneBotPrivateMessageEvent : OneBotMessageEvent {
  */
 @STP
 public interface OneBotFriendMessageEvent : OneBotPrivateMessageEvent, ContactMessageEvent {
+    override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotFriend
 }
 
@@ -67,6 +72,7 @@ public interface OneBotFriendMessageEvent : OneBotPrivateMessageEvent, ContactMe
  */
 @STP
 public interface OneBotGroupPrivateMessageEvent : OneBotPrivateMessageEvent, MemberMessageEvent {
+    override val messageContent: OneBotMessageContent
 
     /**
      * 发起会话的成员

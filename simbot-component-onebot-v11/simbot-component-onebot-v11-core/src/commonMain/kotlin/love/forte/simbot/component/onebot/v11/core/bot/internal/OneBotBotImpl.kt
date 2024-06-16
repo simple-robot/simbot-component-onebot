@@ -60,6 +60,7 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.notice.*
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
+import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
@@ -71,6 +72,7 @@ import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEven
 import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.logger.LoggerFactory
@@ -563,6 +565,15 @@ internal class OneBotBotImpl(
 
     override suspend fun getCsrfToken(): GetCsrfTokenResult =
         GetCsrfTokenApi.create().requestDataBy(this)
+
+    override suspend fun getMessageContent(messageId: ID): OneBotMessageContent {
+        val result = GetMsgApi.create(messageId).requestDataBy(this)
+        return OneBotMessageContentImpl(
+            result.messageId,
+            result.message,
+            this
+        )
+    }
 
     override fun toString(): String =
         "OneBotBot(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"

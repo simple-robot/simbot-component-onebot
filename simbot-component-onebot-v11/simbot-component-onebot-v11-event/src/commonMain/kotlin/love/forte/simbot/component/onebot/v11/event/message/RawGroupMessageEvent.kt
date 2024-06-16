@@ -94,13 +94,13 @@ public data class RawGroupMessageEvent @SourceEventConstructor constructor(
         @SerialName("user_id")
         override val userId: LongID,
         override val nickname: String,
+        override val sex: String = DEFAULT_SEX,
+        override val age: Int = DEFAULT_AGE,
         public val card: String = "",
         public val area: String? = null,
         public val level: Int? = null,
         public val role: String = "member",
         public val title: String? = null,
-        override val sex: String = DEFAULT_SEX,
-        override val age: Int = DEFAULT_AGE,
     ) : RawMessageEvent.Sender
 
 
