@@ -28,6 +28,8 @@ switcher-label: JavaAPI风格
 <def title="botAsMember()">
 将当前Bot作为在群中的成员。
 </def>
+<def title="memberCount">成员数。</def>
+<def title="maxMemberCount">最大成员数（群容量）。</def>
 </deflist>
 
 ## SendSupport
@@ -100,7 +102,6 @@ group.sendReserve(messageContent)
 
 </tab>
 </tabs>
-
 
 ## DeleteSupport
 
@@ -187,6 +188,45 @@ group.deleteReserve(
 </deflist>
 
 ## 其他能力
+
+### 全群禁言
+
+可以通过 `ban(Boolean)` 来设置群名称。
+通常需要bot拥有管理权限。
+
+<tabs group="code">
+<tab title="Kotlin" group-key="Kotlin">
+
+```Kotlin
+val group: OneBotGroup = ...
+group.ban(true) // true开启，false关闭
+```
+
+</tab>
+<tab title="Java" group-key="Java">
+
+```Java
+OneBotGroup group = ...;
+group.banAsync(true); // true开启，false关闭
+```
+{switcher-key=%ja%}
+
+```Java
+OneBotGroup group = ...;
+group.banBlocking(true); // true开启，false关闭
+```
+{switcher-key=%jb%}
+
+```Java
+OneBotGroup group = ...;
+group.banReserve("newName") // true开启，false关闭
+    .transform(SuspendReserves.mono())
+    .subscribe();
+```
+{switcher-key=%jr%}
+
+</tab>
+</tabs>
 
 ### 设置群名
 
@@ -305,7 +345,62 @@ group.setAdminReserve(memberId, true)
 </tab>
 </tabs>
 
-## 获取
+### 获取荣誉信息
+
+可以通过 `getHonorInfo(String)` 和 `getAllHonorInfo()` 
+来获取群内的荣誉信息。
+
+<tabs group="code">
+<tab title="Kotlin" group-key="Kotlin">
+
+```Kotlin
+val group: OneBotGroup = ...
+group.getHonorInfo("talkative")
+group.getAllHonorInfo()
+```
+
+</tab>
+<tab title="Java" group-key="Java">
+
+```Java
+OneBotGroup group = ...;
+group.getHonorInfoAsync("talkative"); 
+group.getAllHonorInfoAsync(); 
+```
+{switcher-key=%ja%}
+
+```Java
+OneBotGroup group = ...;
+group.getHonorInfoBlocking("talkative");
+group.getAllHonorInfoBlocking();
+```
+{switcher-key=%jb%}
+
+```Java
+OneBotGroup group = ...;
+group.getHonorInfoReserve("talkative")
+    .transform(SuspendReserves.mono())
+    .subscribe();
+
+group.getAllHonorInfoReserve()
+    .transform(SuspendReserves.mono())
+    .subscribe();
+```
+{switcher-key=%jr%}
+
+</tab>
+</tabs>
+
+`getHonorInfo` 的参数 `type` 的可选值通常有：
+
+- `all`
+- `talkative`
+- `performer`
+- `legend`
+- `strong_newbie`
+- `emotion`
+
+## 获取 OneBotGroup
 
 `OneBotGroup` 主要来自 `OneBotBot` 获取或与群相关的事件。
 
