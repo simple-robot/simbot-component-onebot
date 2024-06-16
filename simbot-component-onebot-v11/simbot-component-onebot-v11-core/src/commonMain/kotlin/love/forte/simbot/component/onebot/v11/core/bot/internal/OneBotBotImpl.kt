@@ -43,9 +43,11 @@ import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
+import love.forte.simbot.component.onebot.v11.core.actor.internal.toStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.*
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
@@ -506,6 +508,12 @@ internal class OneBotBotImpl(
                     emit(result.toFriend(this@OneBotBotImpl))
                 }
             }
+
+        override suspend fun stranger(id: ID): OneBotStranger =
+            GetStrangerInfoApi
+                .create(userId = id)
+                .requestDataBy(this@OneBotBotImpl)
+                .toStranger(this@OneBotBotImpl)
     }
 
     // 与群聊相关的操作

@@ -32,6 +32,7 @@ import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImple
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
@@ -220,6 +221,20 @@ public interface OneBotBotFriendRelation : ContactRelation {
     @JvmSynthetic
     override suspend fun contactCount(): Int =
         contacts.asFlow().count()
+
+    /**
+     * 根据 [id] 查询对应的陌生人信息。
+     *
+     * @throws Throwable 请求API可能抛出的任何异常，
+     * 例如不存在对应的账户信息。
+     */
+    @ST(
+        blockingBaseName = "getStranger",
+        blockingSuffix = "",
+        asyncBaseName = "getStranger",
+        reserveBaseName = "getStranger"
+    )
+    public suspend fun stranger(id: ID): OneBotStranger
 }
 
 
