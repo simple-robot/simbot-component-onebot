@@ -17,35 +17,16 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot.internal
 
-import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.webSocketSession
-import io.ktor.client.request.bearerAuth
-import io.ktor.http.Url
-import io.ktor.http.takeFrom
-import io.ktor.websocket.DefaultWebSocketSession
-import io.ktor.websocket.Frame
-import io.ktor.websocket.close
-import io.ktor.websocket.closeExceptionally
-import io.ktor.websocket.readBytes
-import io.ktor.websocket.readText
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.ensureActive
+import io.ktor.client.*
+import io.ktor.client.plugins.websocket.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
@@ -66,36 +47,14 @@ import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.api.*
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotFriendRelation
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotGroupRelation
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
-import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
+import love.forte.simbot.component.onebot.v11.core.bot.*
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnknownEvent
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnsupportedEvent
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotAnonymousGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotDefaultGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotDefaultPrivateMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotFriendMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.message.*
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotBotSelfPokeEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotFriendAddEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotFriendRecallEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupAdminEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupBanEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupMemberDecreaseEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupMemberIncreaseEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupRecallEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotGroupUploadEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotHonorEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotLuckyKingEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.OneBotMemberPokeEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.notice.*
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
@@ -105,15 +64,7 @@ import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawFriendAddEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawFriendRecallEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawGroupAdminEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawGroupBanEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawGroupDecreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawGroupIncreaseEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawGroupRecallEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent
-import love.forte.simbot.component.onebot.v11.event.notice.RawNotifyEvent
+import love.forte.simbot.component.onebot.v11.event.notice.*
 import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
 import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
@@ -278,8 +229,14 @@ internal class OneBotBotImpl(
     override suspend fun start(): Unit = startLock.withLock {
         job.ensureActive()
 
+        // 更新个人信息
+        val info = queryLoginInfo()
+        logger.debug("Update bot login info: {}", info)
+
         wsSession = createEventSession().also { s ->
-            launch { s.launch() }
+            // init it first
+            val initialSession = s.createSessionWithRetry()
+            launch { s.launch(initialSession) }
         }
 
         if (!isStarted) {
@@ -309,13 +266,60 @@ internal class OneBotBotImpl(
         private val sessionJob = Job(this@OneBotBotImpl.job)
         private var session: DefaultWebSocketSession? = null
 
-        private suspend fun createSession(): DefaultWebSocketSession {
+        suspend fun createSession(): DefaultWebSocketSession {
             return wsClient.webSocketSession {
                 url {
                     takeFrom(eventServerHost)
                     accessToken?.also { bearerAuth(it) }
                 }
             }
+        }
+
+        suspend fun createSessionWithRetry(): DefaultWebSocketSession? {
+            var session: DefaultWebSocketSession? = null
+            var retryTimes = 0
+
+            while (session == null && retryTimes <= connectMaxRetryTimes) {
+                try {
+                    logger.debug("Connect to ws server {}", eventServerHost)
+                    session = createSession()
+                } catch (e: Exception) {
+                    retryTimes++
+
+                    @Suppress("ConvertTwoComparisonsToRangeCheck")
+                    if (connectMaxRetryTimes > 0 && retryTimes > connectMaxRetryTimes) {
+                        "Connect to ws server $eventServerHost failed in $retryTimes times.".also { msg ->
+                            val ex = IllegalStateException(msg)
+                            sessionJob.completeExceptionally(ex)
+
+                            throw ex
+                        }
+                    }
+
+                    if (logger.isWarnEnabled()) {
+                        logger.warn(
+                            "Connect to ws server {} failed: {}, retry in {}...",
+                            eventServerHost,
+                            e.message,
+                            connectRetryDelay.toString(),
+                            e,
+                        )
+                    }
+
+                    delay(connectRetryDelay)
+                    continue
+                }
+            }
+
+            if (session == null || retryTimes >= connectMaxRetryTimes) {
+                sessionJob.completeExceptionally(
+                    IllegalStateException("Connect to ws server failed in $retryTimes times.")
+                )
+
+                return null
+            }
+
+            return session
         }
 
         /**
@@ -329,69 +333,30 @@ internal class OneBotBotImpl(
          *
          */
         @OptIn(DelicateCoroutinesApi::class)
-        suspend fun launch() {
+        suspend fun launch(initialSession: DefaultWebSocketSession? = null) {
+            var session: DefaultWebSocketSession? = initialSession
             while (sessionJob.isActive) {
-                var retryTimes = 0
-                var session: DefaultWebSocketSession? = null
-                do {
-                    try {
-                        logger.debug("Connect to ws server {}", eventServerHost)
-                        session = createSession()
-                    } catch (e: Exception) {
-                        retryTimes++
-
-                        @Suppress("ConvertTwoComparisonsToRangeCheck")
-                        if (connectMaxRetryTimes > 0 && retryTimes > connectMaxRetryTimes) {
-                            "Connect to ws server $eventServerHost failed in $retryTimes times.".also { msg ->
-                                val ex = IllegalStateException(msg)
-                                sessionJob.completeExceptionally(ex)
-
-                                throw ex
-                            }
-                        }
-
-                        if (logger.isWarnEnabled()) {
-                            logger.warn(
-                                "Connect to ws server {} failed: {}, retry in {}...",
-                                eventServerHost,
-                                e.message,
-                                connectRetryDelay.toString(),
-                                e,
-                            )
-                        }
-
-                        delay(connectRetryDelay)
-                        continue
-                    }
-                } while (session == null && retryTimes <= connectMaxRetryTimes)
-
-                if (session == null || retryTimes >= connectMaxRetryTimes) {
-                    sessionJob.completeExceptionally(
-                        IllegalStateException("Connect to ws server failed in $retryTimes times.")
-                    )
-
-                    // "Connect to ws server failed in $retryTimes times.".also { msg ->
-                    //     sessionJob.cancel(
-                    //         msg,
-                    //         IllegalStateException(msg)
-                    //     )
-                    // }
-
-                    return
+                if (session?.isActive != true) {
+                    session = null
                 }
 
-                logger.debug("Connected to ws server {}: {}", eventServerHost, session)
+                val currentSession = session ?: createSessionWithRetry().also {
+                    session = it
+                }
 
-                this@WsEventSession.session = session
+                if (currentSession == null) return
 
-                // val session =
+                logger.debug("Connected to ws server {}, session: {}", eventServerHost, currentSession)
+
+                this@WsEventSession.session = currentSession
+
                 val completionHandle = sessionJob.invokeOnCompletion {
-                    if (session.isActive) {
-                        session.cancel("Job is completed: ${it?.message}", it)
+                    if (currentSession.isActive) {
+                        currentSession.cancel("Job is completed: ${it?.message}", it)
                     }
                 }
 
-                receiveEvent(session)
+                receiveEvent(currentSession)
 
                 // The Session is done or dead,
                 // or the job is done.
@@ -399,14 +364,14 @@ internal class OneBotBotImpl(
                 // 如果会话仍然处于活跃状态，
                 // 尝试关闭它，并首先尝试在异步中通过发送 close 数据包的形式进行关闭
                 // 如果 5s 内无法完成此行为，则直接使用 cancel
-                if (session.isActive) {
+                if (currentSession.isActive) {
                     GlobalScope.launch(Dispatchers.IOOrDefault) {
                         try {
                             withTimeout(5.seconds) {
-                                session.close()
+                                currentSession.close()
                             }
                         } catch (timeout: TimeoutCancellationException) {
-                            session.cancel("Session close timeout: $timeout", timeout)
+                            currentSession.cancel("Session close timeout: $timeout", timeout)
                         }
                     }
                 } else {
@@ -416,8 +381,8 @@ internal class OneBotBotImpl(
                 }
 
                 // 等待关闭完成
-                val reason = session.closeReason.await()
-                logger.debug("Session {} done. The reason: {}", session, reason)
+                val reason = currentSession.closeReason.await()
+                logger.debug("Session {} done. The reason: {}", currentSession, reason)
             }
 
             logger.debug(
@@ -632,8 +597,8 @@ internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent
         //endregion
 
         //region 元事件
-        is RawLifecycleEvent -> OneBotLifecycleEventImpl(raw, event, bot,)
-        is RawHeartbeatEvent -> OneBotHeartbeatEventImpl(raw, event, bot,)
+        is RawLifecycleEvent -> OneBotLifecycleEventImpl(raw, event, bot)
+        is RawHeartbeatEvent -> OneBotHeartbeatEventImpl(raw, event, bot)
         //endregion
 
         //region 申请事件
