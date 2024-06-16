@@ -24,6 +24,8 @@ import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupHonorInfoApi
+import love.forte.simbot.component.onebot.v11.core.api.GetGroupHonorInfoResult
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupAdminApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
@@ -203,6 +205,27 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST
     public suspend fun setAdmin(memberId: ID, enable: Boolean)
+
+    /**
+     * 通过 [GetGroupHonorInfoApi] 获取本群的荣誉信息。
+     *
+     * @throws Throwable 任何请求API过程可能产生的异常
+     * @see getAllHonorInfo
+     * @see GetGroupHonorInfoApi
+     */
+    @ST
+    public suspend fun getHonorInfo(type: String): GetGroupHonorInfoResult
+
+    /**
+     * 通过 [GetGroupHonorInfoApi] 获取本群的所有荣誉信息 (即 `type="all"`)。
+     *
+     * @throws Throwable 任何请求API过程可能产生的异常
+     * @see getHonorInfo
+     * @see GetGroupHonorInfoApi
+     */
+    @ST
+    public suspend fun getAllHonorInfo(): GetGroupHonorInfoResult =
+        getHonorInfo(GetGroupHonorInfoApi.TYPE_ALL)
 
 }
 

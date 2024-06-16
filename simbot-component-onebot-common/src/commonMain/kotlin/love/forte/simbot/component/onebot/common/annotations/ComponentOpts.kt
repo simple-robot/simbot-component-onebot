@@ -25,6 +25,16 @@ package love.forte.simbot.component.onebot.common.annotations
     message = "仅用于OneBot组件内部使用的API，可能会随时变更、删除",
     level = RequiresOptIn.Level.ERROR
 )
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.PROPERTY_GETTER,
+)
 @MustBeDocumented
 public annotation class InternalOneBotAPI
 
@@ -35,6 +45,14 @@ public annotation class InternalOneBotAPI
 @RequiresOptIn(
     message = "OneBot组件中仍处于实验阶段的API，可能会随时变更、删除",
     level = RequiresOptIn.Level.ERROR
+)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FIELD,
 )
 @MustBeDocumented
 public annotation class ExperimentalOneBotAPI
