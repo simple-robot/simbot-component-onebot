@@ -55,7 +55,7 @@ import kotlin.time.Duration
  * @author ForteScarlet
  */
 @OneBotInternalImplementationsOnly
-public interface OneBotMember : Member, DeleteSupport {
+public interface OneBotMember : Member, DeleteSupport, OneBotStrangerAware {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
      */
