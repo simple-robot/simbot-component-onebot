@@ -26,12 +26,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
 import love.forte.simbot.component.onebot.v11.message.resolveToMessageElement
-import love.forte.simbot.message.At
-import love.forte.simbot.message.AtAll
-import love.forte.simbot.message.Face
-import love.forte.simbot.message.MentionMessage
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessagesBuilder
+import love.forte.simbot.message.*
 import kotlin.jvm.JvmName
 
 /**
@@ -127,6 +122,32 @@ ListSerializer(PolymorphicSerializer(OneBotMessageSegment::class))
  * 判断 [this] 的类型是 [OneBotMessageSegmentElement]
  * 并且 [segment][OneBotMessageSegmentElement.segment]
  * 的类型是 [T]。
+ *
+ * @see oneBotSegment
+ * @see oneBotSegmentOrNull
  */
 public inline fun <reified T : OneBotMessageSegment> Message.Element.isOneBotSegment(): Boolean =
     this is OneBotMessageSegmentElement && segment is T
+
+/**
+ * 如果[this] 的类型是 [OneBotMessageSegmentElement]
+ * 并且 [segment][OneBotMessageSegmentElement.segment]，则获取到对应的 [T] 结果，
+ * 否则抛出 [ClassCastException]。
+ *
+ * @see isOneBotSegment
+ * @see oneBotSegmentOrNull
+ * @throws ClassCastException 如果类型不符
+ */
+public inline fun <reified T : OneBotMessageSegment> Message.Element.oneBotSegment(): T =
+    (this as OneBotMessageSegmentElement).segment as T
+
+/**
+ * 如果[this] 的类型是 [OneBotMessageSegmentElement]
+ * 并且 [segment][OneBotMessageSegmentElement.segment]，则获取到对应的 [T] 结果，
+ * 否则得到 `null`。
+ *
+ * @see oneBotSegment
+ * @see isOneBotSegment
+ */
+public inline fun <reified T : OneBotMessageSegment> Message.Element.oneBotSegmentOrNull(): T? =
+    (this as? OneBotMessageSegmentElement)?.segment as? T

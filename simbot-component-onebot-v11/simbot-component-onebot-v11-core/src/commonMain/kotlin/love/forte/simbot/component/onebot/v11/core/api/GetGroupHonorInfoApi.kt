@@ -23,7 +23,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
+import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
 import kotlin.jvm.JvmStatic
 
 /**
@@ -47,6 +49,13 @@ public class GetGroupHonorInfoApi private constructor(
     public companion object Factory {
         private const val ACTION: String = "get_group_honor_info"
 
+        public const val TYPE_ALL: String = "all"
+        public const val TYPE_TALKATIVE: String = "talkative"
+        public const val TYPE_PERFORMER: String = "performer"
+        public const val TYPE_LEGEND: String = "legend"
+        public const val TYPE_STRONG_NEWBIE: String = "strong_newbie"
+        public const val TYPE_EMOTION: String = "emotion"
+
         private val RES_SER: KSerializer<OneBotApiResult<GetGroupHonorInfoResult>> =
             OneBotApiResult.serializer(GetGroupHonorInfoResult.serializer())
 
@@ -60,6 +69,15 @@ public class GetGroupHonorInfoApi private constructor(
         @JvmStatic
         public fun create(groupId: ID, type: String): GetGroupHonorInfoApi =
             GetGroupHonorInfoApi(Body(groupId, type))
+
+        /**
+         * 构建一个 [GetGroupHonorInfoApi].
+         *
+         * @param groupId 群号
+         */
+        @JvmStatic
+        public fun createAll(groupId: ID): GetGroupHonorInfoApi =
+            create(groupId, TYPE_ALL)
     }
 
     /**
@@ -116,9 +134,9 @@ public data class GetGroupHonorInfoResult @ApiResultConstructor constructor(
         @SerialName("user_id")
         val userId: LongID,
         val nickname: String,
-        val avatar: String,
+        val avatar: String = qqAvatar640(userId.literal),
         @SerialName("day_count")
-        val dayCount: Int,
+        val dayCount: Int = 0,
     )
 
     /**
@@ -134,7 +152,7 @@ public data class GetGroupHonorInfoResult @ApiResultConstructor constructor(
         @SerialName("user_id")
         public val userId: LongID,
         public val nickname: String,
-        public val avatar: String,
-        public val description: String,
+        public val avatar: String = qqAvatar640(userId.literal),
+        public val description: String = "",
     )
 }

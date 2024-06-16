@@ -39,6 +39,7 @@ module simbot.component.onebot11v.core {
     exports love.forte.simbot.component.onebot.v11.core.event.request;
     exports love.forte.simbot.component.onebot.v11.core.event.stage;
     exports love.forte.simbot.component.onebot.v11.core.utils;
+    exports love.forte.simbot.component.onebot.v11.core.message;
 
     provides ComponentFactoryProvider with OneBot11ComponentFactoryProvider;
     uses OneBot11ComponentFactoryConfigurerProvider;
