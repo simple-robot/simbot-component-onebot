@@ -24,7 +24,6 @@ import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEve
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.ContactMessageEvent
 import love.forte.simbot.event.MemberMessageEvent
-import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.STP
 
 
