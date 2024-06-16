@@ -175,6 +175,9 @@ internal abstract class OneBotGroupImpl(
         ).requestDataBy(bot)
     }
 
+    override suspend fun getHonorInfo(type: String): GetGroupHonorInfoResult =
+        GetGroupHonorInfoApi.create(groupId = id, type = type).requestDataBy(bot)
+
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }
 
@@ -189,6 +192,10 @@ internal class OneBotGroupApiResultImpl(
     override val coroutineContext: CoroutineContext = bot.subContext
     override val id: ID
         get() = source.groupId
+    override val memberCount: Int
+        get() = source.memberCount
+    override val maxMemberCount: Int
+        get() = source.maxMemberCount
 }
 
 internal fun GetGroupInfoResult.toGroup(

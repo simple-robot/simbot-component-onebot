@@ -19,7 +19,9 @@ package love.forte.simbot.component.onebot.v11.core.actor.internal
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.GetFriendListResult
+import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.SendLikeApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
@@ -68,6 +70,11 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
             times = times
         ).requestDataBy(bot)
     }
+
+    override suspend fun toStranger(): OneBotStranger =
+        GetStrangerInfoApi.create(userId = id)
+            .requestDataBy(bot)
+            .toStranger(bot)
 
     override fun toString(): String = "OneBotFriend(id=$id, bot=${bot.id})"
 }

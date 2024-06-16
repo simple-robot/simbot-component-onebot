@@ -17,12 +17,11 @@
 
 package love.forte.simbot.component.onebot.v11.core.api
 
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode
 import kotlin.jvm.JvmStatic
 
 /**
@@ -74,6 +73,46 @@ public class GetForwardMsgApi private constructor(
  * 数组中的消息段全部为 [`node` 消息段](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md#合并转发自定义节点)
  */
 @Serializable
-public data class GetForwardMsgResult @ApiResultConstructor constructor(
-    public val message: List<OneBotMessageSegment> = emptyList(),
-)
+public class GetForwardMsgResult @ApiResultConstructor constructor(
+    // 部分协议实现中会将此字段命名为 `messages` 而不是
+    // https://github.com/botuniverse/onebot-11/blob/master/api/public.md#get_forward_msg-获取合并转发消息
+    // 中约定的 `message`，此处提供两个属性做兼容。
+    // 不直接使用 @JsonNames 是因为它是实验性特性，
+    // 且需要由 Json.useAlternativeNames 配置启用而不是取决于此实体类型，
+    // 而且似乎启用会一定程度的影响性能。
+
+    /**
+     * @suppress internal
+     */
+    @SerialName("message")
+    @InternalOneBotAPI
+    internal val messageInternal: List<OneBotForwardNode>? = null,
+    /**
+     * @suppress internal
+     */
+    @SerialName("messages")
+    @InternalOneBotAPI
+    internal val messagesInternal: List<OneBotForwardNode>? = null,
+) {
+    @Transient
+    public val message: List<OneBotForwardNode> =
+        messageInternal ?: messagesInternal ?: emptyList()
+
+    public operator fun component1(): List<OneBotForwardNode> = message
+
+    override fun toString(): String =
+        "GetForwardMsgResult(message=$message)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GetForwardMsgResult) return false
+
+        if (message != other.message) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return message.hashCode()
+    }
+}

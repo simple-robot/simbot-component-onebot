@@ -41,7 +41,7 @@ import kotlin.coroutines.CoroutineContext
  * @author ForteScarlet
  */
 @OneBotInternalImplementationsOnly
-public interface OneBotFriend : Contact, SendLikeSupport {
+public interface OneBotFriend : Contact, SendLikeSupport, OneBotStrangerAware {
     /**
      * 协程上下文。源自 [OneBotBot], 但是不含 [Job][kotlinx.coroutines.Job]。
      */
