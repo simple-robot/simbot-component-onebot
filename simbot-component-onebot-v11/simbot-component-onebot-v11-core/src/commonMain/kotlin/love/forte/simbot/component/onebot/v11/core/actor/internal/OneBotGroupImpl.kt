@@ -189,6 +189,10 @@ internal class OneBotGroupApiResultImpl(
     override val coroutineContext: CoroutineContext = bot.subContext
     override val id: ID
         get() = source.groupId
+    override val memberCount: Int
+        get() = source.memberCount
+    override val maxMemberCount: Int
+        get() = source.maxMemberCount
 }
 
 internal fun GetGroupInfoResult.toGroup(

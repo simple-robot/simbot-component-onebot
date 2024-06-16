@@ -68,6 +68,32 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
     override val id: ID
 
     /**
+     * 群名称。
+     *
+     * 值可能会被 [setName] 所影响。
+     *
+     * @see setName
+     */
+    override val name: String
+
+    /**
+     * 设置群名。
+     *
+     * 当 [setName] 修改成功后会影响 [name] 的值，
+     * 但是仅会影响 **当前对象** 内的属性值。
+     *
+     * [setName] 不保证并发安全也不会加锁，
+     * 如果并发请求 [setName]，无法保证 [name] 的最终结果。
+     *
+     * @see name
+     * @param newName 要设置的新群名
+     *
+     * @throws Throwable 任何在请求API过程中可能产生的异常
+     */
+    @ST
+    public suspend fun setName(newName: String)
+
+    /**
      * 群内的全部角色权限。
      * 即 [OneBotMemberRole]
      * 的枚举元素。
@@ -87,6 +113,16 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
     override suspend fun member(id: ID): OneBotMember?
+
+    /**
+     * 成员数。
+     */
+    public val memberCount: Int
+
+    /**
+     * 最大成员数（群容量）。
+     */
+    public val maxMemberCount: Int
 
     /**
      * 将当前所属Bot作为一个 [OneBotMember] 获取。
@@ -144,22 +180,6 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST
     public suspend fun ban(enable: Boolean)
-
-    /**
-     * 设置群名。
-     *
-     * 当 [setName] 修改成功后会影响 [name] 的值，
-     * 但是仅会影响 **当前对象** 内的属性值。
-     *
-     * [setName] 不保证并发安全也不会加锁，
-     * 如果并发请求 [setName]，无法保证 [name] 的最终结果。
-     *
-     * @param newName 要设置的新群名
-     *
-     * @throws Throwable 任何在请求API过程中可能产生的异常
-     */
-    @ST
-    public suspend fun setName(newName: String)
 
     /**
      * 设置 bot 在此群内的群备注。
