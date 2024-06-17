@@ -97,7 +97,9 @@ dependencies {
 kotlin.sourceSets.commonMain {
     // solves all implicit dependency trouble and IDEs source code detection
     // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
-    tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) }
+    tasks.withType<KspTaskMetadata> {
+        kotlin.srcDir(destinationDirectory.file("kotlin"))
+    }
 }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
