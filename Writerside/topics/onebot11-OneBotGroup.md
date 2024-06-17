@@ -187,7 +187,7 @@ group.deleteReserve(
 </def>
 </deflist>
 
-## 其他能力
+## 更多能力
 
 ### 全群禁言
 
