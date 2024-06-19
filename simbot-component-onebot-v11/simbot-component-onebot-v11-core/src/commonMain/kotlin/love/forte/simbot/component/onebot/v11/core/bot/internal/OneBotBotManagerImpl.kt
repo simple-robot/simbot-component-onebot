@@ -21,6 +21,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.bot.BotRegisterFailureException
 import love.forte.simbot.bot.NoSuchBotException
 import love.forte.simbot.common.collection.computeValue
@@ -29,6 +32,7 @@ import love.forte.simbot.common.collection.removeValue
 import love.forte.simbot.common.coroutines.mergeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManager
@@ -47,8 +51,12 @@ internal class OneBotBotManagerImpl(
     override val job: Job,
     override val coroutineContext: CoroutineContext,
     private val component: OneBot11Component,
-    private val eventProcessor: EventProcessor
+    private val eventProcessor: EventProcessor,
+    private val serializersModule: SerializersModule,
 ) : OneBotBotManager(), CoroutineScope {
+    private val decoderJson = Json(OneBot11.DefaultJson) {
+        serializersModule = serializersModule overwriteWith this@OneBotBotManagerImpl.serializersModule
+    }
 
     private val bots = concurrentMutableMap<String, OneBotBot>()
 
@@ -72,6 +80,7 @@ internal class OneBotBotManagerImpl(
                 configuration,
                 component,
                 eventProcessor,
+                decoderJson
             )
 
         val created = bots.computeValue(

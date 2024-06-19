@@ -28,6 +28,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.utils.io.charsets.*
+import kotlinx.serialization.json.Json
 import love.forte.simbot.common.serialization.guessSerializer
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.OneBot11
@@ -216,6 +217,10 @@ public suspend fun OneBotApi<*>.requestRaw(
  *
  * 更多描述参考 [OneBotApi.request].
  *
+ * @param decoder 用于解析JSON字符串为 [OneBotApiResult] 的JSON解析器。
+ * 如果要提供自定义解析器，尽可能使其支持 [OneBot11.serializersModule]，
+ * 否则部分涉及到OneBot消息段多态类型的地方可能会出现问题。
+ *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @see OneBotApi.request
  */
@@ -226,9 +231,10 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
 ): OneBotApiResult<T> {
     val raw = requestRaw(client, host, accessToken, actionSuffixes, charset)
-    return OneBot11.DefaultJson
+    return decoder
         .decodeFromString(apiResultDeserializer, raw)
         .withRaw(raw)
 }
@@ -238,6 +244,10 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
  *
  * 更多描述参考 [OneBotApi.request].
  *
+ * @param decoder 用于解析JSON字符串为 [OneBotApiResult] 的JSON解析器。
+ * 如果要提供自定义解析器，尽可能使其支持 [OneBot11.serializersModule]，
+ * 否则部分涉及到OneBot消息段多态类型的地方可能会出现问题。
+ *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @see OneBotApi.request
  */
@@ -247,13 +257,25 @@ public suspend fun <T : Any> OneBotApi<T>.requestResult(
     host: String,
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
-    charset: Charset = Charsets.UTF_8
-): OneBotApiResult<T> = requestResult(client, Url(host), accessToken, actionSuffixes, charset)
+    charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
+): OneBotApiResult<T> = requestResult(
+    client,
+    Url(host),
+    accessToken,
+    actionSuffixes,
+    charset,
+    decoder
+)
 
 /**
  * 对 [this] 发起一次请求，并得到响应体的 [T] 类型结果。
  *
  * 更多描述参考 [OneBotApi.request].
+ *
+ * @param decoder 用于解析JSON字符串为 [OneBotApiResult] 的JSON解析器。
+ * 如果要提供自定义解析器，尽可能使其支持 [OneBot11.serializersModule]，
+ * 否则部分涉及到OneBot消息段多态类型的地方可能会出现问题。
  *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @throws IllegalStateException 如果响应结果体的状态 [OneBotApiResult.retcode]
@@ -267,8 +289,16 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
 ): T {
-    val result = requestResult(client, host, accessToken, actionSuffixes, charset)
+    val result = requestResult(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
     return result.dataOrThrow
 }
 
@@ -276,6 +306,10 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
  * 对 [this] 发起一次请求，并得到响应体的 [T] 结果。
  *
  * 更多描述参考 [OneBotApi.request].
+ *
+ * @param decoder 用于解析JSON字符串为 [OneBotApiResult] 的JSON解析器。
+ * 如果要提供自定义解析器，尽可能使其支持 [OneBot11.serializersModule]，
+ * 否则部分涉及到OneBot消息段多态类型的地方可能会出现问题。
  *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @throws IllegalStateException 如果响应结果体的状态 [OneBotApiResult.retcode]
@@ -288,8 +322,9 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
     host: String,
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
-    charset: Charset = Charsets.UTF_8
-): T = requestData(client, Url(host), accessToken, actionSuffixes, charset)
+    charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
+): T = requestData(client, Url(host), accessToken, actionSuffixes, charset, decoder)
 
 
 /**
@@ -298,7 +333,6 @@ public suspend fun <T : Any> OneBotApi<T>.requestData(
  * 其他平台始终得到 `true`。
  */
 internal expect val isContentNegotiationRuntimeAvailable: Boolean
-
 
 
 private fun <R : Any, T : OneBotApiResult<R>> T.withRaw(raw: String): T = apply {

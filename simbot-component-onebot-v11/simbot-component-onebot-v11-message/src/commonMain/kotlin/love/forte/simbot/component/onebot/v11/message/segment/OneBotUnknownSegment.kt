@@ -25,6 +25,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
@@ -55,7 +56,7 @@ public data class OneBotUnknownSegment
 @InternalOneBotAPI
 constructor(
     val type: String,
-    override val data: JsonObject? = null
+    override val data: JsonElement? = null
 ) : OneBotMessageSegment
 
 /**
@@ -86,13 +87,13 @@ public object OneBotUnknownSegmentDeserializer :
             }
 
             var type: String? = null
-            var data: JsonObject? = null
+            var data: JsonElement? = null
 
             while (true) {
                 when (val index = decodeElementIndex(descriptor)) {
                     CompositeDecoder.DECODE_DONE -> break
                     0 -> type = decodeStringElement(descriptor, 0)
-                    1 -> data = decodeSerializableElement(descriptor, 1, JsonObject.serializer())
+                    1 -> data = decodeSerializableElement(descriptor, 1, JsonElement.serializer())
                     else -> error("Unexpected index: $index")
                 }
             }
@@ -123,7 +124,7 @@ public class OneBotUnknownSegmentPolymorphicSerializer(type: String) :
     override fun serialize(encoder: Encoder, value: OneBotMessageSegment) {
         if (value is OneBotUnknownSegment) {
             encoder.encodeStructure(descriptor) {
-                this.encodeNullableSerializableElement(descriptor, 0, JsonObject.serializer(), value.data)
+                this.encodeNullableSerializableElement(descriptor, 0, JsonElement.serializer(), value.data)
             }
         }
     }

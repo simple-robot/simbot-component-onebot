@@ -27,9 +27,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
+import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
@@ -95,6 +97,7 @@ internal class OneBotBotImpl(
     override val configuration: OneBotBotConfiguration,
     override val component: OneBot11Component,
     private val eventProcessor: EventProcessor,
+    baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
     override val apiClient: HttpClient
     private val wsClient: HttpClient
@@ -103,6 +106,12 @@ internal class OneBotBotImpl(
         apiClient = resolveHttpClient()
         wsClient = resolveWsClient()
         job.invokeOnCompletion { apiClient.close() }
+    }
+
+    override val decoderJson: Json = Json(baseDecoderJson) {
+        configuration.serializersModule?.also { confMd ->
+            serializersModule = serializersModule overwriteWith confMd
+        }
     }
 
     override val subContext = coroutineContext.minusKey(Job)

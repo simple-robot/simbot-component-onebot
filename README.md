@@ -32,7 +32,9 @@ Simple Robot OneBot 组件是一个将
 [Simple Robot](http://github.com/simple-robot/simpler-robot) 标准API下实现的组件库，
 并由此提供simbot中的各项能力。
 
-它是一个 Kotlin multiplatform 库，Java 友好、异步高效！
+它是一个 
+[Kotlin 多平台](https://kotlinlang.org/docs/multiplatform.html) 
+库，Java 友好、异步高效！
 
 借助simbot核心库提供的能力，它可以支持很多高级功能和封装，比如组件协同、Spring支持等，
 祝你快速开发 OneBot 客户端应用！
@@ -42,7 +44,7 @@ Simple Robot OneBot 组件是一个将
 
 ## 文档与引导
 
-- OneBot组件手册(🚧建设中): [OneBot组件手册](https://simple-robot.github.io/simbot-component-onebot/)
+- OneBot组件手册: [OneBot组件手册](https://simple-robot.github.io/simbot-component-onebot/)
 - 了解simbot: [Simple Robot 应用手册](https://simbot.forte.love)
 - [文档引导站&API文档](https://docs.simbot.forte.love)
 - [**社群**](https://simbot.forte.love/communities.html) 文档中也有提供社群信息喔

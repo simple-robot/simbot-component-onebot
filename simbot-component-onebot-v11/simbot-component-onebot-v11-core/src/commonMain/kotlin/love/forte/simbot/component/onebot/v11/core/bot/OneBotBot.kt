@@ -21,6 +21,7 @@ import io.ktor.client.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.json.Json
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
@@ -58,6 +59,11 @@ import kotlin.jvm.JvmSynthetic
 @OneBotInternalImplementationsOnly
 public interface OneBotBot : Bot {
     override val coroutineContext: CoroutineContext
+
+    /**
+     * [OneBotBot] 会使用的 [Json]
+     */
+    public val decoderJson: Json
 
     /**
      * 当前Bot的配置类。

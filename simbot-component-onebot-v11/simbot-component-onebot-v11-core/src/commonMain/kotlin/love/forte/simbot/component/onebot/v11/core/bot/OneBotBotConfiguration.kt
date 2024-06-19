@@ -21,6 +21,8 @@ import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import kotlin.coroutines.CoroutineContext
@@ -55,6 +57,15 @@ public class OneBotBotConfiguration {
      *
      */
     public var accessToken: String? = null
+
+    /**
+     * **额外的**序列化模块信息。
+     * 如果不为 `null`，则 [OneBotBot.decoderJson]
+     * 中的序列化模块会
+     * [overwriteWith][SerializersModule.overwriteWith] 此 [serializersModule]。
+     *
+     */
+    public var serializersModule: SerializersModule? = null
 
     /**
      * 必填属性，HTTP API的目标服务器地址。
