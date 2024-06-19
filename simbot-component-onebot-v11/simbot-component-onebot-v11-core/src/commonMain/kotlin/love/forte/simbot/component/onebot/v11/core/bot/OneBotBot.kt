@@ -43,7 +43,7 @@ import kotlin.jvm.JvmSynthetic
 
 
 /**
- * 一个 OneBot协议的 [Bot]。
+ * 一个 OneBot 协议的 [Bot]。
  *
  * ### Bot 的终止
  * Bot的运行状态 ([isActive]) 可能会因为一些原因被更改：
