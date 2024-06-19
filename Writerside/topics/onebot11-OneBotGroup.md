@@ -61,8 +61,6 @@ group.sendAsync(
 ); 
 group.sendAsync(messageContent); 
 
-
-
 ```
 {switcher-key=%ja%}
 
@@ -144,7 +142,7 @@ group.deleteBlocking(
 
 ```Java
 OneBotGroup group = ...;
-    group.deleteReserve()
+group.deleteReserve()
     .transform(SuspendReserves.mono())
     .subscribe();
 

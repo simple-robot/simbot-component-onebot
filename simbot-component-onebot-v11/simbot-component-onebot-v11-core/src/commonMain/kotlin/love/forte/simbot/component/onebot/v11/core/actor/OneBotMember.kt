@@ -209,6 +209,7 @@ public interface OneBotMember : Member, DeleteSupport, OneBotStrangerAware {
      *
      */
     @ST
+    @JvmSynthetic
     public suspend fun ban(duration: Long, unit: TimeUnit)
 
     /**
