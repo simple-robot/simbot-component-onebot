@@ -26,6 +26,8 @@ import love.forte.simbot.common.id.LongID
  * 当出现了尚未支持或某种未知的事件体，无法对应到任何现有的已定义结构时，
  * 则应当将其解析并包装为 [UnknownEvent]。
  *
+ * [UnknownEvent] 要求事件体必须包括 [time], [selfId] 和 [postType]。
+ *
  * ### FragileAPI
  *
  * 这是一个具有**特殊规则**的事件类型。
