@@ -79,7 +79,7 @@ group.sendBlocking(messageContent);
 
 ```Java
 OneBotGroup group = ...;
-    group.sendReserve("text")
+group.sendReserve("text")
     .transform(SuspendReserves.mono())
     .subscribe();
 

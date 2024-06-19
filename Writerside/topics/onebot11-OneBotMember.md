@@ -79,7 +79,7 @@ member.sendBlocking(messageContent);
 
 ```Java
 OneBotMember member = ...;
-    member.sendReserve("text")
+member.sendReserve("text")
     .transform(SuspendReserves.mono())
     .subscribe();
 
@@ -100,7 +100,6 @@ member.sendReserve(messageContent)
 
 </tab>
 </tabs>
-
 
 ## DeleteSupport
 
@@ -422,6 +421,13 @@ member.unbanReserve()
 
 ## 获取 OneBotMember
 
-`OneBotMember` 通常来自
+群成员 `OneBotMember` 通常来自
 <a href="onebot11-OneBotGroup.md" />
 或与群成员相关的事件。
+
+### 来自事件
+
+大多数跟群成员相关的事件中都可以直接获取到 `OneBotMember`。
+通常来讲，如果事件主体与群成员相关，那么就是 `content`，
+如果侧面相关，例如某个群成员消息事件中，
+消息才是重点，而群成员则为 `author`。
