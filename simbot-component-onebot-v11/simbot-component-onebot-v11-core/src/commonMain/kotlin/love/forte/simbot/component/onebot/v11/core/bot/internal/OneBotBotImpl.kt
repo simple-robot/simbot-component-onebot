@@ -482,18 +482,30 @@ internal class OneBotBotImpl(
                 text
             )
 
-            val postType = obj["post_type"]!!.jsonPrimitive.content
+            val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
+                "Missing required event property 'post_type'"
+            }
+
             val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
-            val subType = obj[subTypeFieldName]!!.jsonPrimitive.content
-            resolveEventSerializer(postType, subType)?.let {
-                return OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
-            } ?: run {
+            val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
+
+            fun toUnknown(): UnknownEvent {
                 val time = obj["time"]?.jsonPrimitive?.long ?: -1L
                 val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
                 return UnknownEvent(time, selfId, postType, text)
             }
-        }
 
+            if (subType == null) {
+                // 一个不规则的 unknown event
+                return toUnknown()
+            }
+
+            resolveEventSerializer(postType, subType)?.let {
+                return OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
+            } ?: run {
+                return toUnknown()
+            }
+        }
 
         private fun pushEvent(event: Event): Job {
             return eventProcessor
