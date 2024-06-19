@@ -25,7 +25,9 @@ import io.ktor.client.statement.request
 import io.ktor.http.Url
 import io.ktor.utils.io.charsets.Charset
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
@@ -114,7 +116,17 @@ public fun <T : Any> OneBotApi<T>.requestResultBlocking(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
-): OneBotApiResult<T> = runInNoScopeBlocking { requestResult(client, host, accessToken, actionSuffixes, charset) }
+    decoder: Json = OneBot11.DefaultJson,
+): OneBotApiResult<T> = runInNoScopeBlocking {
+    requestResult(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
 
 /**
  * 阻塞地请求 [OneBotApi].
@@ -128,7 +140,17 @@ public fun <T : Any> OneBotApi<T>.requestResultBlocking(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
-): OneBotApiResult<T> = runInNoScopeBlocking { requestResult(client, host, accessToken, actionSuffixes, charset) }
+    decoder: Json = OneBot11.DefaultJson,
+): OneBotApiResult<T> = runInNoScopeBlocking {
+    requestResult(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
 
 /**
  * 阻塞地请求 [OneBotApi].
@@ -142,7 +164,17 @@ public fun <T : Any> OneBotApi<T>.requestDataBlocking(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
-): T = runInNoScopeBlocking { requestData(client, host, accessToken, actionSuffixes, charset) }
+    decoder: Json = OneBot11.DefaultJson,
+): T = runInNoScopeBlocking {
+    requestData(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
 
 /**
  * 阻塞地请求 [OneBotApi].
@@ -156,7 +188,17 @@ public fun <T : Any> OneBotApi<T>.requestDataBlocking(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
-): T = runInNoScopeBlocking { requestData(client, host, accessToken, actionSuffixes, charset) }
+    decoder: Json = OneBot11.DefaultJson,
+): T = runInNoScopeBlocking {
+    requestData(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
 //endregion
 
 //region async
@@ -236,8 +278,18 @@ public fun <T : Any> OneBotApi<T>.requestResultAsync(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): CompletableFuture<out OneBotApiResult<T>> =
-    runInAsync(scope ?: client) { requestResult(client, host, accessToken, actionSuffixes, charset) }
+    runInAsync(scope ?: client) {
+        requestResult(
+            client,
+            host,
+            accessToken,
+            actionSuffixes,
+            charset,
+            decoder
+        )
+    }
 
 /**
  * 异步地请求 [OneBotApi].
@@ -252,8 +304,18 @@ public fun <T : Any> OneBotApi<T>.requestResultAsync(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): CompletableFuture<out OneBotApiResult<T>> =
-    runInAsync(scope ?: client) { requestResult(client, host, accessToken, actionSuffixes, charset) }
+    runInAsync(scope ?: client) {
+        requestResult(
+            client,
+            host,
+            accessToken,
+            actionSuffixes,
+            charset,
+            decoder
+        )
+    }
 
 /**
  * 异步地请求 [OneBotApi].
@@ -268,8 +330,18 @@ public fun <T : Any> OneBotApi<T>.requestDataAsync(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): CompletableFuture<out T> =
-    runInAsync(scope ?: client) { requestData(client, host, accessToken, actionSuffixes, charset) }
+    runInAsync(scope ?: client) {
+        requestData(
+            client,
+            host,
+            accessToken,
+            actionSuffixes,
+            charset,
+            decoder
+        )
+    }
 
 /**
  * 异步地请求 [OneBotApi].
@@ -284,8 +356,18 @@ public fun <T : Any> OneBotApi<T>.requestDataAsync(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): CompletableFuture<out T> =
-    runInAsync(scope ?: client) { requestData(client, host, accessToken, actionSuffixes, charset) }
+    runInAsync(scope ?: client) {
+        requestData(
+            client,
+            host,
+            accessToken,
+            actionSuffixes,
+            charset,
+            decoder
+        )
+    }
 //endregion
 
 //region suspend reserve
@@ -381,6 +463,7 @@ public fun <T : Any> OneBotApi<T>.requestResultReserve(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): SuspendReserve<OneBotApiResult<T>> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) {
         requestResult(
@@ -388,7 +471,8 @@ public fun <T : Any> OneBotApi<T>.requestResultReserve(
             host,
             accessToken,
             actionSuffixes,
-            charset
+            charset,
+            decoder
         )
     }
 
@@ -405,6 +489,7 @@ public fun <T : Any> OneBotApi<T>.requestResultReserve(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): SuspendReserve<OneBotApiResult<T>> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) {
         requestResult(
@@ -412,7 +497,8 @@ public fun <T : Any> OneBotApi<T>.requestResultReserve(
             host,
             accessToken,
             actionSuffixes,
-            charset
+            charset,
+            decoder
         )
     }
 
@@ -429,6 +515,7 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): SuspendReserve<T> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) {
         requestData(
@@ -436,7 +523,8 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
             host,
             accessToken,
             actionSuffixes,
-            charset
+            charset,
+            decoder
         )
     }
 
@@ -453,6 +541,7 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
     actionSuffixes: Collection<String>? = null,
     charset: Charset = Charsets.UTF_8,
     scope: CoroutineScope? = null,
+    decoder: Json = OneBot11.DefaultJson,
 ): SuspendReserve<T> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) {
         requestData(
@@ -460,7 +549,8 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
             host,
             accessToken,
             actionSuffixes,
-            charset
+            charset,
+            decoder
         )
     }
 //endregion
