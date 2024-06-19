@@ -21,14 +21,13 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationFactoryConfigurer
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManager
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotManagerConfiguration
-import love.forte.simbot.component.onebot.v11.core.bot.firstOneBotBotManager
-import love.forte.simbot.component.onebot.v11.core.bot.firstOneBotBotManagerOrNull
-import love.forte.simbot.component.onebot.v11.core.bot.useOneBot11BotManager
+import love.forte.simbot.component.onebot.v11.core.bot.*
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11ComponentConfiguration
 import love.forte.simbot.component.onebot.v11.core.component.useOneBot11Component
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * 同时安装使用 [OneBot11Component] 和 [OneBotBotManager].
@@ -120,13 +119,23 @@ private class OneBot11UsageBuilderImpl : OneBot11UsageBuilder {
  * 获取第一个 [OneBotBotManager] 并使用
  * @throws [NoSuchElementException] if no such element is found.
  */
+@OptIn(ExperimentalContracts::class)
 public inline fun Application.oneBot11Bots(block: OneBotBotManager.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+
     botManagers.firstOneBotBotManager().block()
 }
 
 /**
  * 获取第一个 [OneBotBotManager] 并使用（如果有的话）
  */
+@OptIn(ExperimentalContracts::class)
 public inline fun Application.oneBot11BotsIfSupport(block: OneBotBotManager.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+    }
+
     botManagers.firstOneBotBotManagerOrNull()?.block()
 }

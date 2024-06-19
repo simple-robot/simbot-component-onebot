@@ -22,6 +22,7 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.ChatGroupMessageEvent
 import love.forte.simbot.suspendrunner.STP
@@ -41,6 +42,7 @@ import love.forte.simbot.suspendrunner.STP
 @STP
 public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
     override val sourceEvent: RawGroupMessageEvent
+    override val messageContent: OneBotMessageContent
 
     /**
      * 事件发生所在群
@@ -85,6 +87,7 @@ public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
  */
 @STP
 public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
+    override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup
     override suspend fun author(): OneBotMember
 }
@@ -95,6 +98,7 @@ public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGr
  */
 @STP
 public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
+    override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup
     override suspend fun author(): OneBotMember
 }
@@ -105,5 +109,6 @@ public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, Cha
  */
 @STP
 public interface OneBotNoticeGroupMessageEvent : OneBotGroupMessageEvent {
+    override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup
 }

@@ -21,12 +21,14 @@ import io.ktor.client.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.json.Json
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
@@ -34,13 +36,14 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmSynthetic
 
 
 /**
- * 一个 OneBot协议的 [Bot]。
+ * 一个 OneBot 协议的 [Bot]。
  *
  * ### Bot 的终止
  * Bot的运行状态 ([isActive]) 可能会因为一些原因被更改：
@@ -56,6 +59,11 @@ import kotlin.jvm.JvmSynthetic
 @OneBotInternalImplementationsOnly
 public interface OneBotBot : Bot {
     override val coroutineContext: CoroutineContext
+
+    /**
+     * [OneBotBot] 会使用的 [Json]
+     */
+    public val decoderJson: Json
 
     /**
      * 当前Bot的配置类。
@@ -181,6 +189,19 @@ public interface OneBotBot : Bot {
     @ST
     public suspend fun getCsrfToken(): GetCsrfTokenResult
 
+    /**
+     * 根据 [messageId] 使用 [GetMsgApi] 查询消息内容，
+     * 并得到对应的 [OneBotMessageContent]。
+     *
+     * 注意：此API是实验性的，未来可能会随时被变更或删除。
+     *
+     * @see GetMsgApi
+     * @throws Throwable 任何API请求过程中可能产生的异常，
+     * 例如消息不存在
+     */
+    @ST
+    @ExperimentalOneBotAPI
+    public suspend fun getMessageContent(messageId: ID): OneBotMessageContent
 
 }
 

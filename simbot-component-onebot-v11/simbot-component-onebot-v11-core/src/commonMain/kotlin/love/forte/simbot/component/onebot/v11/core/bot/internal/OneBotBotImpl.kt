@@ -27,9 +27,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
+import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
@@ -60,6 +62,7 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.notice.*
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
+import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
@@ -71,6 +74,7 @@ import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEven
 import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.logger.LoggerFactory
@@ -93,6 +97,7 @@ internal class OneBotBotImpl(
     override val configuration: OneBotBotConfiguration,
     override val component: OneBot11Component,
     private val eventProcessor: EventProcessor,
+    baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
     override val apiClient: HttpClient
     private val wsClient: HttpClient
@@ -101,6 +106,12 @@ internal class OneBotBotImpl(
         apiClient = resolveHttpClient()
         wsClient = resolveWsClient()
         job.invokeOnCompletion { apiClient.close() }
+    }
+
+    override val decoderJson: Json = Json(baseDecoderJson) {
+        configuration.serializersModule?.also { confMd ->
+            serializersModule = serializersModule overwriteWith confMd
+        }
     }
 
     override val subContext = coroutineContext.minusKey(Job)
@@ -471,18 +482,30 @@ internal class OneBotBotImpl(
                 text
             )
 
-            val postType = obj["post_type"]!!.jsonPrimitive.content
+            val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
+                "Missing required event property 'post_type'"
+            }
+
             val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
-            val subType = obj[subTypeFieldName]!!.jsonPrimitive.content
-            resolveEventSerializer(postType, subType)?.let {
-                return OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
-            } ?: run {
+            val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
+
+            fun toUnknown(): UnknownEvent {
                 val time = obj["time"]?.jsonPrimitive?.long ?: -1L
                 val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
                 return UnknownEvent(time, selfId, postType, text)
             }
-        }
 
+            if (subType == null) {
+                // 一个不规则的 unknown event
+                return toUnknown()
+            }
+
+            resolveEventSerializer(postType, subType)?.let {
+                return OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
+            } ?: run {
+                return toUnknown()
+            }
+        }
 
         private fun pushEvent(event: Event): Job {
             return eventProcessor
@@ -563,6 +586,15 @@ internal class OneBotBotImpl(
 
     override suspend fun getCsrfToken(): GetCsrfTokenResult =
         GetCsrfTokenApi.create().requestDataBy(this)
+
+    override suspend fun getMessageContent(messageId: ID): OneBotMessageContent {
+        val result = GetMsgApi.create(messageId).requestDataBy(this)
+        return OneBotMessageContentImpl(
+            result.messageId,
+            result.message,
+            this
+        )
+    }
 
     override fun toString(): String =
         "OneBotBot(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"

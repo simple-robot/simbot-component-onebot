@@ -51,7 +51,7 @@ internal abstract class OneBotGroupMessageEventImpl(
     override val authorId: ID
         get() = sourceEvent.userId
 
-    override val messageContent: MessageContent = OneBotMessageContentImpl(
+    override val messageContent: OneBotMessageContent = OneBotMessageContentImpl(
         sourceEvent.messageId,
         sourceEvent.message,
         bot
