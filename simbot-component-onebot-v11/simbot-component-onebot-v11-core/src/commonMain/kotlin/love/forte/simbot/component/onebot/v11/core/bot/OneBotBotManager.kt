@@ -19,12 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.bot
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.BotManagerFactory
-import love.forte.simbot.bot.BotRegisterFailureException
-import love.forte.simbot.bot.JobBasedBotManager
-import love.forte.simbot.bot.SerializableBotConfiguration
-import love.forte.simbot.bot.UnsupportedBotConfigurationException
+import love.forte.simbot.bot.*
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.id.ID
@@ -142,3 +137,15 @@ public interface OneBotBotManagerFactoryConfigurerProvider :
     PluginFactoryConfigurerProvider<OneBotBotManagerConfiguration>
 
 internal expect fun loadOneBotBotManagerConfigures(): Sequence<OneBotBotManagerFactoryConfigurerProvider>
+
+
+/**
+ * 根据配置注册一个 [OneBotBot]。
+ *
+ * @see OneBotBotManager.register
+ * @throws BotRegisterFailureException 注册过程出现异常，
+ * 比如出现了冲突的 [OneBotBotConfiguration.botUniqueId]
+ */
+public inline fun OneBotBotManager.register(block: OneBotBotConfiguration.() -> Unit): OneBotBot {
+    return register(OneBotBotConfiguration().also(block))
+}
