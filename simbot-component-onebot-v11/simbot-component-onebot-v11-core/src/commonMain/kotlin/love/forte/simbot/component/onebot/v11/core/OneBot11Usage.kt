@@ -136,6 +136,6 @@ public inline fun Application.oneBot11BotsIfSupport(block: OneBotBotManager.() -
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
-    
+
     botManagers.firstOneBotBotManagerOrNull()?.block()
 }
