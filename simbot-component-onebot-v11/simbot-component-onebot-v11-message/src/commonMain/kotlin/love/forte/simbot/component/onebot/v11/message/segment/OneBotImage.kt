@@ -182,3 +182,17 @@ public class OneBotImage private constructor(
         return "OneBotImage(data=$data)"
     }
 }
+
+/**
+ * 使用 [Resource] 构建一个**用于发送**的 [OneBotImage]。
+ *
+ * 更多说明参考 [OneBotImage.create]
+ *
+ * @see OneBotImage.create
+ */
+public inline fun OneBotImage.Factory.create(
+    resource: Resource,
+    block: OneBotImage.AdditionalParams.() -> Unit
+): OneBotImage {
+    return create(resource, OneBotImage.AdditionalParams().also(block))
+}
