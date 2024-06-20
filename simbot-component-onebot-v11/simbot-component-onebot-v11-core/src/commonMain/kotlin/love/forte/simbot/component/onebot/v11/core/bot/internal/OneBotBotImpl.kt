@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -369,7 +370,11 @@ internal class OneBotBotImpl(
                     }
                 }
 
-                receiveEvent(currentSession)
+                kotlin.runCatching {
+                    receiveEvent(currentSession)
+                }.onFailure { ex ->
+                    logger.error("Event reception is interrupted: {}", ex.message, ex)
+                }
 
                 // The Session is done or dead,
                 // or the job is done.
@@ -448,6 +453,8 @@ internal class OneBotBotImpl(
                         }
                     } ?: continue
 
+                    logger.debug("Received raw event: {}", eventRaw)
+
                     val event = kotlin.runCatching {
                         resolveRawEvent(eventRaw)
                     }.getOrElse { e ->
@@ -460,9 +467,9 @@ internal class OneBotBotImpl(
                         )
                         // 接收的事件解析出现错误，
                         // 这应该是预期外的情况，
-                        // 直接终止 session 和 Bot
+                        // 直接终止 session, 但是不终止 Bot，
+                        // 只有当重连次数用尽才考虑终止 Bot。
                         session.closeExceptionally(ex)
-                        job.cancel(exMsg, ex)
 
                         throw ex
                     }
@@ -489,10 +496,10 @@ internal class OneBotBotImpl(
             val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
             val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
 
-            fun toUnknown(): UnknownEvent {
+            fun toUnknown(reason: Throwable? = null): UnknownEvent {
                 val time = obj["time"]?.jsonPrimitive?.long ?: -1L
                 val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
-                return UnknownEvent(time, selfId, postType, text)
+                return UnknownEvent(time, selfId, postType, text, reason)
             }
 
             if (subType == null) {
@@ -501,7 +508,29 @@ internal class OneBotBotImpl(
             }
 
             resolveEventSerializer(postType, subType)?.let {
-                return OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
+                return try {
+                    OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
+                } catch (serEx: SerializationException) {
+                    logger.error(
+                        "Received raw event '{}' decode failed because of serialization: {}" +
+                            "It will be pushed as an UnknownEvent",
+                        text,
+                        serEx.message,
+                        serEx
+                    )
+
+                    toUnknown(serEx)
+                } catch (argEx: IllegalArgumentException) {
+                    logger.error(
+                        "Received raw event '{}' decode failed because of illegal argument: {}" +
+                            "It will be pushed as an UnknownEvent",
+                        text,
+                        argEx.message,
+                        argEx
+                    )
+
+                    toUnknown(argEx)
+                }
             } ?: run {
                 return toUnknown()
             }
