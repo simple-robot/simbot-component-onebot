@@ -100,6 +100,8 @@ kotlin {
             implementation(libs.kotlinPoet)
             implementation(libs.kotlinx.coroutines.reactor)
             api(libs.ktor.client.java)
+            implementation(libs.ktor.server.netty)
+            implementation(libs.ktor.server.ws)
         }
     }
 }

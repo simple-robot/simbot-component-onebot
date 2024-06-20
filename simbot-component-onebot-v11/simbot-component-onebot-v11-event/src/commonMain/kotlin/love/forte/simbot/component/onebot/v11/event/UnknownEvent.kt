@@ -17,9 +17,11 @@
 
 package love.forte.simbot.component.onebot.v11.event
 
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.JsonObject
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.LongID
-
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 
 /**
  * 用于“兜底”的 [RawEvent] 类型实现。
@@ -27,6 +29,15 @@ import love.forte.simbot.common.id.LongID
  * 则应当将其解析并包装为 [UnknownEvent]。
  *
  * [UnknownEvent] 要求事件体必须包括 [time], [selfId] 和 [postType]。
+ *
+ * 如果 [UnknownEvent] 是由于某些异常而产生（例如原本事件进行序列化但是失败了），
+ * 那么失败的原因则会通过 [reason] 提供。
+ *
+ * ### 内部构造
+ *
+ * [UnknownEvent] 应当始终由内部使用、构造，
+ * 不要在其他地方自行构造 [UnknownEvent]，
+ * 它的构造函数不保证任何源码或二进制兼容。
  *
  * ### FragileAPI
  *
@@ -37,12 +48,41 @@ import love.forte.simbot.common.id.LongID
  * @author ForteScarlet
  */
 @FragileSimbotAPI
-public data class UnknownEvent(
+public class UnknownEvent @InternalOneBotAPI constructor(
     override val time: Long,
     override val selfId: LongID,
     override val postType: String,
     /**
-     * 原始的JSON字符串
+     * 原始的JSON字符串，
+     * 也是判断 [UnknownEvent] 之间是否相同的**唯一依据**。
      */
     public val raw: String,
-) : RawEvent
+
+    /**
+     * [raw] 对应解析的 [JsonObject] 对象。
+     */
+    public val rawJson: JsonObject,
+
+    /**
+     * 如果是由于异常而产生，则此处为异常的原因。
+     * 通常会是 [SerializationException]。
+     */
+    public val reason: Throwable? = null,
+
+) : RawEvent {
+    override fun toString(): String =
+        "UnknownEvent(time=$time, selfId=$selfId, postType='$postType')"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is UnknownEvent) return false
+
+        if (raw != other.raw) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return raw.hashCode()
+    }
+}
