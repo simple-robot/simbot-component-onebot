@@ -17,19 +17,99 @@
 
 package love.forte.simbot.component.onebot.v11.message
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.message.JvmOfflineImageValueResolver
+import love.forte.simbot.message.Message
 import love.forte.simbot.message.OfflineImage
 import love.forte.simbot.message.OfflineImageValueResolver
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.URIResource
 import love.forte.simbot.resource.toResource
+import love.forte.simbot.suspendrunner.reserve.SuspendReserve
+import love.forte.simbot.suspendrunner.reserve.suspendReserve
+import love.forte.simbot.suspendrunner.runInAsync
+import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
+import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
+
+/**
+ * 将 [Message] 解析为一用于API请求的 [OneBotMessageSegment] 列表。
+ *
+ * @see resolveToOneBotSegmentList
+ */
+@InternalOneBotAPI
+@Api4J
+public fun Message.resolveToOneBotSegmentListBlocking(): List<OneBotMessageSegment> =
+    runInNoScopeBlocking { resolveToOneBotSegmentList() }
+
+/**
+ * 将 [Message] 解析为一用于API请求的 [OneBotMessageSegment] 列表。
+ *
+ * @see resolveToOneBotSegmentList
+ */
+@OptIn(InternalSimbotAPI::class)
+@InternalOneBotAPI
+@Api4J
+public fun Message.resolveToOneBotSegmentListAsync(): CompletableFuture<out List<OneBotMessageSegment>> =
+    runInAsync { resolveToOneBotSegmentList() }
+
+/**
+ * 将 [Message] 解析为一用于API请求的 [OneBotMessageSegment] 列表。
+ *
+ * @see resolveToOneBotSegmentList
+ */
+@OptIn(InternalSimbotAPI::class, DelicateCoroutinesApi::class)
+@InternalOneBotAPI
+@Api4J
+public fun Message.resolveToOneBotSegmentListReserve(): SuspendReserve<List<OneBotMessageSegment>> =
+    suspendReserve(
+        GlobalScope,
+        EmptyCoroutineContext
+    ) { resolveToOneBotSegmentList() }
+
+/**
+ * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
+ * @see resolveToOneBotSegment
+ */
+@InternalOneBotAPI
+@Api4J
+public fun Message.Element.resolveToOneBotSegmentBlocking(): OneBotMessageSegment? =
+    runInNoScopeBlocking { resolveToOneBotSegment() }
+
+/**
+ * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
+ * @see resolveToOneBotSegment
+ */
+@OptIn(InternalSimbotAPI::class)
+@InternalOneBotAPI
+@Api4J
+public fun Message.Element.resolveToOneBotSegmentAsync(): CompletableFuture<out OneBotMessageSegment?> =
+    runInAsync { resolveToOneBotSegment() }
+
+/**
+ * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
+ * @see resolveToOneBotSegment
+ */
+@OptIn(DelicateCoroutinesApi::class, InternalSimbotAPI::class)
+@InternalOneBotAPI
+@Api4J
+public fun Message.Element.resolveToOneBotSegmentReserve(): SuspendReserve<OneBotMessageSegment?> =
+    suspendReserve(
+        GlobalScope,
+        EmptyCoroutineContext
+    ) { resolveToOneBotSegment() }
+
 
 internal actual fun offlineImageResolver(): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
     object : JvmOfflineImageValueResolver<Continuation<OneBotMessageSegment?>>() {

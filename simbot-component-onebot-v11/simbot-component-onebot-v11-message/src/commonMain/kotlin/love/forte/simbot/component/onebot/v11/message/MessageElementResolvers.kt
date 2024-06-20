@@ -32,6 +32,7 @@ import love.forte.simbot.resource.toStringResource
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
 
 /**
  * 将事件中接收到的 [OneBotMessageSegment] 解析为 [Message.Element]。
@@ -57,6 +58,7 @@ public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
  * @see resolveToOneBotSegment
  */
 @InternalOneBotAPI
+@JvmSynthetic
 public suspend fun Message.resolveToOneBotSegmentList(): List<OneBotMessageSegment> {
     return when (this) {
         is Message.Element -> resolveToOneBotSegment()
@@ -71,6 +73,7 @@ public suspend fun Message.resolveToOneBotSegmentList(): List<OneBotMessageSegme
  * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
  */
 @InternalOneBotAPI
+@JvmSynthetic
 public suspend fun Message.Element.resolveToOneBotSegment(): OneBotMessageSegment? {
     return when (this) {
         // OB组件的 segment 类型，直接使用
