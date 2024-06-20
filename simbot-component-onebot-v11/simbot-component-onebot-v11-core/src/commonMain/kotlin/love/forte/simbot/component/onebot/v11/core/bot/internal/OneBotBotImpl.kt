@@ -499,7 +499,7 @@ internal class OneBotBotImpl(
             fun toUnknown(reason: Throwable? = null): UnknownEvent {
                 val time = obj["time"]?.jsonPrimitive?.long ?: -1L
                 val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
-                return UnknownEvent(time, selfId, postType, text, reason)
+                return UnknownEvent(time, selfId, postType, text, obj, reason)
             }
 
             if (subType == null) {

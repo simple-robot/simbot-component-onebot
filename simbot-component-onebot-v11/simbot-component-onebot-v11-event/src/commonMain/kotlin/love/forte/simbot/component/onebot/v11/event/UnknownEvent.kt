@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.event
 
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.JsonObject
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
@@ -31,6 +32,12 @@ import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
  *
  * 如果 [UnknownEvent] 是由于某些异常而产生（例如原本事件进行序列化但是失败了），
  * 那么失败的原因则会通过 [reason] 提供。
+ *
+ * ### 内部构造
+ *
+ * [UnknownEvent] 应当始终由内部使用、构造，
+ * 不要在其他地方自行构造 [UnknownEvent]，
+ * 它的构造函数不保证任何源码或二进制兼容。
  *
  * ### FragileAPI
  *
@@ -52,10 +59,16 @@ public class UnknownEvent @InternalOneBotAPI constructor(
     public val raw: String,
 
     /**
+     * [raw] 对应解析的 [JsonObject] 对象。
+     */
+    public val rawJson: JsonObject,
+
+    /**
      * 如果是由于异常而产生，则此处为异常的原因。
      * 通常会是 [SerializationException]。
      */
-    public val reason: Throwable? = null
+    public val reason: Throwable? = null,
+
 ) : RawEvent {
     override fun toString(): String =
         "UnknownEvent(time=$time, selfId=$selfId, postType='$postType')"
