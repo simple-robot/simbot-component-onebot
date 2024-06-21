@@ -469,3 +469,264 @@ public class MyComponent {
 有关事件的更多内容参考 
 <a href="onebot11-event.md" /> 。
 </warning>
+
+
+## 外部事件
+
+`OneBotBot` 提供了 `push(String)` 来允许直接从外部推送一个原始的事件字符串。
+
+<tabs group="code">
+<tab title="Kotlin" group-key="Kotlin">
+
+```Kotlin
+val json = """
+{
+    "time": 1515204254,
+    "self_id": 10001000,
+    "post_type": "message",
+    "message_type": "private",
+    "sub_type": "friend",
+    "message_id": 12,
+    "user_id": 12345678,
+    "message": "你好～",
+    "raw_message": "你好～",
+    "font": 456,
+    "sender": {
+        "nickname": "小不点",
+        "sex": "male",
+        "age": 18
+    }
+}
+"""
+
+bot.push(json).collect()
+```
+
+</tab>
+<tab title="Java" group-key="Java">
+
+```Java
+var json = """
+    {
+        "time": 1515204254,
+        "self_id": 10001000,
+        "post_type": "message",
+        "message_type": "private",
+        "sub_type": "friend",
+        "message_id": 12,
+        "user_id": 12345678,
+        "message": "你好～",
+        "raw_message": "你好～",
+        "font": 456,
+        "sender": {
+            "nickname": "小不点",
+            "sex": "male",
+            "age": 18
+        }
+    }
+    """
+
+// 推送并在异步中处理
+bot.pushAndLaunch(json);
+```
+
+由于 `bot.push` 返回的结果是 `Flow`, 因此 Java 中想要直接使用它会比较困难。
+你可以先通过 `Collectables.valueOf(flow)` 将其转化为 `Collectable` (与关系对象相关API的结果类型一样)，
+然后再做进一步操作。
+
+
+```java
+var collectable = Collectables.valueOf(flow);
+// 使用 collectAsync 异步遍历
+// 或者 Collectables 中提供的各种辅助API
+// 或者 transform 转化为其他的类型，比如响应式的 Flux
+```
+
+</tab>
+</tabs>
+
+> 示例JSON来自 
+> https://github.com/botuniverse/onebot-11/blob/master/communication/http-post.md 。
+
+这可以让你能够使用**反向事件推送**来接收事件，比如通过接收来自 HTTP 的事件推送请求。
+
+简单示例：
+
+<tabs>
+<tab title="Ktor">
+
+```kotlin
+suspend fun main() {
+    val application = launchSimpleApplication {
+        useOneBot11()
+    }
+    // 注册事件省略...
+
+    // 注册bot并启动
+    val bot = application.oneBot11Bots {
+        register {
+            // 内容省略
+        }.apply { start() }
+    }
+
+    // 启动一个Ktor Server
+    embeddedServer(Netty, port = 5959, module = { serverModule(bot) })
+        .start(wait = true)
+}
+
+fun io.ktor.server.application.Application.serverModule(bot: OneBotBot) {
+    routing {
+        post("/event") {
+            // 收到事件，推送并在异步中处理
+            // 你也可以选择直接 push(body).collect(), 
+            // 直到事件被完全处理后在返回
+            val body = call.receiveText()
+            bot.pushAndLaunch(body)
+
+            // 响应一个默认的空JSON结果
+            call.response.header(HttpHeaders.ContentType, "application/json")
+            call.respond("{}")
+        }
+    }
+}
+```
+
+</tab>
+<tab title="Spring Boot Web">
+
+```java
+@RestController
+public class MyController {
+    private final Application application;
+
+    // 一个简单的返回值类型，假设始终返回空JSON {}
+    public record Result() {
+    }
+
+    private static final Result OK = new Result();
+
+    public MyController(Application application) {
+        this.application = application;
+    }
+
+    /**
+     * 通过 /xxx/event 接收事件，
+     * xxx 为你bot配置的 uniqueBotId
+     */
+    @PostMapping("/{botId}/event")
+    public Result onEvent(@PathVariable String botId, @RequestBody String body) {
+        for (var botManager : application.getBotManagers()) {
+            if (botManager instanceof OneBotBotManager obManager) {
+                // 找到这个bot
+                var bot = obManager.find(Identifies.of(botId));
+                // 如果有就推送这个事件并退出寻找
+                if (bot != null) {
+                    // 推送事件并在异步中处理
+                    // 你也可以参考上面有关 Flux 和 Collectable 的说明
+                    // 来阻塞地等待事件处理完成后再返回
+                    bot.pushAndLaunch(body);
+                    break;
+                }
+            }
+        }
+
+        return OK;
+    }
+}
+```
+
+</tab>
+<tab title="Spring Boot WebFlux">
+
+<tabs>
+<tab title="异步处理">
+
+如果选择直接异步处理，那么其实跟 Spring Boot Web 的情况下没什么太大区别。
+
+```java
+@RestController
+public class MyController {
+    private final Application application;
+
+    public record Result() {
+    }
+
+    private static final Result OK = new Result();
+
+    public MyController(Application application) {
+        this.application = application;
+    }
+
+    /**
+     * 通过 /xxx/event 接收事件，
+     * xxx 为你bot配置的 uniqueBotId
+     */
+    @PostMapping("/{botId}/event")
+    public Mono<Result> onEvent(@PathVariable String botId, @RequestBody String body) {
+        for (var botManager : application.getBotManagers()) {
+            if (botManager instanceof OneBotBotManager obManager) {
+                // 找到这个bot
+                var bot = obManager.find(Identifies.of(botId));
+                // 如果有就推送这个事件并退出寻找
+                if (bot != null) {
+                    bot.pushAndLaunch(body);
+                    break;
+                }
+            }
+        }
+
+        return Mono.just(OK);
+    }
+}
+```
+
+</tab>
+<tab title="顺序响应式处理">
+
+```java
+@RestController
+public class MyController {
+    private final Application application;
+
+    public record Result() {
+    }
+
+    private static final Result OK = new Result();
+
+    public MyController(Application application) {
+        this.application = application;
+    }
+
+    /**
+     * 通过 /xxx/event 接收事件，
+     * xxx 为你bot配置的 uniqueBotId
+     */
+    @PostMapping("/{botId}/event")
+    public Mono<Result> onEvent(@PathVariable String botId, @RequestBody String body) {
+        for (var botManager : application.getBotManagers()) {
+            if (botManager instanceof OneBotBotManager obManager) {
+                // 找到这个bot
+                var bot = obManager.find(Identifies.of(botId));
+                // 如果有就推送这个事件并退出寻找
+                if (bot != null) {
+                    final var flow = bot.push(body);
+                    // 将 flow 转为 reactor 的 Flux
+                    // 需要添加依赖 [[[kotlinx-coroutines-reactor|https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive]]]
+                    return ReactorFlowKt
+                            .asFlux(flow)
+                            .then(Mono.just(OK));
+                }
+            }
+        }
+
+        // 没找到，直接返回
+        return Mono.just(OK);
+    }
+}
+```
+
+</tab>
+</tabs>
+
+</tab>
+</tabs>

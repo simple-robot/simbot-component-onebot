@@ -119,17 +119,18 @@ public class OneBotBotConfiguration {
     }
 
     /**
-     * 必填属性，订阅事件的目标服务器地址。应当是ws或wss协议。
+     * 订阅事件的目标服务器地址。应当是ws或wss协议。
+     * 如果为 `null` 则不启用 ws 连接。
      */
-    public var eventServerHost: Url = Url("ws://localhost:3001")
+    public var eventServerHost: Url? = null
 
     /**
      * 配置 [eventServerHost]
      *
      * @see eventServerHost
      */
-    public fun setEventServerHost(urlString: String) {
-        eventServerHost = Url(urlString)
+    public fun setEventServerHost(urlString: String?) {
+        eventServerHost = urlString?.let { Url(it) }
     }
 
     /**

@@ -102,22 +102,12 @@ internal class OneBotBotImpl(
     private val eventProcessor: EventProcessor,
     baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
-    override val apiClient: HttpClient
-    private val wsClient: HttpClient
-
-    init {
-        apiClient = resolveHttpClient()
-        wsClient = resolveWsClient()
-        job.invokeOnCompletion { apiClient.close() }
-    }
-
+    override val subContext = coroutineContext.minusKey(Job)
     override val decoderJson: Json = Json(baseDecoderJson) {
         configuration.serializersModule?.also { confMd ->
             serializersModule = serializersModule overwriteWith confMd
         }
     }
-
-    override val subContext = coroutineContext.minusKey(Job)
 
     internal val logger = LoggerFactory
         .getLogger(
@@ -125,10 +115,29 @@ internal class OneBotBotImpl(
         )
 
     private val eventServerHost = configuration.eventServerHost
-
     private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
-
     private val connectRetryDelay = max(configuration.wsConnectRetryDelayMillis, 0L).milliseconds
+
+    override val apiClient: HttpClient
+    private val wsClient: HttpClient?
+
+
+    init {
+        apiClient = resolveHttpClient()
+        wsClient = if (eventServerHost != null) {
+            resolveWsClient()
+        } else {
+            null
+        }
+
+        job.invokeOnCompletion {
+            apiClient.close()
+            wsClient?.close()
+        }
+    }
+
+    private val wsEnabled: Boolean
+        get() = wsClient != null
 
     private inline fun resolveHttpClient(crossinline block: HttpClientConfig<*>.() -> Unit = {}): HttpClient {
         val apiClientConfigurer = configuration.apiClientConfigurer
@@ -250,10 +259,19 @@ internal class OneBotBotImpl(
         val info = queryLoginInfo()
         logger.debug("Update bot login info: {}", info)
 
-        wsSession = createEventSession().also { s ->
-            // init it first
-            val initialSession = s.createSessionWithRetry()
-            launch { s.launch(initialSession) }
+        if (wsEnabled) {
+            val wsHost = eventServerHost!!
+            val client = wsClient!!
+            logger.debug("WebSocket connection is enabled to {} via client {}", wsHost, client)
+            val wsSession = createEventSession(client, wsHost).also { s ->
+                // init it first
+                val initialSession = s.createSessionWithRetry()
+                launch { s.launch(initialSession) }
+            }
+            logger.debug("WebSocket session connected: {}", wsSession)
+            this.wsSession = wsSession
+        } else {
+            logger.debug("WebSocket connection is disabled because of the `eventServerHost` is null")
         }
 
         if (!isStarted) {
@@ -267,7 +285,7 @@ internal class OneBotBotImpl(
         }
     }
 
-    private fun createEventSession(): WsEventSession {
+    private fun createEventSession(wsClient: HttpClient, host: Url): WsEventSession {
         // Cancel current session if exists
         val currentSession = wsSession
         wsSession = null
@@ -275,18 +293,21 @@ internal class OneBotBotImpl(
 
         // OB11 似乎没有什么心跳之类乱七八糟的，似乎可以直接省略状态机
         // 直接连接、断线重连
-        return WsEventSession()
+        return WsEventSession(wsClient, host)
     }
 
 
-    private inner class WsEventSession {
+    private inner class WsEventSession(
+        val wsClient: HttpClient,
+        val host: Url
+    ) {
         private val sessionJob = Job(this@OneBotBotImpl.job)
         private var session: DefaultWebSocketSession? = null
 
         suspend fun createSession(): DefaultWebSocketSession {
             return wsClient.webSocketSession {
                 url {
-                    takeFrom(eventServerHost)
+                    takeFrom(host)
                     eventAccessToken?.also { bearerAuth(it) }
                 }
             }
