@@ -199,7 +199,8 @@ internal class OneBotBotImpl(
 
     override val apiHost: Url = configuration.apiServerHost
 
-    override val accessToken: String? = configuration.accessToken
+    override val apiAccessToken: String? = configuration.apiAccessToken
+    override val eventAccessToken: String? = configuration.eventAccessToken
 
     override val id: ID = uniqueId.ID
 
@@ -284,7 +285,7 @@ internal class OneBotBotImpl(
             return wsClient.webSocketSession {
                 url {
                     takeFrom(eventServerHost)
-                    accessToken?.also { bearerAuth(it) }
+                    eventAccessToken?.also { bearerAuth(it) }
                 }
             }
         }

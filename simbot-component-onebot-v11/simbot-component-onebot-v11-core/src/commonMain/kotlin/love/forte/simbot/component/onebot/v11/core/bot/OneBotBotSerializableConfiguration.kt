@@ -47,6 +47,8 @@ public data class OneBotBotSerializableConfiguration(
         val apiServerHost: String? = null,
         val eventServerHost: String? = null,
         val accessToken: String? = null,
+        val apiAccessToken: String? = null,
+        val eventAccessToken: String? = null,
     )
 
     @Serializable
@@ -101,7 +103,9 @@ public data class OneBotBotSerializableConfiguration(
             conf.botUniqueId = authorization.botUniqueId
             authorization.apiServerHost?.also { conf.apiServerHost = Url(it) }
             authorization.eventServerHost?.also { conf.eventServerHost = Url(it) }
-            authorization.accessToken?.also { conf.accessToken = it }
+            authorization.accessToken?.also { conf.accessToken(it) }
+            authorization.apiAccessToken?.also { conf.apiAccessToken = it }
+            authorization.eventAccessToken?.also { conf.eventAccessToken = it }
 
             config?.apply {
                 apiHttpRequestTimeoutMillis?.also { conf.apiHttpRequestTimeoutMillis = it }
