@@ -23,6 +23,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
@@ -78,6 +79,7 @@ import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.event.EventResult
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
@@ -117,7 +119,7 @@ internal class OneBotBotImpl(
 
     override val subContext = coroutineContext.minusKey(Job)
 
-    private val logger = LoggerFactory
+    internal val logger = LoggerFactory
         .getLogger(
             "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId"
         )
@@ -476,72 +478,9 @@ internal class OneBotBotImpl(
                     }
 
                     pushEvent(resolveRawEventToEvent(eventRaw, event))
+                        .launchIn(this@OneBotBotImpl)
                 }
             }
-        }
-
-        /**
-         * 解析数据包字符串为 [Event]。
-         */
-        @OptIn(FragileSimbotAPI::class)
-        private fun resolveRawEvent(text: String): OBRawEvent {
-            val obj = OneBot11.DefaultJson.decodeFromString(
-                JsonObject.serializer(),
-                text
-            )
-
-            val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
-                "Missing required event property 'post_type'"
-            }
-
-            val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
-            val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
-
-            fun toUnknown(reason: Throwable? = null): UnknownEvent {
-                val time = obj["time"]?.jsonPrimitive?.long ?: -1L
-                val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
-                return UnknownEvent(time, selfId, postType, text, obj, reason)
-            }
-
-            if (subType == null) {
-                // 一个不规则的 unknown event
-                return toUnknown()
-            }
-
-            resolveEventSerializer(postType, subType)?.let {
-                return try {
-                    OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
-                } catch (serEx: SerializationException) {
-                    logger.error(
-                        "Received raw event '{}' decode failed because of serialization: {}" +
-                            "It will be pushed as an UnknownEvent",
-                        text,
-                        serEx.message,
-                        serEx
-                    )
-
-                    toUnknown(serEx)
-                } catch (argEx: IllegalArgumentException) {
-                    logger.error(
-                        "Received raw event '{}' decode failed because of illegal argument: {}" +
-                            "It will be pushed as an UnknownEvent",
-                        text,
-                        argEx.message,
-                        argEx
-                    )
-
-                    toUnknown(argEx)
-                }
-            } ?: run {
-                return toUnknown()
-            }
-        }
-
-        private fun pushEvent(event: Event): Job {
-            return eventProcessor
-                .push(event)
-                .onEachErrorLog(logger)
-                .launchIn(this@OneBotBotImpl)
         }
 
         fun cancel() {
@@ -626,10 +565,86 @@ internal class OneBotBotImpl(
         )
     }
 
+    override fun push(rawEvent: String): Flow<EventResult> {
+        val event = kotlin.runCatching {
+            resolveRawEvent(rawEvent)
+        }.getOrElse { e ->
+            val exMsg = "Failed to resolve raw event $rawEvent, " +
+                "session and bot will be closed exceptionally"
+
+            throw IllegalArgumentException(exMsg, e)
+        }
+
+        return pushEvent(resolveRawEventToEvent(rawEvent, event))
+    }
+
+    private fun pushEvent(event: Event): Flow<EventResult> {
+        return eventProcessor
+            .push(event)
+            .onEachErrorLog(logger)
+    }
+
     override fun toString(): String =
         "OneBotBot(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"
 }
 
+
+/**
+ * 解析数据包字符串为 [Event]。
+ */
+@OptIn(FragileSimbotAPI::class)
+internal fun OneBotBotImpl.resolveRawEvent(text: String): OBRawEvent {
+    val obj = OneBot11.DefaultJson.decodeFromString(
+        JsonObject.serializer(),
+        text
+    )
+
+    val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
+        "Missing required event property 'post_type'"
+    }
+
+    val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
+    val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
+
+    fun toUnknown(reason: Throwable? = null): UnknownEvent {
+        val time = obj["time"]?.jsonPrimitive?.long ?: -1L
+        val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
+        return UnknownEvent(time, selfId, postType, text, obj, reason)
+    }
+
+    if (subType == null) {
+        // 一个不规则的 unknown event
+        return toUnknown()
+    }
+
+    resolveEventSerializer(postType, subType)?.let {
+        return try {
+            OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
+        } catch (serEx: SerializationException) {
+            logger.error(
+                "Received raw event '{}' decode failed because of serialization: {}" +
+                    "It will be pushed as an UnknownEvent",
+                text,
+                serEx.message,
+                serEx
+            )
+
+            toUnknown(serEx)
+        } catch (argEx: IllegalArgumentException) {
+            logger.error(
+                "Received raw event '{}' decode failed because of illegal argument: {}" +
+                    "It will be pushed as an UnknownEvent",
+                text,
+                argEx.message,
+                argEx
+            )
+
+            toUnknown(argEx)
+        }
+    } ?: run {
+        return toUnknown()
+    }
+}
 
 @OptIn(FragileSimbotAPI::class)
 internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {
