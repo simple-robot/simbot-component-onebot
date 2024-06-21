@@ -173,8 +173,6 @@ public interface OneBotMember : Member, DeleteSupport, OneBotStrangerAware {
     @JvmSynthetic
     public suspend fun setSpecialTitle(specialTitle: String, duration: Duration)
 
-
-
     /**
      * 向此成员发送消息。
      *
