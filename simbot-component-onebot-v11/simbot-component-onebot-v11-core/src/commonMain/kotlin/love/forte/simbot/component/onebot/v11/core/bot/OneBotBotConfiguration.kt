@@ -58,8 +58,42 @@ public class OneBotBotConfiguration {
     /**
      * 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
      *
+     * 可分开配置 [apiAccessToken] 或 [eventAccessToken]，或使用函数 [accessToken] 统一配置。
+     *
+     * @see apiAccessToken
+     * @see eventAccessToken
      */
-    public var accessToken: String? = null
+    @Deprecated("Use `apiAccessToken` or `eventAccessToken`")
+    public var accessToken: String?
+        get() = null
+        set(value) {
+            accessToken(value)
+        }
+
+    /**
+     * 用于正向请求API的 accessToken。
+     * 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
+     *
+     */
+    public var apiAccessToken: String? = null
+
+    /**
+     * 用于连接正向ws接收事件的 accessToken。
+     * 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
+     *
+     */
+    public var eventAccessToken: String? = null
+
+    /**
+     * 同时配置 [apiAccessToken] 和 [eventAccessToken]。
+     *
+     * @see apiAccessToken
+     * @see eventAccessToken
+     */
+    public fun accessToken(value: String?) {
+        apiAccessToken = value
+        eventAccessToken = value
+    }
 
     /**
      * **额外的**序列化模块信息。

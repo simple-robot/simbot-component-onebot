@@ -89,8 +89,24 @@ public interface OneBotBot : Bot {
 
     /**
      * [OneBotBotConfiguration] 中配置的 accessToken。
+     *
+     * 分开使用 [apiAccessToken] 或 [eventAccessToken]，
+     * [accessToken] 将会在 v1.0.0 版本后移除。
      */
+    @Deprecated("Use `apiAccessToken` or `eventAccessToken`", ReplaceWith("apiAccessToken"))
     public val accessToken: String?
+        get() = apiAccessToken
+    // TODO Removal
+
+    /**
+     * [OneBotBotConfiguration] 中配置的 [apiAccessToken][OneBotBotConfiguration.apiAccessToken]。
+     */
+    public val apiAccessToken: String?
+
+    /**
+     * [OneBotBotConfiguration] 中配置的 [eventAccessToken][OneBotBotConfiguration.eventAccessToken]。
+     */
+    public val eventAccessToken: String?
 
     /**
      * 当前Bot的唯一标识。
