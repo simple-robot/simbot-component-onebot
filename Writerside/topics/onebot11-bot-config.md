@@ -24,10 +24,15 @@ Bot配置文件通常情况下是配合Spring Boot starter的时候用的。
         "botUniqueId": "123456",
         // api地址，是个http/https服务器的路径，默认localhost:3000
         "apiServerHost": "http://localhost:3000",
-        // 订阅事件的服务器地址，是个ws/wss路径，默认localhost:3001
+        // 订阅事件的服务器地址，是个ws/wss路径，默认 `null`
+        // 如果为 `null` 则不会连接 ws 和订阅事件
         "eventServerHost": "ws://localhost:3001",
-        // 配置的 token，可以是null
-        "accessToken": null
+        // 配置的 token，可以是null, 代表同时配置 apiAccessToken 和 eventAccessToken
+        "accessToken": null,
+        // 用于API请求时用的 token，默认 null
+        "apiAccessToken": null,
+        // 用于连接事件订阅ws时用的 token，默认 null
+        "eventAccessToken": null
     },
     // 额外的可选配置
     // config本身以及其内的各项属性绝大多数都可省略或null

@@ -58,8 +58,42 @@ public class OneBotBotConfiguration {
     /**
      * 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
      *
+     * 可分开配置 [apiAccessToken] 或 [eventAccessToken]，或使用函数 [accessToken] 统一配置。
+     *
+     * @see apiAccessToken
+     * @see eventAccessToken
      */
-    public var accessToken: String? = null
+    @Deprecated("Use `apiAccessToken` or `eventAccessToken`")
+    public var accessToken: String?
+        get() = null
+        set(value) {
+            accessToken(value)
+        }
+
+    /**
+     * 用于正向请求API的 accessToken。
+     * 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
+     *
+     */
+    public var apiAccessToken: String? = null
+
+    /**
+     * 用于连接正向ws接收事件的 accessToken。
+     * 参考 [鉴权](https://github.com/botuniverse/onebot-11/blob/master/communication/authorization.md)
+     *
+     */
+    public var eventAccessToken: String? = null
+
+    /**
+     * 同时配置 [apiAccessToken] 和 [eventAccessToken]。
+     *
+     * @see apiAccessToken
+     * @see eventAccessToken
+     */
+    public fun accessToken(value: String?) {
+        apiAccessToken = value
+        eventAccessToken = value
+    }
 
     /**
      * **额外的**序列化模块信息。
@@ -85,17 +119,18 @@ public class OneBotBotConfiguration {
     }
 
     /**
-     * 必填属性，订阅事件的目标服务器地址。应当是ws或wss协议。
+     * 订阅事件的目标服务器地址。应当是ws或wss协议。
+     * 如果为 `null` 则不启用 ws 连接。
      */
-    public var eventServerHost: Url = Url("ws://localhost:3001")
+    public var eventServerHost: Url? = null
 
     /**
      * 配置 [eventServerHost]
      *
      * @see eventServerHost
      */
-    public fun setEventServerHost(urlString: String) {
-        eventServerHost = Url(urlString)
+    public fun setEventServerHost(urlString: String?) {
+        eventServerHost = urlString?.let { Url(it) }
     }
 
     /**

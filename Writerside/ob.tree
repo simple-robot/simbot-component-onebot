@@ -13,11 +13,12 @@
             <toc-element topic="onebot11-quick-start.md">
                 <toc-element topic="use-onebot11.md"/>
             </toc-element>
-            <toc-element topic="onebot11-bot-config.md"/>
             <toc-element topic="onebot11-event.md">
             </toc-element>
             <toc-element topic="onebot11-message.md"/>
-            <toc-element topic="onebot11-OneBotBot.md"/>
+            <toc-element topic="onebot11-OneBotBot.md">
+            </toc-element>
+            <toc-element topic="onebot11-bot-config.md"/>
             <toc-element topic="onebot11-actors.md">
                 <toc-element topic="onebot11-OneBotGroup.md"/>
                 <toc-element topic="onebot11-OneBotMember.md"/>

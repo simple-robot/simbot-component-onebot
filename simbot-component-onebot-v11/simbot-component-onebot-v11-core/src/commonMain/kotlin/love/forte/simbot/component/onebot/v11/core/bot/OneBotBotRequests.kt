@@ -41,7 +41,7 @@ public suspend fun OneBotApi<*>.requestBy(
 ): HttpResponse = request(
     client = bot.apiClient,
     host = bot.apiHost,
-    accessToken = bot.accessToken
+    accessToken = bot.apiAccessToken
 )
 
 /**
@@ -59,7 +59,7 @@ public suspend fun OneBotApi<*>.requestRawBy(
 ): String = requestRaw(
     client = bot.apiClient,
     host = bot.apiHost,
-    accessToken = bot.accessToken
+    accessToken = bot.apiAccessToken
 )
 
 /**
@@ -77,7 +77,7 @@ public suspend fun <T : Any> OneBotApi<T>.requestResultBy(
 ): OneBotApiResult<T> = requestResult(
     client = bot.apiClient,
     host = bot.apiHost,
-    accessToken = bot.accessToken,
+    accessToken = bot.apiAccessToken,
     decoder = bot.decoderJson
 )
 
@@ -99,6 +99,6 @@ public suspend fun <T : Any> OneBotApi<T>.requestDataBy(
 ): T = requestData(
     client = bot.apiClient,
     host = bot.apiHost,
-    accessToken = bot.accessToken,
+    accessToken = bot.apiAccessToken,
     decoder = bot.decoderJson
 )

@@ -23,6 +23,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
@@ -78,6 +79,7 @@ import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.event.EventResult
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
@@ -100,33 +102,42 @@ internal class OneBotBotImpl(
     private val eventProcessor: EventProcessor,
     baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
-    override val apiClient: HttpClient
-    private val wsClient: HttpClient
-
-    init {
-        apiClient = resolveHttpClient()
-        wsClient = resolveWsClient()
-        job.invokeOnCompletion { apiClient.close() }
-    }
-
+    override val subContext = coroutineContext.minusKey(Job)
     override val decoderJson: Json = Json(baseDecoderJson) {
         configuration.serializersModule?.also { confMd ->
             serializersModule = serializersModule overwriteWith confMd
         }
     }
 
-    override val subContext = coroutineContext.minusKey(Job)
-
-    private val logger = LoggerFactory
+    internal val logger = LoggerFactory
         .getLogger(
             "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId"
         )
 
     private val eventServerHost = configuration.eventServerHost
-
     private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
-
     private val connectRetryDelay = max(configuration.wsConnectRetryDelayMillis, 0L).milliseconds
+
+    override val apiClient: HttpClient
+    private val wsClient: HttpClient?
+
+
+    init {
+        apiClient = resolveHttpClient()
+        wsClient = if (eventServerHost != null) {
+            resolveWsClient()
+        } else {
+            null
+        }
+
+        job.invokeOnCompletion {
+            apiClient.close()
+            wsClient?.close()
+        }
+    }
+
+    private val wsEnabled: Boolean
+        get() = wsClient != null
 
     private inline fun resolveHttpClient(crossinline block: HttpClientConfig<*>.() -> Unit = {}): HttpClient {
         val apiClientConfigurer = configuration.apiClientConfigurer
@@ -199,7 +210,8 @@ internal class OneBotBotImpl(
 
     override val apiHost: Url = configuration.apiServerHost
 
-    override val accessToken: String? = configuration.accessToken
+    override val apiAccessToken: String? = configuration.apiAccessToken
+    override val eventAccessToken: String? = configuration.eventAccessToken
 
     override val id: ID = uniqueId.ID
 
@@ -247,10 +259,19 @@ internal class OneBotBotImpl(
         val info = queryLoginInfo()
         logger.debug("Update bot login info: {}", info)
 
-        wsSession = createEventSession().also { s ->
-            // init it first
-            val initialSession = s.createSessionWithRetry()
-            launch { s.launch(initialSession) }
+        if (wsEnabled) {
+            val wsHost = eventServerHost!!
+            val client = wsClient!!
+            logger.debug("WebSocket connection is enabled to {} via client {}", wsHost, client)
+            val wsSession = createEventSession(client, wsHost).also { s ->
+                // init it first
+                val initialSession = s.createSessionWithRetry()
+                launch { s.launch(initialSession) }
+            }
+            logger.debug("WebSocket session connected: {}", wsSession)
+            this.wsSession = wsSession
+        } else {
+            logger.debug("WebSocket connection is disabled because of the `eventServerHost` is null")
         }
 
         if (!isStarted) {
@@ -264,7 +285,7 @@ internal class OneBotBotImpl(
         }
     }
 
-    private fun createEventSession(): WsEventSession {
+    private fun createEventSession(wsClient: HttpClient, host: Url): WsEventSession {
         // Cancel current session if exists
         val currentSession = wsSession
         wsSession = null
@@ -272,19 +293,22 @@ internal class OneBotBotImpl(
 
         // OB11 似乎没有什么心跳之类乱七八糟的，似乎可以直接省略状态机
         // 直接连接、断线重连
-        return WsEventSession()
+        return WsEventSession(wsClient, host)
     }
 
 
-    private inner class WsEventSession {
+    private inner class WsEventSession(
+        val wsClient: HttpClient,
+        val wsHost: Url
+    ) {
         private val sessionJob = Job(this@OneBotBotImpl.job)
         private var session: DefaultWebSocketSession? = null
 
         suspend fun createSession(): DefaultWebSocketSession {
             return wsClient.webSocketSession {
                 url {
-                    takeFrom(eventServerHost)
-                    accessToken?.also { bearerAuth(it) }
+                    takeFrom(wsHost)
+                    eventAccessToken?.also { bearerAuth(it) }
                 }
             }
         }
@@ -475,72 +499,9 @@ internal class OneBotBotImpl(
                     }
 
                     pushEvent(resolveRawEventToEvent(eventRaw, event))
+                        .launchIn(this@OneBotBotImpl)
                 }
             }
-        }
-
-        /**
-         * 解析数据包字符串为 [Event]。
-         */
-        @OptIn(FragileSimbotAPI::class)
-        private fun resolveRawEvent(text: String): OBRawEvent {
-            val obj = OneBot11.DefaultJson.decodeFromString(
-                JsonObject.serializer(),
-                text
-            )
-
-            val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
-                "Missing required event property 'post_type'"
-            }
-
-            val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
-            val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
-
-            fun toUnknown(reason: Throwable? = null): UnknownEvent {
-                val time = obj["time"]?.jsonPrimitive?.long ?: -1L
-                val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
-                return UnknownEvent(time, selfId, postType, text, obj, reason)
-            }
-
-            if (subType == null) {
-                // 一个不规则的 unknown event
-                return toUnknown()
-            }
-
-            resolveEventSerializer(postType, subType)?.let {
-                return try {
-                    OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
-                } catch (serEx: SerializationException) {
-                    logger.error(
-                        "Received raw event '{}' decode failed because of serialization: {}" +
-                            "It will be pushed as an UnknownEvent",
-                        text,
-                        serEx.message,
-                        serEx
-                    )
-
-                    toUnknown(serEx)
-                } catch (argEx: IllegalArgumentException) {
-                    logger.error(
-                        "Received raw event '{}' decode failed because of illegal argument: {}" +
-                            "It will be pushed as an UnknownEvent",
-                        text,
-                        argEx.message,
-                        argEx
-                    )
-
-                    toUnknown(argEx)
-                }
-            } ?: run {
-                return toUnknown()
-            }
-        }
-
-        private fun pushEvent(event: Event): Job {
-            return eventProcessor
-                .push(event)
-                .onEachErrorLog(logger)
-                .launchIn(this@OneBotBotImpl)
         }
 
         fun cancel() {
@@ -625,10 +586,86 @@ internal class OneBotBotImpl(
         )
     }
 
+    override fun push(rawEvent: String): Flow<EventResult> {
+        val event = kotlin.runCatching {
+            resolveRawEvent(rawEvent)
+        }.getOrElse { e ->
+            val exMsg = "Failed to resolve raw event $rawEvent, " +
+                "session and bot will be closed exceptionally"
+
+            throw IllegalArgumentException(exMsg, e)
+        }
+
+        return pushEvent(resolveRawEventToEvent(rawEvent, event))
+    }
+
+    private fun pushEvent(event: Event): Flow<EventResult> {
+        return eventProcessor
+            .push(event)
+            .onEachErrorLog(logger)
+    }
+
     override fun toString(): String =
         "OneBotBot(uniqueId='$uniqueId', isStarted=$isStarted, isActive=$isActive)"
 }
 
+
+/**
+ * 解析数据包字符串为 [Event]。
+ */
+@OptIn(FragileSimbotAPI::class)
+internal fun OneBotBotImpl.resolveRawEvent(text: String): OBRawEvent {
+    val obj = OneBot11.DefaultJson.decodeFromString(
+        JsonObject.serializer(),
+        text
+    )
+
+    val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
+        "Missing required event property 'post_type'"
+    }
+
+    val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
+    val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
+
+    fun toUnknown(reason: Throwable? = null): UnknownEvent {
+        val time = obj["time"]?.jsonPrimitive?.long ?: -1L
+        val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
+        return UnknownEvent(time, selfId, postType, text, obj, reason)
+    }
+
+    if (subType == null) {
+        // 一个不规则的 unknown event
+        return toUnknown()
+    }
+
+    resolveEventSerializer(postType, subType)?.let {
+        return try {
+            OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
+        } catch (serEx: SerializationException) {
+            logger.error(
+                "Received raw event '{}' decode failed because of serialization: {}" +
+                    "It will be pushed as an UnknownEvent",
+                text,
+                serEx.message,
+                serEx
+            )
+
+            toUnknown(serEx)
+        } catch (argEx: IllegalArgumentException) {
+            logger.error(
+                "Received raw event '{}' decode failed because of illegal argument: {}" +
+                    "It will be pushed as an UnknownEvent",
+                text,
+                argEx.message,
+                argEx
+            )
+
+            toUnknown(argEx)
+        }
+    } ?: run {
+        return toUnknown()
+    }
+}
 
 @OptIn(FragileSimbotAPI::class)
 internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {

@@ -19,8 +19,11 @@ package love.forte.simbot.component.onebot.v11.core.bot
 
 import io.ktor.client.*
 import io.ktor.http.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.serialization.json.Json
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
@@ -37,6 +40,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
+import love.forte.simbot.event.EventResult
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmSynthetic
@@ -89,8 +93,24 @@ public interface OneBotBot : Bot {
 
     /**
      * [OneBotBotConfiguration] 中配置的 accessToken。
+     *
+     * 分开使用 [apiAccessToken] 或 [eventAccessToken]，
+     * [accessToken] 将会在 v1.0.0 版本后移除。
      */
+    @Deprecated("Use `apiAccessToken` or `eventAccessToken`", ReplaceWith("apiAccessToken"))
     public val accessToken: String?
+        get() = apiAccessToken
+    // TODO Removal
+
+    /**
+     * [OneBotBotConfiguration] 中配置的 [apiAccessToken][OneBotBotConfiguration.apiAccessToken]。
+     */
+    public val apiAccessToken: String?
+
+    /**
+     * [OneBotBotConfiguration] 中配置的 [eventAccessToken][OneBotBotConfiguration.eventAccessToken]。
+     */
+    public val eventAccessToken: String?
 
     /**
      * 当前Bot的唯一标识。
@@ -164,6 +184,25 @@ public interface OneBotBot : Bot {
      */
     override val guildRelation: GuildRelation?
         get() = null
+
+    /**
+     * 直接推送一个外部的原始事件字符串。
+     * 你需要收集结果的 [Flow] 事件才会真正的被处理，
+     * 或者使用 [pushAndLaunch]。
+     *
+     * 事件处理结果如果出现了异常结果会同内部事件一样输出异常日志。
+     *
+     * @throws IllegalArgumentException 如果事件解析失败
+     */
+    public fun push(rawEvent: String): Flow<EventResult>
+
+    /**
+     * 直接推送一个外部的原始事件字符串，并在异步任务中处理事件。
+     *
+     * @throws IllegalArgumentException 如果事件解析失败
+     */
+    public fun pushAndLaunch(rawEvent: String): Job =
+        push(rawEvent).launchIn(this)
 
     /**
      * 获取 Cookies
