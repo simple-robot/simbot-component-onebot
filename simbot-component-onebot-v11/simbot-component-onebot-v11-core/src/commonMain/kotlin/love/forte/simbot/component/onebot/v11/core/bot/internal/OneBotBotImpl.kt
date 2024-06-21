@@ -299,7 +299,7 @@ internal class OneBotBotImpl(
 
     private inner class WsEventSession(
         val wsClient: HttpClient,
-        val host: Url
+        val wsHost: Url
     ) {
         private val sessionJob = Job(this@OneBotBotImpl.job)
         private var session: DefaultWebSocketSession? = null
@@ -307,7 +307,7 @@ internal class OneBotBotImpl(
         suspend fun createSession(): DefaultWebSocketSession {
             return wsClient.webSocketSession {
                 url {
-                    takeFrom(host)
+                    takeFrom(wsHost)
                     eventAccessToken?.also { bearerAuth(it) }
                 }
             }
