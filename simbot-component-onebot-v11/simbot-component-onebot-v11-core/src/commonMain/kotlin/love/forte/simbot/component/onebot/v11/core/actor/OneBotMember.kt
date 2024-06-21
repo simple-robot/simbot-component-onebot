@@ -129,6 +129,51 @@ public interface OneBotMember : Member, DeleteSupport, OneBotStrangerAware {
     public suspend fun getSourceMemberInfo(): GetGroupMemberInfoResult
 
     /**
+     * 使用 [SetGroupSpecialTitleApi] 为群成员设置专属头衔。
+     * 通常要求bot拥有群主权限。
+     *
+     * 如果想要获取当前成员的专属头衔，使用 [getSourceMemberInfo]
+     * 后可通过 [GetGroupMemberInfoResult.title] 获取。
+     *
+     * @param specialTitle 要设置的新头衔。为空或为 `null` 则代表取消头衔。
+     * @throws Throwable 任何可能在请求API过程中产生的异常。
+     */
+    @ST
+    public suspend fun setSpecialTitle(specialTitle: String? = null)
+
+    /**
+     * 使用 [SetGroupSpecialTitleApi] 为群成员设置专属头衔。
+     * 通常要求bot拥有群主权限。
+     *
+     * 如果想要获取当前成员的专属头衔，使用 [getSourceMemberInfo]
+     * 后可通过 [GetGroupMemberInfoResult.title] 获取。
+     *
+     * @param specialTitle 要设置的新头衔。为空或为 `null` 则代表取消头衔。
+     * @param duration 有效期，最终取秒值，如果小于0则会被忽略。
+     * 不一定有效果，更多说明参考 [SetGroupSpecialTitleApi] 和 [SetGroupSpecialTitleApi.create]。
+     * @param timeUnit [duration] 的时间单位。
+     * @throws Throwable 任何可能在请求API过程中产生的异常。
+     */
+    @ST
+    @JvmSynthetic
+    public suspend fun setSpecialTitle(specialTitle: String, duration: Long, timeUnit: TimeUnit)
+
+    /**
+     * 使用 [SetGroupSpecialTitleApi] 为群成员设置专属头衔。
+     * 通常要求bot拥有群主权限。
+     *
+     * 如果想要获取当前成员的专属头衔，使用 [getSourceMemberInfo]
+     * 后可通过 [GetGroupMemberInfoResult.title] 获取。
+     *
+     * @param specialTitle 要设置的新头衔。为空或为 `null` 则代表取消头衔。
+     * @param duration 有效期，最终取秒值，如果小于0则会被忽略。
+     * 不一定有效果，更多说明参考 [SetGroupSpecialTitleApi] 和 [SetGroupSpecialTitleApi.create]。
+     * @throws Throwable 任何可能在请求API过程中产生的异常。
+     */
+    @JvmSynthetic
+    public suspend fun setSpecialTitle(specialTitle: String, duration: Duration)
+
+    /**
      * 向此成员发送消息。
      *
      * @throws Throwable 任何可能在请求API时得到的异常

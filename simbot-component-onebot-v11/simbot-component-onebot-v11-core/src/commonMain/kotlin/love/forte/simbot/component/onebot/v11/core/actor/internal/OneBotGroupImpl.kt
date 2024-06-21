@@ -30,11 +30,11 @@ import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
+import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.concurrent.Volatile
@@ -75,6 +75,14 @@ internal abstract class OneBotGroupImpl(
         return result.dataOrThrow.toMember(bot)
     }
 
+
+    override suspend fun setAnonymous(enable: Boolean) {
+        SetGroupAnonymousApi.create(
+            groupId = id,
+            enable = enable
+        ).requestDataBy(bot)
+    }
+
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendGroupTextMsgApi(
             target = id,
@@ -96,7 +104,7 @@ internal abstract class OneBotGroupImpl(
     override suspend fun send(message: Message): OneBotMessageReceipt {
         return sendGroupMsgApi(
             target = id,
-            message = message.resolveToOneBotSegmentList()
+            message = message.resolveToOneBotSegmentList(bot)
         ).requestDataBy(bot).toReceipt(bot)
     }
 

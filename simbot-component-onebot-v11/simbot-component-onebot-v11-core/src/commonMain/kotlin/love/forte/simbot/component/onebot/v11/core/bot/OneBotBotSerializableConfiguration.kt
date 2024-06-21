@@ -23,6 +23,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.bot.SerializableBotConfiguration
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 
 
 /**
@@ -69,8 +70,31 @@ public data class OneBotBotSerializableConfiguration(
         /**
          * @see OneBotBotConfiguration.wsConnectRetryDelayMillis
          */
-        val wsConnectRetryDelayMillis: Long? = null
+        val wsConnectRetryDelayMillis: Long? = null,
+
+        /**
+         * @see OneBotBotConfiguration.defaultImageAdditionalParams
+         */
+        val defaultImageAdditionalParams: AdditionalParams? = null,
     )
+
+    @Serializable
+    public data class AdditionalParams(
+        val localFileToBase64: Boolean = false,
+        val type: String? = null,
+        val cache: Boolean? = null,
+        val proxy: Boolean? = null,
+        val timeout: Int? = null,
+    ) {
+        internal fun resolve(): OneBotImage.AdditionalParams =
+            OneBotImage.AdditionalParams().apply {
+                localFileToBase64 = this@AdditionalParams.localFileToBase64
+                type = this@AdditionalParams.type
+                cache = this@AdditionalParams.cache
+                proxy = this@AdditionalParams.proxy
+                timeout = this@AdditionalParams.timeout
+            }
+    }
 
     public fun toConfiguration(): OneBotBotConfiguration =
         OneBotBotConfiguration().also { conf ->
@@ -85,6 +109,7 @@ public data class OneBotBotSerializableConfiguration(
                 apiHttpSocketTimeoutMillis?.also { conf.apiHttpSocketTimeoutMillis = it }
                 wsConnectMaxRetryTimes?.also { conf.wsConnectMaxRetryTimes = it }
                 wsConnectRetryDelayMillis?.also { conf.wsConnectRetryDelayMillis = it }
+                defaultImageAdditionalParams?.also { conf.defaultImageAdditionalParams(it.resolve()) }
             }
         }
 }

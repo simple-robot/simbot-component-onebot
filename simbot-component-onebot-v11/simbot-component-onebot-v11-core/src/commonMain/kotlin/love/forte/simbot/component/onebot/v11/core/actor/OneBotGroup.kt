@@ -24,10 +24,7 @@ import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupHonorInfoApi
-import love.forte.simbot.component.onebot.v11.core.api.GetGroupHonorInfoResult
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupAdminApi
-import love.forte.simbot.component.onebot.v11.core.api.SetGroupLeaveApi
+import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.ChatGroup
@@ -135,6 +132,15 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @STP
     override suspend fun botAsMember(): OneBotMember
+
+    /**
+     * 使用 [SetGroupAnonymousApi] 设置群组匿名(的开关)。
+     *
+     * @param enable 是否开启(允许)匿名聊天。true为允许。
+     * @throws Throwable 任何可能在请求API过程中产生的异常。
+     */
+    @ST
+    public suspend fun setAnonymous(enable: Boolean)
 
     /**
      * 向此群内发送消息。

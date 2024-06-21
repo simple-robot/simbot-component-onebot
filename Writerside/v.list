@@ -7,7 +7,7 @@
     <var name="jb" value="阻塞"/>
     <var name="ja" value="异步"/>
     <var name="jr" value="响应式"/>
-    <var name="version" value="0.7.0"/>
+    <var name="version" value="0.8.0"/>
     <var name="d-group" value="love.forte.simbot.component"/>
     <var name="d-ob11-id" value="simbot-component-onebot-v11"/>
     <var name="minimum-core-version" value="4.0.1"/>
