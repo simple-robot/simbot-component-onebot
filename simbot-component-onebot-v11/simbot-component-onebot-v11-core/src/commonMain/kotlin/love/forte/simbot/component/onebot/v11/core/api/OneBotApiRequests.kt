@@ -30,10 +30,12 @@ import io.ktor.http.content.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.serialization.json.Json
 import love.forte.simbot.common.serialization.guessSerializer
+import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
+import kotlin.concurrent.Volatile
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
@@ -43,6 +45,36 @@ import kotlin.jvm.JvmSynthetic
  */
 @InternalOneBotAPI
 public val ApiLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.onebot.v11.core.api.API")
+
+private const val EMPTY_JSON_STR: String = "{}"
+
+/**
+ * 全局性的配置属性。
+ */
+@ExperimentalOneBotAPI
+public object GlobalOneBotApiRequestConfiguration {
+    private const val EMPTY_JSON_STRING_IF_BODY_NULL_KEY: String =
+        "simbot.onebot11.api.request.emptyJsonStringIfBodyNull"
+
+    /**
+     * 如果 API 的 body 为 null, 则使用一个空的JSON字符串作为 Body。
+     *
+     * 在 JVM 平台中，可以通JVM属性
+     * `simbot.onebot11.api.request.emptyJsonStringIfBodyNull`
+     * 来设置初始值:
+     * ```
+     * -Dsimbot.onebot11.api.request.emptyJsonStringIfBodyNull=false
+     * ```
+     *
+     * 默认为 `true`。
+     */
+    @Volatile
+    public var emptyJsonStringIfBodyNull: Boolean =
+        initConfig(EMPTY_JSON_STRING_IF_BODY_NULL_KEY, "true")
+            .toBoolean()
+}
+
+internal expect fun initConfig(key: String, default: String?): String?
 
 /**
  * 对 [this] 发起一次请求，并得到相应的 [HttpResponse] 响应。
@@ -91,7 +123,12 @@ public suspend fun OneBotApi<*>.request(
         }
 
         when (val b = this@request.body) {
-            null -> {}
+            null -> {
+                if (GlobalOneBotApiRequestConfiguration.emptyJsonStringIfBodyNull) {
+                    setBody(EMPTY_JSON_STR)
+                }
+            }
+
             is OutgoingContent, is String -> {
                 setBody(b)
             }
