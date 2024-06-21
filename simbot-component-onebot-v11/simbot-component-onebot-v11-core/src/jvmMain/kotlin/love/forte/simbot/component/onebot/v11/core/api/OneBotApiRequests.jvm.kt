@@ -19,10 +19,9 @@
 
 package love.forte.simbot.component.onebot.v11.core.api
 
-import io.ktor.client.HttpClient
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
-import io.ktor.http.Url
+import io.ktor.client.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.utils.io.charsets.Charset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
@@ -34,6 +33,7 @@ import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.text.Charsets
 
 /**
  * 校验当前运行时是否存在
@@ -554,3 +554,7 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
         )
     }
 //endregion
+
+
+internal actual fun initConfig(key: String, default: String?): String? =
+    System.getProperty(key)

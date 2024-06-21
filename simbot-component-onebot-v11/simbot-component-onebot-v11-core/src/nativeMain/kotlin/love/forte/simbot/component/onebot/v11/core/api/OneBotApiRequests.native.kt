@@ -22,3 +22,4 @@ package love.forte.simbot.component.onebot.v11.core.api
  */
 @Suppress("TopLevelPropertyNaming")
 internal actual const val isContentNegotiationRuntimeAvailable: Boolean = true
+internal actual fun initConfig(key: String, default: String?): String? = default
