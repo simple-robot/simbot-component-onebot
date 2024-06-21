@@ -120,12 +120,12 @@ private class OneBot11UsageBuilderImpl : OneBot11UsageBuilder {
  * @throws [NoSuchElementException] if no such element is found.
  */
 @OptIn(ExperimentalContracts::class)
-public inline fun Application.oneBot11Bots(block: OneBotBotManager.() -> Unit) {
+public inline fun <T> Application.oneBot11Bots(block: OneBotBotManager.() -> T): T {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
 
-    botManagers.firstOneBotBotManager().block()
+    return botManagers.firstOneBotBotManager().block()
 }
 
 /**

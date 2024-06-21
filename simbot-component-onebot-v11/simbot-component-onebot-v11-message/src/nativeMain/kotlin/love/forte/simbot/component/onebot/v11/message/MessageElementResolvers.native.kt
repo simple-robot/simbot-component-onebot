@@ -17,9 +17,15 @@
 
 package love.forte.simbot.component.onebot.v11.message
 
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.message.OfflineImageValueResolver
+import love.forte.simbot.resource.Resource
 import kotlin.coroutines.Continuation
 
-internal actual fun offlineImageResolver(): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
-    commonOfflineImageResolver()
+internal actual fun offlineImageResolver(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
+): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
+    commonOfflineImageResolver(
+        defaultImageAdditionalParams = defaultImageAdditionalParams,
+    )

@@ -15,17 +15,15 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.message
+package love.forte.simbot.component.onebot.v11.core.utils
 
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.message.OfflineImageValueResolver
-import love.forte.simbot.resource.Resource
-import kotlin.coroutines.Continuation
+import love.forte.simbot.message.Message
 
-internal actual fun offlineImageResolver(
-    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
-): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
-    commonOfflineImageResolver(
-        defaultImageAdditionalParams = defaultImageAdditionalParams,
-    )
+internal suspend fun Message.resolveToOneBotSegmentList(
+    bot: OneBotBot,
+): List<OneBotMessageSegment> = resolveToOneBotSegmentList(
+    defaultImageAdditionalParams = bot.configuration.defaultImageAdditionalParamsProvider
+)
