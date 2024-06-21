@@ -265,7 +265,6 @@ group.setNameReserve("newName")
 </tab>
 </tabs>
 
-
 ### 设置bot群备注
 
 可以通过 `setBotGroupNick(String?)` 来设置bot在群内的群备注。
@@ -397,6 +396,46 @@ group.getAllHonorInfoReserve()
 - `legend`
 - `strong_newbie`
 - `emotion`
+
+### 设置匿名聊天
+
+可以通过 `setAnonymous(Boolean)` 来设置是否允许匿名聊天，`true` 为开启。
+
+> 这可能需要bot拥有管理权限。
+
+<tabs group="code">
+<tab title="Kotlin" group-key="Kotlin">
+
+```Kotlin
+val group: OneBotGroup = ...
+group.setAnonymous(true)
+```
+
+</tab>
+<tab title="Java" group-key="Java">
+
+```Java
+OneBotGroup group = ...;
+group.setAnonymousAsync(true); 
+```
+{switcher-key=%ja%}
+
+```Java
+OneBotGroup group = ...;
+group.setAnonymousBlocking(true);
+```
+{switcher-key=%jb%}
+
+```Java
+OneBotGroup group = ...;
+group.setAnonymousReserve(true)
+    .transform(SuspendReserves.mono())
+    .subscribe();
+```
+{switcher-key=%jr%}
+
+</tab>
+</tabs>
 
 ## 获取 OneBotGroup
 

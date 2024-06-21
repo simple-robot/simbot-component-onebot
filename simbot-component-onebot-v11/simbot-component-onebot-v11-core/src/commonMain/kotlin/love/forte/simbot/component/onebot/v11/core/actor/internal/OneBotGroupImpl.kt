@@ -75,6 +75,14 @@ internal abstract class OneBotGroupImpl(
         return result.dataOrThrow.toMember(bot)
     }
 
+
+    override suspend fun setAnonymous(enable: Boolean) {
+        SetGroupAnonymousApi.create(
+            groupId = id,
+            enable = enable
+        ).requestDataBy(bot)
+    }
+
     override suspend fun send(text: String): OneBotMessageReceipt {
         return sendGroupTextMsgApi(
             target = id,
