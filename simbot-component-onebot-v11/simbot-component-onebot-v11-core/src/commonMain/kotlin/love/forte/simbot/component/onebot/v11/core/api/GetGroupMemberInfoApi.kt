@@ -109,20 +109,20 @@ public data class GetGroupMemberInfoResult @ApiResultConstructor constructor(
     @SerialName("user_id")
     public val userId: LongID,
     public val nickname: String,
-    public val card: String,
-    public val sex: String,
-    public val age: Int,
-    public val area: String,
+    public val card: String = "",
+    public val sex: String = "unknown",
+    public val age: Int = -1,
+    public val area: String = "",
     @SerialName("join_time")
-    public val joinTime: Int,
+    public val joinTime: Int = -1,
     @SerialName("last_sent_time")
-    public val lastSentTime: Int,
-    public val level: String,
-    public val role: String,
-    public val unfriendly: Boolean,
-    public val title: String,
+    public val lastSentTime: Int = -1,
+    public val level: String = "",
+    public val role: String = "member",
+    public val unfriendly: Boolean = false,
+    public val title: String = "",
     @SerialName("title_expire_time")
-    public val titleExpireTime: Int,
+    public val titleExpireTime: Int = -1,
     @SerialName("card_changeable")
-    public val cardChangeable: Boolean,
+    public val cardChangeable: Boolean = false,
 )

@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - master
-      - dev/main
+#      - dev/main
     paths:
       - 'Writerside/**'
       - '.github/workflows/deploy-website.yml'

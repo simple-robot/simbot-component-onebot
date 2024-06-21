@@ -418,6 +418,52 @@ member.unbanReserve()
 </tab>
 </tabs>
 
+### 设置头衔
+
+可以通过 `setSpecialTitle(String?)` 设置此成员在群内的特殊头衔。
+
+<tip>
+
+想要获取头衔，可以通过
+[获取原始类型](#获取原始类型)
+取到 `title`。
+
+</tip>
+
+<tabs group="code">
+<tab title="Kotlin" group-key="Kotlin">
+
+```Kotlin
+val member: OneBotMember = ...
+member.setSpecialTitle("newTitle")
+```
+
+</tab>
+<tab title="Java" group-key="Java">
+
+```Java
+OneBotMember member = ...;
+member.setSpecialTitleAsync("newTitle");
+```
+{switcher-key=%ja%}
+
+```Java
+OneBotMember member = ...;
+member.setSpecialTitleBlocking("newTitle");
+```
+{switcher-key=%jb%}
+
+```Java
+OneBotMember member = ...;
+member.setSpecialTitleReserve("newTitle")
+        .transform(SuspendReserves.mono())
+        .subscribe();
+```
+{switcher-key=%jr%}
+
+</tab>
+</tabs>
+
 
 ## 获取 OneBotMember
 
