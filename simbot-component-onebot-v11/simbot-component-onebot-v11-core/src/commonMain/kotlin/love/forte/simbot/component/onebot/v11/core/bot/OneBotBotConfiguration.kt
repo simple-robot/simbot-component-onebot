@@ -76,10 +76,27 @@ public class OneBotBotConfiguration {
     public var apiServerHost: Url = Url("http://localhost:3001")
 
     /**
+     * 配置 [apiServerHost]
+     *
+     * @see apiServerHost
+     */
+    public fun setApiServerHost(urlString: String) {
+        apiServerHost = Url(urlString)
+    }
+
+    /**
      * 必填属性，订阅事件的目标服务器地址。应当是ws或wss协议。
      */
     public var eventServerHost: Url = Url("ws://localhost:3001")
 
+    /**
+     * 配置 [eventServerHost]
+     *
+     * @see eventServerHost
+     */
+    public fun setEventServerHost(urlString: String) {
+        eventServerHost = Url(urlString)
+    }
 
     /**
      * 用于API请求的 [HttpClient] 所使用的[引擎](https://ktor.io/docs/http-client-engines.html)。
