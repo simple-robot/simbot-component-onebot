@@ -68,8 +68,11 @@ Bot进行API请求时使用的HttpClient。
 <def id="prop-apiHost" title="apiHost">
 Bot进行API请求时使用的服务地址的host，来自配置信息。
 </def>
-<def id="prop-accessToken" title="accessToken">
-Bot进行API请求时使用的accessToken，来自配置信息。
+<def id="prop-apiAccessToken" title="apiAccessToken">
+Bot进行API请求时使用的 accessToken，来自配置信息。
+</def>
+<def id="prop-eventAccessToken" title="eventAccessToken">
+Bot进行事件订阅的ws连接请求时使用的 accessToken，来自配置信息。
 </def>
 <def id="prop-userId" title="userId">
 

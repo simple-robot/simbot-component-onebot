@@ -7,8 +7,7 @@ switcher-label: JavaAPI风格
 ## 前期准备
 
 参考
-<a href="onebot11-quick-start.md"/>
-。
+<a href="onebot11-quick-start.md"/> 。
 
 ## 安装
 ### 安装组件库
@@ -420,7 +419,10 @@ public static void configure(Application application) {
     botConfiguration.setEventServerHost(URLUtilsKt.Url("ws://localhost:3001"));
     // 其他配置, 一般都是可选属性
     /// token
-    botConfiguration.setAccessToken(null);
+    botConfiguration.accessToken(null);
+    // 或
+    botConfiguration.setApiAccessToken(null);
+    botConfiguration.setEventAccessToken(null);
     /// ...
 
     // 注册
@@ -482,7 +484,10 @@ public static void configure(Application application) {
     botConfiguration.setEventServerHost(URLUtilsKt.Url("ws://localhost:3001"));
     // 其他配置, 一般都是可选属性
     /// token
-    botConfiguration.setAccessToken(null);
+    botConfiguration.accessToken(null);
+    // 或
+    botConfiguration.setApiAccessToken(null);
+    botConfiguration.setEventAccessToken(null);
     /// ...
 
     // 注册
@@ -545,7 +550,10 @@ public static void configure(Application application) {
     botConfiguration.setEventServerHost(URLUtilsKt.Url("ws://localhost:3001"));
     // 其他配置, 一般都是可选属性
     /// token
-    botConfiguration.setAccessToken(null);
+    botConfiguration.accessToken(null);
+    // 或
+    botConfiguration.setApiAccessToken(null);
+    botConfiguration.setEventAccessToken(null);
     /// ...
 
     // 注册
