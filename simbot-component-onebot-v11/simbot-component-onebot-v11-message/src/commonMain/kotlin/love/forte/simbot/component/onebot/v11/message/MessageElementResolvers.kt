@@ -59,13 +59,15 @@ public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
  */
 @InternalOneBotAPI
 @JvmSynthetic
-public suspend fun Message.resolveToOneBotSegmentList(): List<OneBotMessageSegment> {
+public suspend fun Message.resolveToOneBotSegmentList(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)? = null,
+): List<OneBotMessageSegment> {
     return when (this) {
-        is Message.Element -> resolveToOneBotSegment()
+        is Message.Element -> resolveToOneBotSegment(defaultImageAdditionalParams)
             ?.let { listOf(it) }
             ?: emptyList()
 
-        is Messages -> mapNotNull { it.resolveToOneBotSegment() }
+        is Messages -> mapNotNull { it.resolveToOneBotSegment(defaultImageAdditionalParams) }
     }
 }
 
@@ -74,7 +76,9 @@ public suspend fun Message.resolveToOneBotSegmentList(): List<OneBotMessageSegme
  */
 @InternalOneBotAPI
 @JvmSynthetic
-public suspend fun Message.Element.resolveToOneBotSegment(): OneBotMessageSegment? {
+public suspend fun Message.Element.resolveToOneBotSegment(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)? = null,
+): OneBotMessageSegment? {
     return when (this) {
         // OB组件的 segment 类型，直接使用
         is OneBotMessageSegmentElement -> segment
@@ -87,7 +91,8 @@ public suspend fun Message.Element.resolveToOneBotSegment(): OneBotMessageSegmen
             when (this) {
                 // offline image
                 is OfflineImage -> suspendCancellableCoroutine<OneBotMessageSegment?> { continuation ->
-                    offlineImageResolver().resolve(this, continuation)
+                    offlineImageResolver(defaultImageAdditionalParams)
+                        .resolve(this, continuation)
                 }
 
                 // remote images, OneBot组件中实际上没有此类型的实现
@@ -107,27 +112,31 @@ public suspend fun Message.Element.resolveToOneBotSegment(): OneBotMessageSegmen
 /**
  * 解析一个 [OfflineImage] 中的内容为 [OneBotMessageSegment]。
  */
-internal expect fun offlineImageResolver(): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>>
+internal expect fun offlineImageResolver(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
+): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>>
 
 /**
  * 给非JVM平台目标使用的共享代码
  */
-internal fun commonOfflineImageResolver(): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
+internal fun commonOfflineImageResolver(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
+): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
     object : OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> {
         override fun resolveUnknown(image: OfflineImage, context: Continuation<OneBotMessageSegment?>) {
             resolveUnknown0(context)
         }
 
         override fun resolveByteArray(byteArray: ByteArray, context: Continuation<OneBotMessageSegment?>) {
-            resolveByteArray0(byteArray, context)
+            resolveByteArray0(defaultImageAdditionalParams, byteArray, context)
         }
 
         override fun resolveString(string: String, context: Continuation<OneBotMessageSegment?>) {
-            resolveString0(string, context)
+            resolveString0(defaultImageAdditionalParams, string, context)
         }
 
         override fun resolveUnknown(resource: Resource, context: Continuation<OneBotMessageSegment?>) {
-            resolveUnknown0(context)
+            resolveByteArray(resource.data(), context)
         }
     }
 
@@ -143,16 +152,22 @@ internal fun resolveUnknown0(context: Continuation<OneBotMessageSegment?>) {
  * 直接交给 [OneBotImage] 处理，
  * 应当会被视为 base64 字符串。
  */
-internal fun resolveString0(string: String, context: Continuation<OneBotMessageSegment?>) {
-    context.resume(
-        OneBotImage.create(string.toStringResource())
-    )
+internal fun resolveString0(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
+    string: String,
+    context: Continuation<OneBotMessageSegment?>
+) {
+    val resource = string.toStringResource()
+    val additional = defaultImageAdditionalParams?.invoke(resource)
+    context.resume(OneBotImage.create(resource, additional))
 }
 
-internal fun resolveByteArray0(byteArray: ByteArray, context: Continuation<OneBotMessageSegment?>) {
-    context.resume(
-        OneBotImage.create(
-            byteArray.toResource()
-        )
-    )
+internal fun resolveByteArray0(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
+    byteArray: ByteArray,
+    context: Continuation<OneBotMessageSegment?>
+) {
+    val resource = byteArray.toResource()
+    val additional = defaultImageAdditionalParams?.invoke(resource)
+    context.resume(OneBotImage.create(resource, additional))
 }

@@ -25,6 +25,9 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
+import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
+import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -174,4 +177,27 @@ public class OneBotBotConfiguration {
      */
     public var wsConnectRetryDelayMillis: Long = 3500L
 
+    /**
+     * 当使用非 [OneBotImage] 类型作为图片资源发送消息时，
+     * 默认根据 [Resource] 得到一个可能存在的 [OneBotImage.AdditionalParams]。
+     * 注意！这无法影响直接使用 [OneBotImage] 的情况。
+     */
+    @ExperimentalOneBotAPI
+    public var defaultImageAdditionalParamsProvider: ((Resource) -> OneBotImage.AdditionalParams?)? = null
+
+    /**
+     * 配置 [defaultImageAdditionalParamsProvider]
+     */
+    @ExperimentalOneBotAPI
+    public fun defaultImageAdditionalParamsProvider(block: ((Resource) -> OneBotImage.AdditionalParams?)?) {
+        defaultImageAdditionalParamsProvider = block
+    }
+
+    /**
+     * 配置 [defaultImageAdditionalParamsProvider]
+     */
+    @ExperimentalOneBotAPI
+    public fun defaultImageAdditionalParams(params: OneBotImage.AdditionalParams?) {
+        defaultImageAdditionalParamsProvider = { params }
+    }
 }

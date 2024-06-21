@@ -31,12 +31,12 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGro
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNoticeGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
+import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 
@@ -87,7 +87,7 @@ internal abstract class OneBotGroupMessageEventImpl(
     override suspend fun reply(message: Message): OneBotMessageReceipt {
         return sendGroupMsgApi(
             target = sourceEvent.groupId,
-            message = message.resolveToOneBotSegmentList(),
+            message = message.resolveToOneBotSegmentList(bot),
             reply = sourceEvent.messageId
         ).requestDataBy(bot).toReceipt(bot)
     }

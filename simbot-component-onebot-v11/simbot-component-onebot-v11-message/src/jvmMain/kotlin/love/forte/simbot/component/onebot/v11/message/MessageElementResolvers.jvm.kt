@@ -17,8 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.message
 
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
@@ -111,14 +110,16 @@ public fun Message.Element.resolveToOneBotSegmentReserve(): SuspendReserve<OneBo
     ) { resolveToOneBotSegment() }
 
 
-internal actual fun offlineImageResolver(): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
+internal actual fun offlineImageResolver(
+    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
+): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
     object : JvmOfflineImageValueResolver<Continuation<OneBotMessageSegment?>>() {
         override fun resolveUnknownInternal(image: OfflineImage, context: Continuation<OneBotMessageSegment?>) {
             resolveUnknown0(context)
         }
 
         override fun resolveByteArray(byteArray: ByteArray, context: Continuation<OneBotMessageSegment?>) {
-            resolveByteArray0(byteArray, context)
+            resolveByteArray0(defaultImageAdditionalParams, byteArray, context)
         }
 
         /**
@@ -126,9 +127,12 @@ internal actual fun offlineImageResolver(): OfflineImageValueResolver<Continuati
          * `file:xxx`
          */
         override fun resolveFile(file: File, context: Continuation<OneBotMessageSegment?>) {
+            val resource = file.toResource()
+            val additional = defaultImageAdditionalParams?.invoke(resource)
             context.resume(
                 OneBotImage.create(
-                    file.toResource()
+                    resource,
+                    additional
                 )
             )
         }
@@ -138,15 +142,18 @@ internal actual fun offlineImageResolver(): OfflineImageValueResolver<Continuati
          * `file:xxx`
          */
         override fun resolvePath(path: Path, context: Continuation<OneBotMessageSegment?>) {
+            val resource = path.toResource()
+            val additional = defaultImageAdditionalParams?.invoke(resource)
             context.resume(
                 OneBotImage.create(
-                    path.toResource()
+                    resource,
+                    additional
                 )
             )
         }
 
         override fun resolveString(string: String, context: Continuation<OneBotMessageSegment?>) {
-            resolveString0(string, context)
+            resolveString0(defaultImageAdditionalParams, string, context)
         }
 
         /**
@@ -156,14 +163,17 @@ internal actual fun offlineImageResolver(): OfflineImageValueResolver<Continuati
          * 会进行处理，直接使用它的链接地址。
          */
         override fun resolveURINotFileScheme(uri: URI, context: Continuation<OneBotMessageSegment?>) {
+            val resource = uri.toResource()
+            val additional = defaultImageAdditionalParams?.invoke(resource)
             context.resume(
                 OneBotImage.create(
-                    uri.toResource()
+                    resource,
+                    additional
                 )
             )
         }
 
         override fun resolveUnknownInternal(resource: Resource, context: Continuation<OneBotMessageSegment?>) {
-            resolveUnknown0(context)
+            resolveByteArray(resource.data(), context)
         }
     }
