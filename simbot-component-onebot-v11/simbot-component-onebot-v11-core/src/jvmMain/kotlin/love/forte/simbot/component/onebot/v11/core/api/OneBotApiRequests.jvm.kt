@@ -557,4 +557,4 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
 
 
 internal actual fun initConfig(key: String, default: String?): String? =
-    System.getProperty(key)
+    System.getProperty(key) ?: default
