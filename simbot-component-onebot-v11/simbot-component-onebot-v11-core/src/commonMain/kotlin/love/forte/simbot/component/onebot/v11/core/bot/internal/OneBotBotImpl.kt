@@ -102,6 +102,11 @@ internal class OneBotBotImpl(
     private val eventProcessor: EventProcessor,
     baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
+    companion object {
+        private const val BASE_LOGGER_NAME =
+            "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot"
+    }
+
     override val subContext = coroutineContext.minusKey(Job)
     override val decoderJson: Json = Json(baseDecoderJson) {
         configuration.serializersModule?.also { confMd ->
@@ -109,10 +114,7 @@ internal class OneBotBotImpl(
         }
     }
 
-    internal val logger = LoggerFactory
-        .getLogger(
-            "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId"
-        )
+    internal val logger = LoggerFactory.getLogger("$BASE_LOGGER_NAME.$uniqueId")
 
     private val eventServerHost = configuration.eventServerHost
     private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
@@ -319,14 +321,14 @@ internal class OneBotBotImpl(
 
             while (session == null && retryTimes <= connectMaxRetryTimes) {
                 try {
-                    logger.debug("Connect to ws server {}", eventServerHost)
+                    logger.debug("Connect to ws server {}", wsHost)
                     session = createSession()
                 } catch (e: Exception) {
                     retryTimes++
 
                     @Suppress("ConvertTwoComparisonsToRangeCheck")
                     if (connectMaxRetryTimes > 0 && retryTimes > connectMaxRetryTimes) {
-                        "Connect to ws server $eventServerHost failed in $retryTimes times.".also { msg ->
+                        "Connect to ws server $wsHost failed in $retryTimes times.".also { msg ->
                             val ex = IllegalStateException(msg)
                             sessionJob.completeExceptionally(ex)
 
@@ -337,7 +339,7 @@ internal class OneBotBotImpl(
                     if (logger.isWarnEnabled()) {
                         logger.warn(
                             "Connect to ws server {} failed: {}, retry in {}...",
-                            eventServerHost,
+                            wsHost,
                             e.message,
                             connectRetryDelay.toString(),
                             e,
@@ -384,7 +386,7 @@ internal class OneBotBotImpl(
 
                 if (currentSession == null) return
 
-                logger.debug("Connected to ws server {}, session: {}", eventServerHost, currentSession)
+                logger.debug("Connected to ws server {}, session: {}", wsHost, currentSession)
 
                 this@WsEventSession.session = currentSession
 
