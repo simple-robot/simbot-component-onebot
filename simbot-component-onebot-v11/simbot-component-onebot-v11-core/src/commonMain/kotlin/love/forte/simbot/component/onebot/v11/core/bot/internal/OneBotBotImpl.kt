@@ -102,6 +102,11 @@ internal class OneBotBotImpl(
     private val eventProcessor: EventProcessor,
     baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
+    companion object {
+        private const val BASE_LOGGER_NAME =
+            "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot"
+    }
+
     override val subContext = coroutineContext.minusKey(Job)
     override val decoderJson: Json = Json(baseDecoderJson) {
         configuration.serializersModule?.also { confMd ->
@@ -109,10 +114,7 @@ internal class OneBotBotImpl(
         }
     }
 
-    internal val logger = LoggerFactory
-        .getLogger(
-            "love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId"
-        )
+    internal val logger = LoggerFactory.getLogger("$BASE_LOGGER_NAME.$uniqueId")
 
     private val eventServerHost = configuration.eventServerHost
     private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes

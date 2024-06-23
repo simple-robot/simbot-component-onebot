@@ -57,6 +57,11 @@ import kotlin.jvm.JvmSynthetic
  * 且在重新连接的过程中始终失败并达到了重试次数上限，此时会话中的任务会被视为因异常结束，
  * 并连带 [OneBotBot] 的任务一同终结。
  *
+ * ### 日志
+ *
+ * [OneBotBot] 的内部会输出三种日志：
+ * - `love.forte.simbot.component.onebot.v11.core.bot.OneBotBot.$uniqueId`
+ *   bot的基本日志，例如连接信息、接收到的原始事件等debug日志。
  *
  * @author ForteScarlet
  */
