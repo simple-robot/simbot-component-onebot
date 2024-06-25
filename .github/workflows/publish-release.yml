@@ -43,7 +43,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run all tests
-        run: gradle assemble allTests
+        run: gradle assemble allTests --stacktrace --warning-mode all
 
   publish-releases:
     name: Publish releases

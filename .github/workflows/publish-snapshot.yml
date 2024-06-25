@@ -61,7 +61,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run all tests
-        run: gradle assemble allTests
+        run: gradle assemble allTests --stacktrace --warning-mode all
 
   publish-snapshots:
     name: Publish snapshots
@@ -76,7 +76,7 @@ jobs:
           cache: 'gradle'
 
       # setup Gradle
-      - name: Setup Gradle
+      - name: Publish snapshots
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
