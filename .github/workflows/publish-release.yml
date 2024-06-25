@@ -15,10 +15,9 @@ env:
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
   GRADLE_OPTS: "-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
 
-
 jobs:
-  run-test-and-publish:
-    name: Run test and publish
+  run-test:
+    name: Run all tests
     strategy:
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
@@ -26,7 +25,6 @@ jobs:
     steps:
       # 检出仓库代码
       - uses: actions/checkout@v4
-
       # setup Java
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -34,28 +32,39 @@ jobs:
           distribution: 'zulu'
           java-version: 21
           cache: 'gradle'
+      # setup Gradle
+      # https://github.com/gradle/actions/blob/main/docs/setup-gradle.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Run all tests
+        run: gradle assemble allTests -Porg.gradle.daemon=false
+
+  publish-releases:
+    name: Publish releases
+    needs: run-test
+    # 交叉编译 support
+    # see https://kotlinlang.org/docs/multiplatform-publish-lib.html#host-requirements
+    runs-on: macos-latest
+    steps:
+      # 检出仓库代码
+      - uses: actions/checkout@v4
+      # setup Java
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+          cache: 'gradle'
 
       # setup Gradle
-      - name: Gradle Run Test
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.5
-          arguments: assemble test -Porg.gradle.daemon=false
+#        with:
+#          gradle-version: 8.5
 
       # setup Gradle
-      - name: Publish Release
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.5
-          arguments: |
-            publishToSonatype
-            closeAndReleaseStagingRepositories
-            --info 
-            --warning-mode all
-            -x test
-            --build-cache
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
-
+      - name: Publish releases
+        run: gradle publishToSonatype closeAndReleaseStagingRepositories --info --warning-mode all -x test --build-cache -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
@@ -63,14 +72,12 @@ jobs:
   create-release:
     name: Create release
     runs-on: ubuntu-latest
-    needs: run-test-and-publish
+    needs: publish-releases
     permissions:
       contents: write
     steps:
       # 检出仓库代码
-      - name: Check Out Repo
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
         # Create gitHub release
       - name: Create Github Release
         uses: softprops/action-gh-release@v2
@@ -81,76 +88,50 @@ jobs:
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, 'preview') || contains(github.ref_name, 'alpha') }}
 
-  #  || contains(github.ref_name, 'beta')
-
-  publish-snapshot:
-    name: Publish snapshot
-    strategy:
-      matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
-    needs: run-test-and-publish
+  publish-snapshots:
+    name: Publish snapshots
+    # 交叉编译 support
+    # see https://kotlinlang.org/docs/multiplatform-publish-lib.html#host-requirements
+    runs-on: macos-latest
+    needs: publish-releases
     steps:
-      # 检出仓库代码
-      - name: Check out repo
-        uses: actions/checkout@v4
-
-      # setup Java
-      - name: Setup java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
 
       # setup Gradle
-      - name: Gradle publish snapshot
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.5
-          arguments: |
-            publishToSonatype
-            closeAndReleaseStagingRepositories
-            --info
-            --warning-mode all
-            -x test
-            --build-cache
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
-            -Porg.gradle.daemon=false
+
+      - name: Publish snapshots
+        run: gradle publishToSonatype closeAndReleaseStagingRepositories --info --warning-mode all -x test --build-cache -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" -Porg.gradle.daemon=false
         env:
           SIMBOT_IS_SNAPSHOT: true
           SIMBOT_SNAPSHOT_ONLY: true
 
   deploy-doc:
-    name: Deploy-doc
+    name: Deploy doc
     runs-on: ubuntu-latest
-    needs: run-test-and-publish
+    needs: publish-releases
     steps:
       # 检出仓库代码
-      - name: Check out repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
       # setup Java
-      - name: Setup java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
 
-      # setup Gradle
-      - name: Gradle generate documentation
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.5
-          arguments: |
-            dokkaHtmlMultiModule
-            --info 
-            --warning-mode all
-            -x test
-            --build-cache
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.daemon=false
+
+      - name: Generate documentation
+        run: gradle dokkaHtmlMultiModule --info --warning-mode all -x test --build-cache -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" -Porg.gradle.daemon=false
 
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3
