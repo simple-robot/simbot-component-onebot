@@ -21,6 +21,7 @@ import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 
 /**
  * An OneBot object.
+ *
  */
 @InternalOneBotAPI
 public object OneBot
