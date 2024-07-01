@@ -25,9 +25,10 @@ plugins {
 
 
 // dokka config
+@Suppress("MaxLineLength")
 tasks.withType<DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
-        version = P.ComponentOneBot.version.toString()
+        version = P.ComponentOneBot.version
         documentedVisibilities.set(
             listOf(
                 DokkaConfiguration.Visibility.PUBLIC,
@@ -62,7 +63,14 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             val relativeTo = projectDir.relativeTo(rootProject.projectDir)
-            remoteUrl.set(URI.create("${P.ComponentOneBot.HOMEPAGE}/tree/dev/main/$relativeTo/src/").toURL())
+            val uri = URI.create(
+                "${P.ComponentOneBot.HOMEPAGE}/tree/dev/main/${relativeTo.path.replace('\\', '/')}/src/"
+            )
+
+            logger.info("Dokka source link URI: {}", uri)
+
+            // remoteUrl.set(URI.create("${P.ComponentOneBot.HOMEPAGE}/tree/dev/main/$relativeTo/src/").toURL())
+            remoteUrl.set(uri.toURL())
             remoteLineSuffix.set("#L")
         }
 
