@@ -27,6 +27,10 @@ plugins {
 // dokka config
 @Suppress("MaxLineLength")
 tasks.withType<DokkaTaskPartial>().configureEach {
+    if (isSimbotLocal()) {
+        offlineMode.set(true)
+    }
+
     dokkaSourceSets.configureEach {
         version = P.ComponentOneBot.version
         documentedVisibilities.set(
@@ -96,7 +100,7 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         externalDocumentation(URI.create("https://api.ktor.io/"))
 
         // simbot doc
-        externalDocumentation(URI.create("https://docs.simbot.forte.love/main/"))
+        externalDocumentation(URI.create("https://docs.simbot.forte.love/main-v4/"))
 
     }
 }

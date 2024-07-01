@@ -36,7 +36,9 @@ fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
 @Suppress("MaxLineLength")
 tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
     configOutput("html")
-
+    if (isSimbotLocal()) {
+        offlineMode.set(true)
+    }
     // rootProject.file("README.md").takeIf { it.exists() }?.also {
     //     includes.from(it)
     // }
@@ -44,7 +46,6 @@ tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModu
     pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
         customAssets = listOf(rootProject.file(".simbot/dokka-assets/logo-icon.svg"))
         customStyleSheets = listOf(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
-        // TODO ?
         homepageLink = "https://github.com/simple-robot/simbot-component-onebot"
         footerMessage = "© 2024-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>, <a href='https://github.com/ForteScarlet'>ForteScarlet</a>. All rights reserved."
         separateInheritedMembers = true
