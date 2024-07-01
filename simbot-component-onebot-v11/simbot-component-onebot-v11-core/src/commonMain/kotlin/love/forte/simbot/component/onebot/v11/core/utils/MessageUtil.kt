@@ -101,19 +101,7 @@ internal fun sendMsgApi(
             autoEscape = true
         )
     } else {
-        val newMessage = ArrayList<OneBotMessageSegment>(message.size + 1)
-        var hasReply = false
-        for (segment in message) {
-            if (!hasReply && segment is OneBotReply) {
-                hasReply = true
-            }
-
-            newMessage.add(segment)
-        }
-
-        if (!hasReply) {
-            newMessage.add(OneBotReply.create(reply))
-        }
+        val newMessage = resolveReplyMessageSegmentList(message, reply)
 
         SendMsgApi.create(
             messageType = messageType,
@@ -122,6 +110,26 @@ internal fun sendMsgApi(
             message = OneBotMessageOutgoing.create(newMessage)
         )
     }
+}
+
+internal fun resolveReplyMessageSegmentList(
+    message: List<OneBotMessageSegment>,
+    reply: ID,
+): List<OneBotMessageSegment> {
+    val newMessage = ArrayList<OneBotMessageSegment>(message.size + 1)
+    var hasReply = false
+    for (segment in message) {
+        if (!hasReply && segment is OneBotReply) {
+            hasReply = true
+        }
+
+        newMessage.add(segment)
+    }
+
+    if (!hasReply) {
+        newMessage.add(0, OneBotReply.create(reply))
+    }
+    return newMessage
 }
 
 internal fun sendPrivateMsgApi(
