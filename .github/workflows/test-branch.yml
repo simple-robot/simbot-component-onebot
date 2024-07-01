@@ -33,21 +33,12 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-#          cache: 'gradle'
+          cache: 'gradle'
 
-      - name: Run All Tests
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.5
-          arguments: |
-            assemble
-            build
-            allTests
-            --info 
-            --warning-mode all
-#            --build-cache
-#            -Porg.gradle.daemon=false
-#            -Porg.gradle.jvmargs="-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Run all tests
+        run: gradle assemble build allTests --info --warning-mode all
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4

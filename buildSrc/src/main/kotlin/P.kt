@@ -16,10 +16,7 @@
  */
 
 import love.forte.gradle.common.core.project.ProjectDetail
-import love.forte.gradle.common.core.project.Version
-import love.forte.gradle.common.core.project.minus
 import love.forte.gradle.common.core.property.systemProp
-import love.forte.gradle.common.core.project.version as v
 
 
 /**
@@ -40,11 +37,11 @@ object P {
         override val description: String get() = DESCRIPTION
         override val homepage: String get() = HOMEPAGE
 
+        const val VERSION = "1.0.0-RC"
+        const val NEXT_VERSION = "1.0.0"
 
-        private val baseVersion = v(0, 9, 1)
-
-        val snapshotVersion = baseVersion - Version.SNAPSHOT
-        override val version = if (isSnapshot()) snapshotVersion else baseVersion
+        override val snapshotVersion = "$NEXT_VERSION-SNAPSHOT"
+        override val version = if (isSnapshot()) snapshotVersion else VERSION
 
         override val developers: List<Developer> = developers {
             developer {
