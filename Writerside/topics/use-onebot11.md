@@ -18,7 +18,7 @@ switcher-label: JavaAPI风格
 <tab title="Gradle(Kotlin DSL)" group-key="kts">
 
 ```Kotlin
-implementation("%d-group%:%d-ob11-id%-core:%version%")
+implementation("%d-group%:%d-ob11-id%-core:%ob-version%")
 ```
 
 <tip>
@@ -27,7 +27,7 @@ implementation("%d-group%:%d-ob11-id%-core:%version%")
 那么你需要指定依赖的后缀为 `-jvm`。
 
 ```Kotlin
-implementation("%d-group%:%d-ob11-id%-core-jvm:%version%")
+implementation("%d-group%:%d-ob11-id%-core-jvm:%ob-version%")
 ```
 
 </tip>
@@ -35,7 +35,7 @@ implementation("%d-group%:%d-ob11-id%-core-jvm:%version%")
 <tab title="Gradle(Groovy)" group-key="groovy">
 
 ```Groovy
-implementation '%d-group%:%d-ob11-id%-core:%version%'
+implementation '%d-group%:%d-ob11-id%-core:%ob-version%'
 ```
 
 <tip>
@@ -43,7 +43,7 @@ implementation '%d-group%:%d-ob11-id%-core:%version%'
 如果使用 Java 而不配合使用 Gradle 的 `kotlin` 插件, 那么你需要指定依赖的后缀为 `-jvm`。
 
 ```Groovy
-implementation '%d-group%:%d-ob11-id%-core-jvm:%version%'
+implementation '%d-group%:%d-ob11-id%-core-jvm:%ob-version%'
 ```
 
 </tip>
@@ -57,7 +57,7 @@ implementation '%d-group%:%d-ob11-id%-core-jvm:%version%'
 <dependency>
     <groupId>%d-group%</groupId>
     <artifactId>%d-ob11-id%-core-jvm</artifactId>
-    <version>%version%</version>
+    <version>%ob-version%</version>
 </dependency>
 ```
 
