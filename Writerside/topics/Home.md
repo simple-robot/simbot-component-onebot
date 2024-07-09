@@ -19,7 +19,7 @@ Simple Robot OneBot 组件是一个将
 并由此提供simbot中的各项能力。
 
 借助simbot核心库提供的能力，它可以支持很多高级功能和封装，比如组件协同、Spring支持等，
-祝你快速开发 OneBot 客户端应用！
+助你快速开发 OneBot 客户端应用！
 
 序列化和网络请求相关分别基于 [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization)
 和 [Ktor](https://ktor.io/)。
