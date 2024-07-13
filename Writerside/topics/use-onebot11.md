@@ -4,6 +4,8 @@ switcher-label: JavaAPI风格
 
 # 使用核心库或Spring
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 ## 前期准备
 
 参考

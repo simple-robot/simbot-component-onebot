@@ -1,5 +1,7 @@
 # Bot配置文件
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 Bot配置文件通常情况下是配合Spring Boot starter的时候用的。
 
 当使用Spring Boot starter时，

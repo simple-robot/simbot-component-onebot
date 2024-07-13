@@ -1,5 +1,7 @@
 # 事件
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 ## 原始事件
 
 我们根据 OneBot11 协议中定义的所有事件结构，
