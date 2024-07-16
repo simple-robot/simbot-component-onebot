@@ -302,8 +302,8 @@ implementation 'io.ktor:ktor-client-darwin:$ktor_version'
 
 <warning>
 
-OneBot组件的内容已经迁移合并到了[**核心库手册**](https://simbot.forte.love/component-onebot.html)中！
-本站点将不再更新，直接前往[**核心库手册**](https://simbot.forte.love/component-onebot.html)吧~！
+OneBot组件的文档内容已经迁移合并到了[**核心库手册**](https://simbot.forte.love/component-onebot.html)中！
+本站点将不再更新，直接前往核心库手册的[**OneBot组件**](https://simbot.forte.love/component-onebot.html)部分吧~！
 
 </warning>
 
