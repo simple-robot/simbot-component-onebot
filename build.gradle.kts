@@ -30,9 +30,6 @@ plugins {
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
 }
 
-group = "love.forte.simbot.component"
-version = "0.0.1"
-
 setup(P.ComponentOneBot)
 
 buildscript {
