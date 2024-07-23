@@ -16,8 +16,11 @@
  */
 
 import org.jetbrains.dokka.DokkaConfiguration
+import org.jetbrains.dokka.base.DokkaBase
+import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URI
+import java.time.Year
 
 plugins {
     id("org.jetbrains.dokka")
@@ -27,6 +30,23 @@ plugins {
 // dokka config
 @Suppress("MaxLineLength")
 tasks.withType<DokkaTaskPartial>().configureEach {
+    pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
+        customAssets = listOf(
+            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
+            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
+        )
+        customStyleSheets = listOf(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
+        if (!isSimbotLocal()) {
+            templatesDir = rootProject.file(".simbot/dokka-templates")
+        }
+        val now = Year.now().value
+        val yearRange = if (now == 2024) "2024" else "2024-$now"
+        footerMessage = "© $yearRange <a href='https://github.com/simple-robot'>Simple Robot</a>. All rights reserved."
+        separateInheritedMembers = true
+        mergeImplicitExpectActualDeclarations = true
+        homepageLink = P.ComponentOneBot.HOMEPAGE
+    }
+
     if (isSimbotLocal()) {
         offlineMode.set(true)
     }
@@ -58,17 +78,14 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             checkModule("README.md")
         }
 
-        // samples
-//        samples.from(
-//            project.files(),
-//            project.files("src/samples"),
-//        )
-
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             val relativeTo = projectDir.relativeTo(rootProject.projectDir)
+                .path
+                .replace('\\', '/')
+
             val uri = URI.create(
-                "${P.ComponentOneBot.HOMEPAGE}/tree/dev/main/${relativeTo.path.replace('\\', '/')}/src/"
+                "${P.ComponentOneBot.HOMEPAGE}/tree/dev/main/${relativeTo}/src/"
             )
 
             logger.info("Dokka source link URI: {}", uri)
@@ -90,17 +107,18 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             }
         }
 
-        // kotlin-coroutines doc
-        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.coroutines/"))
+        if (!isSimbotLocal()) {
+            // kotlin-coroutines doc
+            externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.coroutines/"))
 
-        // kotlin-serialization doc
-        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.serialization/"))
+            // kotlin-serialization doc
+            externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.serialization/"))
 
-        // ktor
-        externalDocumentation(URI.create("https://api.ktor.io/"))
+            // ktor
+            externalDocumentation(URI.create("https://api.ktor.io/"))
 
-        // simbot doc
-        externalDocumentation(URI.create("https://docs.simbot.forte.love/main-v4/"))
-
+            // simbot doc
+            externalDocumentation(URI.create("https://docs.simbot.forte.love/main-v4/"))
+        }
     }
 }
