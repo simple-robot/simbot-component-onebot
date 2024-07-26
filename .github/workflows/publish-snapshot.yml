@@ -16,9 +16,12 @@ on:
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradle.properties'
-
+    tags-ignore:
+      - v**
   # 手动触发工作流
   workflow_dispatch:
+
+
 
 env:
   JAVA_VERSION: 21
