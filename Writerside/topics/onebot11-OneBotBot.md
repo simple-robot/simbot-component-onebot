@@ -6,6 +6,8 @@ switcher-label: JavaAPI风格
 
 # OneBotBot
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 表示一个 OneBot 的 bot 客户端实例，实现 `Bot`，由 `OneBotBotManager` 注册产生。
 
 ## Bot

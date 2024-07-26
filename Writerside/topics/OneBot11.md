@@ -1,5 +1,7 @@
 # OneBot11
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 OneBot组件是一个对
 [OneBot11协议](https://github.com/botuniverse/onebot-11)
 的**客户端**实现。

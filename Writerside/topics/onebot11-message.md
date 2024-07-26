@@ -1,5 +1,7 @@
 # 消息
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 ## 标准消息元素
 
 作为一个simbot组件，OneBot组件理所当然的会支持部分simbot核心库所定义的标准消息元素。

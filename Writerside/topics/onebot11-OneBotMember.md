@@ -6,6 +6,8 @@ switcher-label: JavaAPI风格
 
 #  群成员 OneBotMember
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 `OneBotMember` 实现 `Member`, `OneBotStrangerAware`
 以及其他一些功能接口（后续 "更多能力" 中会介绍），
 用于表示一个 OneBot11 协议中的 **群成员**。

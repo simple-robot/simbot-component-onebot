@@ -1,5 +1,7 @@
 # 模块概述
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 ## 公共模块
 
 OneBot组件为所有协议实现的模块提供了一些共享内容的模块，

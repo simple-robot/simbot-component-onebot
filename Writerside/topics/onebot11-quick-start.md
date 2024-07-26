@@ -2,6 +2,8 @@
 
 开始使用OneBot11协议组件。
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 ## 前期准备
 
 ### OneBot11协议服务端

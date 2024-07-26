@@ -6,6 +6,8 @@ switcher-label: JavaAPI风格
 
 # 群 OneBotGroup
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 `OneBotGroup` 实现 `ChatGroup` 和 `DeleteSupport`，
 用于表示一个 OneBot11 协议中的 **群聊**。
 

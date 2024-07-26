@@ -26,11 +26,11 @@
 </p>
 </div>
 
-Simple Robot OneBot 组件是一个将
+Simple Robot OneBot 组件是一个
 [OneBot11](https://github.com/botuniverse/onebot-11)
-协议在
-[Simple Robot](http://github.com/simple-robot/simpler-robot) 标准API下实现的组件库，
-并由此提供simbot中的各项能力。
+协议的客户端SDK，是基于
+[Simple Robot](http://github.com/simple-robot/simpler-robot) 标准API实现的组件库，
+提供simbot中的各项能力。
 
 它是一个 
 [Kotlin 多平台](https://kotlinlang.org/docs/multiplatform.html) 
@@ -44,11 +44,11 @@ Simple Robot OneBot 组件是一个将
 
 ## 文档与引导
 
-- OneBot组件手册: [OneBot组件手册](https://simple-robot.github.io/simbot-component-onebot/)
-- 了解simbot: [Simple Robot 应用手册](https://simbot.forte.love)
-- [文档引导站&API文档](https://docs.simbot.forte.love)
-- [**社群**](https://simbot.forte.love/communities.html) 文档中也有提供社群信息喔
-- 前往 [组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、以及社群等相关信息！
+- 手册：[Simple Robot 应用手册](https://simbot.forte.love) 
+  与手册内的 [OneBot组件](https://simbot.forte.love/component-onebot.html) 部分。
+- [文档引导站 & API文档](https://docs.simbot.forte.love)
+- [**社群**](https://simbot.forte.love/communities.html) (文档中也有提供社群信息喔~)
+- [组织库首页](https://github.com/simple-robot/): 了解更多有关组件、文档、以及社群等相关信息！
 
 ---
 
@@ -60,8 +60,8 @@ Simple Robot OneBot 组件是一个将
 
 ## 快速开始
 
-前往 [OneBot组件手册](https://simple-robot.github.io/simbot-component-onebot/)
-参考其中的[开始使用](https://simple-robot.github.io/simbot-component-onebot/onebot11-quick-start.html)。
+前往手册 [OneBot组件部分](https://simbot.forte.love/component-onebot.html) 了解更多、
+参考其中的[开始使用OneBot11](https://simbot.forte.love/component-onebot-v11-start-using.html)。
 
 
 ## 事件关系

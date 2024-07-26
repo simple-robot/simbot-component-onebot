@@ -1,5 +1,7 @@
 # 行为对象
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 行为对象，指的是实现了simbot标准API中 `Actor` 接口的类型，
 例如 `OneBotMember`、`OneBotGroup` 等，
 它们与 `OneBotBot` 存在某种关系、并具有很多行为性的API。

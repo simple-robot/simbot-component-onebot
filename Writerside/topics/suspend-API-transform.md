@@ -1,5 +1,7 @@
 # 挂起API桥接
 
+<include from="snippets.md" element-id="to-main-doc" />
+
 <tip>
 
 有关更多Java友好的内容，
