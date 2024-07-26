@@ -98,7 +98,7 @@ public data class RawGroupMessageEvent @SourceEventConstructor constructor(
         override val age: Int = DEFAULT_AGE,
         public val card: String = "",
         public val area: String? = null,
-        public val level: Int? = null,
+        public val level: String? = null,
         public val role: String = "member",
         public val title: String? = null,
     ) : RawMessageEvent.Sender
