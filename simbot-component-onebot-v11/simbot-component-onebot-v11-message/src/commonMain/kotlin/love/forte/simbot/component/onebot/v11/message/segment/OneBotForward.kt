@@ -75,6 +75,11 @@ public class OneBotForward private constructor(
 public class OneBotForwardNode private constructor(
     override val data: Data
 ) : OneBotMessageSegment {
+
+    override fun toString(): String {
+        return "OneBotForwardNode(data=$data)"
+    }
+
     public companion object Factory {
         public const val TYPE: String = "node"
 
