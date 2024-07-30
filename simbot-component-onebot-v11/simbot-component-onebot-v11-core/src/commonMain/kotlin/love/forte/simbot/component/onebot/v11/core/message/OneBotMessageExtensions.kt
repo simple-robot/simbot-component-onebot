@@ -28,7 +28,6 @@ import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.message.segment.*
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
@@ -42,7 +41,7 @@ import kotlin.jvm.JvmSynthetic
  */
 @JvmSynthetic
 public suspend fun OneBotImage.getImageInfo(bot: OneBotBot): GetImageResult =
-    GetImageApi.create(data.file).requestDataBy(bot)
+    bot.executeData(GetImageApi.create(data.file))
 
 /**
  * 通过 [bot] 使用 [GetImageApi] 查询 [OneBotImage.Element.segment]
@@ -64,7 +63,7 @@ public suspend fun OneBotImage.Element.getImageInfo(bot: OneBotBot): GetImageRes
  */
 @JvmSynthetic
 public suspend fun OneBotRecord.getRecordInfo(bot: OneBotBot, outFormat: String): GetRecordResult =
-    GetRecordApi.create(data.file, outFormat).requestDataBy(bot)
+    bot.executeData(GetRecordApi.create(data.file, outFormat))
 
 /**
  * 通过 [bot] 使用 [GetForwardMsgApi] 查询 [OneBotForward] 内的消息节点列表。
@@ -74,7 +73,7 @@ public suspend fun OneBotRecord.getRecordInfo(bot: OneBotBot, outFormat: String)
 @JvmSynthetic
 @ExperimentalOneBotAPI
 public suspend fun OneBotForward.getForwardNodes(bot: OneBotBot): List<OneBotForwardNode> {
-    return GetForwardMsgApi.create(id).requestDataBy(bot).message
+    return bot.executeData(GetForwardMsgApi.create(id)).message
 }
 
 /**

@@ -23,7 +23,6 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotAnonymousGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMessageEvent
@@ -69,27 +68,31 @@ internal abstract class OneBotGroupMessageEventImpl(
             reply = sourceEvent.messageId
         )
 
-        return api.requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(api).toReceipt(bot)
     }
 
     override suspend fun reply(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendGroupMsgApi(
-                target = sourceEvent.groupId,
-                message = sourceEvent.message,
-                reply = sourceEvent.messageId
-            ).requestDataBy(bot).toReceipt(bot)
+            return bot.executeData(
+                sendGroupMsgApi(
+                    target = sourceEvent.groupId,
+                    message = sourceEvent.message,
+                    reply = sourceEvent.messageId
+                )
+            ).toReceipt(bot)
         }
 
         return reply(messageContent.messages)
     }
 
     override suspend fun reply(message: Message): OneBotMessageReceipt {
-        return sendGroupMsgApi(
-            target = sourceEvent.groupId,
-            message = message.resolveToOneBotSegmentList(bot),
-            reply = sourceEvent.messageId
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendGroupMsgApi(
+                target = sourceEvent.groupId,
+                message = message.resolveToOneBotSegmentList(bot),
+                reply = sourceEvent.messageId
+            )
+        ).toReceipt(bot)
     }
 }
 

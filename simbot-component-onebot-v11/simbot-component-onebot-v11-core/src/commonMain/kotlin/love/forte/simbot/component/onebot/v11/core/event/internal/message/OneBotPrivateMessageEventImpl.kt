@@ -25,7 +25,6 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupPrivateMessageEvent
@@ -64,25 +63,29 @@ internal abstract class OneBotPrivateMessageEventImpl(
             text,
         )
 
-        return api.requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(api).toReceipt(bot)
     }
 
     override suspend fun reply(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendPrivateMsgApi(
-                target = sourceEvent.userId,
-                message = sourceEvent.message,
-            ).requestDataBy(bot).toReceipt(bot)
+            return bot.executeData(
+                sendPrivateMsgApi(
+                    target = sourceEvent.userId,
+                    message = sourceEvent.message,
+                )
+            ).toReceipt(bot)
         }
 
         return reply(messageContent.messages)
     }
 
     override suspend fun reply(message: Message): OneBotMessageReceipt {
-        return sendPrivateMsgApi(
-            target = sourceEvent.userId,
-            message = message.resolveToOneBotSegmentList(bot)
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendPrivateMsgApi(
+                target = sourceEvent.userId,
+                message = message.resolveToOneBotSegmentList(bot)
+            )
+        ).toReceipt(bot)
     }
 }
 

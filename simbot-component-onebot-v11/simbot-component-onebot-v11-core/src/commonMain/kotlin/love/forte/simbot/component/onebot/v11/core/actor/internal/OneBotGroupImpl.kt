@@ -27,8 +27,6 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroupDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
-import love.forte.simbot.component.onebot.v11.core.bot.requestResultBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
@@ -53,8 +51,9 @@ internal abstract class OneBotGroupImpl(
 
     override val members: Collectable<OneBotMember>
         get() = flowCollectable {
-            val list = GetGroupMemberListApi.create(id)
-                .requestDataBy(bot)
+            val list = bot.executeData(
+                GetGroupMemberListApi.create(id)
+            )
 
             for (memberInfoResult in list) {
                 emit(memberInfoResult.toMember(bot))
@@ -65,10 +64,12 @@ internal abstract class OneBotGroupImpl(
         member(bot.userId) ?: error("Cannot find the member with userId ${bot.userId} of bot")
 
     override suspend fun member(id: ID): OneBotMember? {
-        val result = GetGroupMemberInfoApi.create(
-            groupId = this.id,
-            userId = id,
-        ).requestResultBy(bot)
+        val result = bot.executeResult(
+            GetGroupMemberInfoApi.create(
+                groupId = this.id,
+                userId = id,
+            )
+        )
 
         // TODO 如果没找到，如何判断？404？
 
@@ -77,35 +78,43 @@ internal abstract class OneBotGroupImpl(
 
 
     override suspend fun setAnonymous(enable: Boolean) {
-        SetGroupAnonymousApi.create(
-            groupId = id,
-            enable = enable
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupAnonymousApi.create(
+                groupId = id,
+                enable = enable
+            )
+        )
     }
 
     override suspend fun send(text: String): OneBotMessageReceipt {
-        return sendGroupTextMsgApi(
-            target = id,
-            text = text,
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendGroupTextMsgApi(
+                target = id,
+                text = text,
+            )
+        ).toReceipt(bot)
     }
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendGroupMsgApi(
-                target = id,
-                message = messageContent.sourceSegments,
-            ).requestDataBy(bot).toReceipt(bot)
+            return bot.executeData(
+                sendGroupMsgApi(
+                    target = id,
+                    message = messageContent.sourceSegments,
+                )
+            ).toReceipt(bot)
         }
 
         return send(messageContent.messages)
     }
 
     override suspend fun send(message: Message): OneBotMessageReceipt {
-        return sendGroupMsgApi(
-            target = id,
-            message = message.resolveToOneBotSegmentList(bot)
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendGroupMsgApi(
+                target = id,
+                message = message.resolveToOneBotSegmentList(bot)
+            )
+        ).toReceipt(bot)
     }
 
     override suspend fun delete(vararg options: DeleteOption) {
@@ -123,10 +132,12 @@ internal abstract class OneBotGroupImpl(
 
     private suspend fun doDelete(mark: DeleteMark) {
         kotlin.runCatching {
-            SetGroupLeaveApi.create(
-                groupId = id,
-                isDismiss = mark.isDismiss
-            ).requestDataBy(bot)
+            bot.executeData(
+                SetGroupLeaveApi.create(
+                    groupId = id,
+                    isDismiss = mark.isDismiss
+                )
+            )
         }.onFailure { err ->
             if (!mark.isIgnoreFailure) {
                 throw err
@@ -152,39 +163,47 @@ internal abstract class OneBotGroupImpl(
     }
 
     override suspend fun ban(enable: Boolean) {
-        SetGroupWholeBanApi.create(
-            groupId = id,
-            enable = enable
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupWholeBanApi.create(
+                groupId = id,
+                enable = enable
+            )
+        )
     }
 
     override suspend fun setName(newName: String) {
-        SetGroupNameApi.create(
-            id,
-            newName
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupNameApi.create(
+                id,
+                newName
+            )
+        )
 
         this.name = newName
     }
 
     override suspend fun setBotGroupNick(newNick: String?) {
-        SetGroupCardApi.create(
-            groupId = id,
-            userId = bot.userId,
-            card = newNick
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupCardApi.create(
+                groupId = id,
+                userId = bot.userId,
+                card = newNick
+            )
+        )
     }
 
     override suspend fun setAdmin(memberId: ID, enable: Boolean) {
-        SetGroupAdminApi.create(
-            groupId = id,
-            userId = memberId,
-            enable = enable,
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupAdminApi.create(
+                groupId = id,
+                userId = memberId,
+                enable = enable,
+            )
+        )
     }
 
     override suspend fun getHonorInfo(type: String): GetGroupHonorInfoResult =
-        GetGroupHonorInfoApi.create(groupId = id, type = type).requestDataBy(bot)
+        bot.executeData(GetGroupHonorInfoApi.create(groupId = id, type = type))
 
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
 }

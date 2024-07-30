@@ -35,14 +35,14 @@ import kotlin.jvm.JvmSynthetic
  *
  * @see OneBotApi.request
  */
+@Deprecated(
+    "Use OneBotBot.execute",
+    ReplaceWith("bot.execute(this)")
+)
 @JvmSynthetic
 public suspend fun OneBotApi<*>.requestBy(
     bot: OneBotBot,
-): HttpResponse = request(
-    client = bot.apiClient,
-    host = bot.apiHost,
-    accessToken = bot.apiAccessToken
-)
+): HttpResponse = bot.execute(this)
 
 /**
  * 使用 [bot] 对 [this] 发起一次请求，
@@ -53,14 +53,14 @@ public suspend fun OneBotApi<*>.requestBy(
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @see OneBotApi.requestRaw
  */
+@Deprecated(
+    "Use OneBotBot.executeRaw",
+    ReplaceWith("bot.executeRaw(this)")
+)
 @JvmSynthetic
 public suspend fun OneBotApi<*>.requestRawBy(
     bot: OneBotBot,
-): String = requestRaw(
-    client = bot.apiClient,
-    host = bot.apiHost,
-    accessToken = bot.apiAccessToken
-)
+): String = bot.executeRaw(this)
 
 /**
  * 使用 [bot] 对 [this] 发起一次请求，
@@ -71,15 +71,14 @@ public suspend fun OneBotApi<*>.requestRawBy(
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @see OneBotApi.requestResult
  */
+@Deprecated(
+    "Use OneBotBot.executeResult",
+    ReplaceWith("bot.executeResult(this)")
+)
 @JvmSynthetic
 public suspend fun <T : Any> OneBotApi<T>.requestResultBy(
     bot: OneBotBot,
-): OneBotApiResult<T> = requestResult(
-    client = bot.apiClient,
-    host = bot.apiHost,
-    accessToken = bot.apiAccessToken,
-    decoder = bot.decoderJson
-)
+): OneBotApiResult<T> = bot.executeResult(this)
 
 /**
  * 使用 [bot] 对 [this] 发起一次请求，
@@ -91,14 +90,13 @@ public suspend fun <T : Any> OneBotApi<T>.requestResultBy(
  * @throws IllegalStateException 如果响应结果体的状态 [OneBotApiResult.retcode]
  * 不是成功或 [OneBotApiResult.data] 为 `null`
  *
- * @see OneBotApi.requestData
+ * @see OneBotBot.executeData
  */
+@Deprecated(
+    "Use OneBotBot.executeData",
+    ReplaceWith("bot.executeData(this)")
+)
 @JvmSynthetic
 public suspend fun <T : Any> OneBotApi<T>.requestDataBy(
     bot: OneBotBot,
-): T = requestData(
-    client = bot.apiClient,
-    host = bot.apiHost,
-    accessToken = bot.apiAccessToken,
-    decoder = bot.decoderJson
-)
+): T = bot.executeData(this)
