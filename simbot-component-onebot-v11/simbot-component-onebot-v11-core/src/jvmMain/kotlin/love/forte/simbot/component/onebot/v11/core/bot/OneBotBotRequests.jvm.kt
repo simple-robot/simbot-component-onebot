@@ -20,9 +20,8 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot
 
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.isSuccess
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResponseNotSuccessException
@@ -45,9 +44,13 @@ import kotlin.coroutines.EmptyCoroutineContext
  *  @see requestBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeBlocking(this)")
+)
 public fun OneBotApi<*>.requestByBlocking(
     bot: OneBotBot,
-): HttpResponse = runInNoScopeBlocking { requestBy(bot) }
+): HttpResponse = runInNoScopeBlocking { bot.execute(this) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次阻塞地请求，
@@ -58,9 +61,13 @@ public fun OneBotApi<*>.requestByBlocking(
  * @see requestRawBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeRawBlocking(this)")
+)
 public fun OneBotApi<*>.requestRawByBlocking(
     bot: OneBotBot,
-): String = runInNoScopeBlocking { requestRawBy(bot) }
+): String = runInNoScopeBlocking { bot.executeRaw(this) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次阻塞地请求，
@@ -73,9 +80,13 @@ public fun OneBotApi<*>.requestRawByBlocking(
  * @see requestResultBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeResultBlocking(this)")
+)
 public fun <T : Any> OneBotApi<T>.requestResultByBlocking(
     bot: OneBotBot,
-): OneBotApiResult<T> = runInNoScopeBlocking { requestResultBy(bot) }
+): OneBotApiResult<T> = runInNoScopeBlocking { bot.executeResult(this) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次阻塞地请求，
@@ -89,9 +100,13 @@ public fun <T : Any> OneBotApi<T>.requestResultByBlocking(
  * @see requestDataBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeDataBlocking(this)")
+)
 public fun <T : Any> OneBotApi<T>.requestDataByBlocking(
     bot: OneBotBot,
-): T = runInNoScopeBlocking { requestDataBy(bot) }
+): T = runInNoScopeBlocking { bot.executeData(this) }
 //endregion
 
 //region async
@@ -104,9 +119,13 @@ public fun <T : Any> OneBotApi<T>.requestDataByBlocking(
  *  @see requestBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeAsync(this)")
+)
 public fun OneBotApi<*>.requestByAsync(
     bot: OneBotBot,
-): CompletableFuture<out HttpResponse> = runInAsync(bot) { requestBy(bot) }
+): CompletableFuture<out HttpResponse> = runInAsync(bot) { bot.execute(this@requestByAsync) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次异步地请求，
@@ -117,9 +136,13 @@ public fun OneBotApi<*>.requestByAsync(
  * @see requestRawBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeRawAsync(this)")
+)
 public fun OneBotApi<*>.requestRawByAsync(
     bot: OneBotBot,
-): CompletableFuture<out String> = runInAsync(bot) { requestRawBy(bot) }
+): CompletableFuture<out String> = runInAsync(bot) { bot.executeRaw(this@requestRawByAsync) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次异步地请求，
@@ -132,9 +155,13 @@ public fun OneBotApi<*>.requestRawByAsync(
  * @see requestResultBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeResultAsync(this)")
+)
 public fun <T : Any> OneBotApi<T>.requestResultByAsync(
     bot: OneBotBot,
-): CompletableFuture<out OneBotApiResult<T>> = runInAsync(bot) { requestResultBy(bot) }
+): CompletableFuture<out OneBotApiResult<T>> = runInAsync(bot) { bot.executeResult(this@requestResultByAsync) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次异步地请求，
@@ -148,9 +175,13 @@ public fun <T : Any> OneBotApi<T>.requestResultByAsync(
  * @see requestDataBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeDataAsync(this)")
+)
 public fun <T : Any> OneBotApi<T>.requestDataByAsync(
     bot: OneBotBot,
-): CompletableFuture<out T> = runInAsync(bot) { requestDataBy(bot) }
+): CompletableFuture<out T> = runInAsync(bot) { bot.executeData(this@requestDataByAsync) }
 //endregion
 
 //region reserve
@@ -163,9 +194,13 @@ public fun <T : Any> OneBotApi<T>.requestDataByAsync(
  *  @see requestBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeReserve(this)")
+)
 public fun OneBotApi<*>.requestByReserve(
     bot: OneBotBot,
-): SuspendReserve<HttpResponse> = suspendReserve(bot, EmptyCoroutineContext) { requestBy(bot) }
+): SuspendReserve<HttpResponse> = suspendReserve(bot, EmptyCoroutineContext) { bot.execute(this) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次预处理地请求，
@@ -176,9 +211,13 @@ public fun OneBotApi<*>.requestByReserve(
  * @see requestRawBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeRawReserve(this)")
+)
 public fun OneBotApi<*>.requestRawByReserve(
     bot: OneBotBot,
-): SuspendReserve<String> = suspendReserve(bot, EmptyCoroutineContext) { requestRawBy(bot) }
+): SuspendReserve<String> = suspendReserve(bot, EmptyCoroutineContext) { bot.executeRaw(this) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次预处理地请求，
@@ -191,9 +230,13 @@ public fun OneBotApi<*>.requestRawByReserve(
  * @see requestResultBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeResultReserve(this)")
+)
 public fun <T : Any> OneBotApi<T>.requestResultByReserve(
     bot: OneBotBot,
-): SuspendReserve<OneBotApiResult<T>> = suspendReserve(bot, EmptyCoroutineContext) { requestResultBy(bot) }
+): SuspendReserve<OneBotApiResult<T>> = suspendReserve(bot, EmptyCoroutineContext) { bot.executeResult(this) }
 
 /**
  * 使用 [bot] 对 [this] 发起一次预处理地请求，
@@ -207,7 +250,11 @@ public fun <T : Any> OneBotApi<T>.requestResultByReserve(
  * @see requestDataBy
  */
 @Api4J
+@Deprecated(
+    "Use OneBotBot.execute* API",
+    ReplaceWith("bot.executeDataReserve(this)")
+)
 public fun <T : Any> OneBotApi<T>.requestDataByReserve(
     bot: OneBotBot,
-): SuspendReserve<T> = suspendReserve(bot, EmptyCoroutineContext) { requestDataBy(bot) }
+): SuspendReserve<T> = suspendReserve(bot, EmptyCoroutineContext) { bot.executeData(this) }
 //endregion

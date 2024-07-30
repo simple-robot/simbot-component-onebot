@@ -20,6 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.bot.internal
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
@@ -221,7 +222,7 @@ internal class OneBotBotImpl(
     private var _loginInfoResult: GetLoginInfoResult? = null
 
     override suspend fun queryLoginInfo(): GetLoginInfoResult {
-        val result = GetLoginInfoApi.create().requestDataBy(this)
+        val result = this.executeData(GetLoginInfoApi.create())
         _loginInfoResult = result
         return result
     }
@@ -516,8 +517,9 @@ internal class OneBotBotImpl(
     private inner class FriendRelationImpl : OneBotBotFriendRelation {
         override val contacts: Collectable<OneBotFriend>
             get() = flowCollectable {
-                val resultList = GetFriendListApi.create()
-                    .requestDataBy(this@OneBotBotImpl)
+                val resultList = this@OneBotBotImpl.executeData(
+                    GetFriendListApi.create()
+                )
 
                 for (result in resultList) {
                     emit(result.toFriend(this@OneBotBotImpl))
@@ -525,9 +527,11 @@ internal class OneBotBotImpl(
             }
 
         override suspend fun stranger(id: ID): OneBotStranger =
-            GetStrangerInfoApi
-                .create(userId = id)
-                .requestDataBy(this@OneBotBotImpl)
+            this@OneBotBotImpl
+                .executeData(
+                    GetStrangerInfoApi
+                        .create(userId = id)
+                )
                 .toStranger(this@OneBotBotImpl)
     }
 
@@ -537,8 +541,9 @@ internal class OneBotBotImpl(
     private inner class GroupRelationImpl : OneBotBotGroupRelation {
         override val groups: Collectable<OneBotGroup>
             get() = flowCollectable {
-                val resultList = GetGroupListApi.create()
-                    .requestDataBy(this@OneBotBotImpl)
+                val resultList = this@OneBotBotImpl.executeData(
+                    GetGroupListApi.create()
+                )
 
                 for (groupInfoResult in resultList) {
                     emit(
@@ -552,8 +557,9 @@ internal class OneBotBotImpl(
             }
 
         override suspend fun group(id: ID): OneBotGroup {
-            val result = GetGroupInfoApi.create(id)
-                .requestResultBy(this@OneBotBotImpl)
+            val result = this@OneBotBotImpl.executeResult(
+                GetGroupInfoApi.create(id)
+            )
 
             // TODO 如何检测不存在？
 
@@ -565,28 +571,59 @@ internal class OneBotBotImpl(
 
         override suspend fun member(groupId: ID, memberId: ID): OneBotMember {
             // TODO 如何检测不存在？
-            return GetGroupMemberInfoApi.create(groupId, userId)
-                .requestDataBy(this@OneBotBotImpl).toMember(this@OneBotBotImpl)
+            return this@OneBotBotImpl.executeData(
+                GetGroupMemberInfoApi.create(groupId, userId)
+            ).toMember(this@OneBotBotImpl)
         }
     }
 
     override suspend fun getCookies(domain: String?): GetCookiesResult =
-        GetCookiesApi.create(domain).requestDataBy(this)
+        this.executeData(GetCookiesApi.create(domain))
 
     override suspend fun getCredentials(domain: String?): GetCredentialsResult =
-        GetCredentialsApi.create(domain).requestDataBy(this)
+        executeData(GetCredentialsApi.create(domain))
 
     override suspend fun getCsrfToken(): GetCsrfTokenResult =
-        GetCsrfTokenApi.create().requestDataBy(this)
+        executeData(GetCsrfTokenApi.create())
 
     override suspend fun getMessageContent(messageId: ID): OneBotMessageContent {
-        val result = GetMsgApi.create(messageId).requestDataBy(this)
+        val result = this.executeData(GetMsgApi.create(messageId))
         return OneBotMessageContentImpl(
             result.messageId,
             result.message,
             this
         )
     }
+
+    override suspend fun execute(api: OneBotApi<*>): HttpResponse =
+        api.request(
+            client = this.apiClient,
+            host = this.apiHost,
+            accessToken = this.apiAccessToken
+        )
+
+    override suspend fun executeRaw(api: OneBotApi<*>): String =
+        api.requestRaw(
+            client = this.apiClient,
+            host = this.apiHost,
+            accessToken = this.apiAccessToken
+        )
+
+    override suspend fun <T : Any> executeResult(api: OneBotApi<T>): OneBotApiResult<T> =
+        api.requestResult(
+            client = this.apiClient,
+            host = this.apiHost,
+            accessToken = this.apiAccessToken,
+            decoder = this.decoderJson
+        )
+
+    override suspend fun <T : Any> executeData(api: OneBotApi<T>): T =
+        api.requestData(
+            client = this.apiClient,
+            host = this.apiHost,
+            accessToken = this.apiAccessToken,
+            decoder = this.decoderJson
+        )
 
     override fun push(rawEvent: String): Flow<EventResult> {
         val event = kotlin.runCatching {

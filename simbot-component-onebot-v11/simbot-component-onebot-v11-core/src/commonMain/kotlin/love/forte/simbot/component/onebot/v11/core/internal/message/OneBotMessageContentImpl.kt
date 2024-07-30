@@ -22,7 +22,6 @@ import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.DeleteMsgApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.resolveToMessageElement
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
@@ -59,7 +58,7 @@ internal class OneBotMessageContentImpl(
 
     override suspend fun delete(vararg options: DeleteOption) {
         runCatching {
-            DeleteMsgApi.create(id).requestDataBy(bot)
+            bot.executeData(DeleteMsgApi.create(id))
         }.onFailure { ex ->
             if (StandardDeleteOption.IGNORE_ON_FAILURE !in options) {
                 throw ex

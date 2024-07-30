@@ -27,7 +27,6 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
@@ -62,28 +61,34 @@ internal abstract class OneBotMemberImpl(
     override var nick: String? = initialNick
 
     override suspend fun send(text: String): OneBotMessageReceipt {
-        return sendPrivateTextMsgApi(
-            target = id,
-            text = text,
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendPrivateTextMsgApi(
+                target = id,
+                text = text,
+            )
+        ).toReceipt(bot)
     }
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendPrivateMsgApi(
-                target = id,
-                message = messageContent.sourceSegments,
-            ).requestDataBy(bot).toReceipt(bot)
+            return bot.executeData(
+                sendPrivateMsgApi(
+                    target = id,
+                    message = messageContent.sourceSegments,
+                )
+            ).toReceipt(bot)
         }
 
         return send(messageContent.messages)
     }
 
     override suspend fun send(message: Message): OneBotMessageReceipt {
-        return sendPrivateMsgApi(
-            target = id,
-            message = message.resolveToOneBotSegmentList(bot)
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendPrivateMsgApi(
+                target = id,
+                message = message.resolveToOneBotSegmentList(bot)
+            )
+        ).toReceipt(bot)
     }
 
     override suspend fun delete(vararg options: DeleteOption) {
@@ -108,11 +113,13 @@ internal abstract class OneBotMemberImpl(
             }
 
         kotlin.runCatching {
-            SetGroupKickApi.create(
-                groupId = groupId,
-                userId = id,
-                rejectAddRequest = mark.isRejectRequest
-            ).requestDataBy(bot)
+            bot.executeData(
+                SetGroupKickApi.create(
+                    groupId = groupId,
+                    userId = id,
+                    rejectAddRequest = mark.isRejectRequest
+                )
+            )
         }.onFailure { err ->
             if (!mark.isIgnoreFailure) {
                 throw err
@@ -169,18 +176,22 @@ internal abstract class OneBotMemberImpl(
     protected open suspend fun doBan(seconds: Long) {
         val groupId = groupIdOrFailure
 
-        SetGroupBanApi.create(
-            groupId = groupId,
-            userId = id,
-            duration = seconds
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupBanApi.create(
+                groupId = groupId,
+                userId = id,
+                duration = seconds
+            )
+        )
     }
 
     override suspend fun getSourceMemberInfo(): GetGroupMemberInfoResult {
-        return GetGroupMemberInfoApi.create(
-            groupId = groupIdOrFailure,
-            userId = id,
-        ).requestDataBy(bot)
+        return bot.executeData(
+            GetGroupMemberInfoApi.create(
+                groupId = groupIdOrFailure,
+                userId = id,
+            )
+        )
     }
 
     override suspend fun setSpecialTitle(specialTitle: String?) {
@@ -206,30 +217,36 @@ internal abstract class OneBotMemberImpl(
     }
 
     private suspend fun setSpecialTitle0(specialTitle: String?, duration: Long?) {
-        SetGroupSpecialTitleApi.create(
-            groupId = groupIdOrFailure,
-            userId = id,
-            specialTitle = specialTitle,
-            duration = duration
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupSpecialTitleApi.create(
+                groupId = groupIdOrFailure,
+                userId = id,
+                specialTitle = specialTitle,
+                duration = duration
+            )
+        )
     }
 
     override suspend fun setNick(newNick: String?) {
-        SetGroupCardApi.create(
-            groupId = groupIdOrFailure,
-            userId = id,
-            card = newNick
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupCardApi.create(
+                groupId = groupIdOrFailure,
+                userId = id,
+                card = newNick
+            )
+        )
 
         this.nick = newNick
     }
 
     override suspend fun setAdmin(enable: Boolean) {
-        SetGroupAdminApi.create(
-            groupId = groupIdOrFailure,
-            userId = id,
-            enable = enable
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupAdminApi.create(
+                groupId = groupIdOrFailure,
+                userId = id,
+                enable = enable
+            )
+        )
 
         this.role = if (enable) {
             OneBotMemberRole.ADMIN
@@ -239,8 +256,9 @@ internal abstract class OneBotMemberImpl(
     }
 
     override suspend fun toStranger(): OneBotStranger =
-        GetStrangerInfoApi.create(userId = id)
-            .requestDataBy(bot)
+        bot.executeData(
+            GetStrangerInfoApi.create(userId = id)
+        )
             .toStranger(bot)
 
     override fun toString(): String = "OneBotMember(id=$id, bot=${bot.id})"
@@ -290,11 +308,13 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
         } else {
             val groupId = groupIdOrFailure
 
-            SetGroupAnonymousBanApi.create(
-                groupId = groupId,
-                anonymousFlag = anonymous.flag,
-                duration = seconds
-            ).requestDataBy(bot)
+            bot.executeData(
+                SetGroupAnonymousBanApi.create(
+                    groupId = groupId,
+                    anonymousFlag = anonymous.flag,
+                    duration = seconds
+                )
+            )
         }
     }
 }
