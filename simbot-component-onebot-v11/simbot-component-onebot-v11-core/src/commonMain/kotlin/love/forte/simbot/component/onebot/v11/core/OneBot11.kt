@@ -85,5 +85,7 @@ public object OneBot11 {
         prettyPrint = false
         serializersModule = OneBot11.serializersModule
         allowTrailingComma = true
+        // since 1.1.1
+        coerceInputValues = true
     }
 }
