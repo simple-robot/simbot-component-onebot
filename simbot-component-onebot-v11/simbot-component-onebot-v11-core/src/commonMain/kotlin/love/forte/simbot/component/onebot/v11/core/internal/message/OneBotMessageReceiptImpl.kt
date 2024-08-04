@@ -23,7 +23,6 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.DeleteMsgApi
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 
 
@@ -36,7 +35,7 @@ internal class OneBotMessageReceiptImpl(
 ) : OneBotMessageReceipt {
     override suspend fun delete(vararg options: DeleteOption) {
         kotlin.runCatching {
-            DeleteMsgApi.create(messageId).requestDataBy(bot)
+            bot.executeData(DeleteMsgApi.create(messageId))
         }.onFailure { ex ->
             if (StandardDeleteOption.IGNORE_ON_FAILURE !in options) {
                 throw ex

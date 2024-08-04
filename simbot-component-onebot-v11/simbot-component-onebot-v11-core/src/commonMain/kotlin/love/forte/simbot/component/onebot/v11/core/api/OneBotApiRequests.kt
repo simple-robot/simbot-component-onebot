@@ -122,6 +122,8 @@ public suspend fun OneBotApi<*>.request(
             accessToken?.also { bearerAuth(it) }
         }
 
+        var jsonStr: String? = null
+
         when (val b = this@request.body) {
             null -> {
                 if (GlobalOneBotApiRequestConfiguration.emptyJsonStringIfBodyNull) {
@@ -143,6 +145,7 @@ public suspend fun OneBotApi<*>.request(
                         val json = OneBot11.DefaultJson
                         val serializer = guessSerializer(b, json.serializersModule)
                         val jsonText = json.encodeToString(serializer, b)
+                        jsonStr = jsonText
                         setBody(jsonText)
                     } catch (e: Throwable) {
                         try {
@@ -157,10 +160,11 @@ public suspend fun OneBotApi<*>.request(
         }
 
         ApiLogger.debug(
-            "API [{}] REQ ===> {}, body: {}",
+            "API [{}] REQ ===> {}, body: {}, json: {}",
             action,
             url,
             this@request.body,
+            jsonStr
         )
     }.also { res ->
         ApiLogger.debug(

@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.bot
 
 import io.ktor.client.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +67,7 @@ import kotlin.jvm.JvmSynthetic
  * @author ForteScarlet
  */
 @OneBotInternalImplementationsOnly
-public interface OneBotBot : Bot {
+public interface OneBotBot : Bot, OneBotApiExecutable {
     override val coroutineContext: CoroutineContext
 
     /**
@@ -97,15 +98,15 @@ public interface OneBotBot : Bot {
     public val apiHost: Url
 
     /**
-     * [OneBotBotConfiguration] 中配置的 accessToken。
-     *
-     * 分开使用 [apiAccessToken] 或 [eventAccessToken]，
-     * [accessToken] 将会在 v1.0.0 版本后移除。
+     * @suppress 分开使用 [apiAccessToken] 或 [eventAccessToken]。
      */
-    @Deprecated("Use `apiAccessToken` or `eventAccessToken`", ReplaceWith("apiAccessToken"))
+    @Deprecated(
+        "Use `apiAccessToken` or `eventAccessToken`",
+        ReplaceWith("apiAccessToken"),
+        level = DeprecationLevel.HIDDEN
+    )
     public val accessToken: String?
         get() = apiAccessToken
-    // TODO Removal
 
     /**
      * [OneBotBotConfiguration] 中配置的 [apiAccessToken][OneBotBotConfiguration.apiAccessToken]。
@@ -247,6 +248,7 @@ public interface OneBotBot : Bot {
     @ExperimentalOneBotAPI
     public suspend fun getMessageContent(messageId: ID): OneBotMessageContent
 
+
 }
 
 /**
@@ -348,3 +350,5 @@ public interface OneBotBotGroupRelation : GroupRelation {
     public suspend fun member(groupId: ID, memberId: ID): OneBotMember?
 
 }
+
+

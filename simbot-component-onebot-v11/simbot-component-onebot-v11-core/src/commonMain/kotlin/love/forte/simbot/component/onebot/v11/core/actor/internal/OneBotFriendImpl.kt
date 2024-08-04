@@ -24,7 +24,6 @@ import love.forte.simbot.component.onebot.v11.core.api.GetFriendListResult
 import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.SendLikeApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
@@ -40,41 +39,49 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
     protected abstract val bot: OneBotBotImpl
 
     override suspend fun send(text: String): OneBotMessageReceipt {
-        return sendPrivateTextMsgApi(
-            target = id,
-            text = text,
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendPrivateTextMsgApi(
+                target = id,
+                text = text,
+            )
+        ).toReceipt(bot)
     }
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
         if (messageContent is OneBotMessageContent) {
-            return sendPrivateMsgApi(
-                target = id,
-                message = messageContent.sourceSegments,
-            ).requestDataBy(bot).toReceipt(bot)
+            return bot.executeData(
+                sendPrivateMsgApi(
+                    target = id,
+                    message = messageContent.sourceSegments,
+                )
+            ).toReceipt(bot)
         }
 
         return send(messageContent.messages)
     }
 
     override suspend fun send(message: Message): OneBotMessageReceipt {
-        return sendPrivateMsgApi(
-            target = id,
-            message = message.resolveToOneBotSegmentList(bot)
-        ).requestDataBy(bot).toReceipt(bot)
+        return bot.executeData(
+            sendPrivateMsgApi(
+                target = id,
+                message = message.resolveToOneBotSegmentList(bot)
+            )
+        ).toReceipt(bot)
     }
 
     override suspend fun sendLike(times: Int) {
-        SendLikeApi.create(
-            userId = id,
-            times = times
-        ).requestDataBy(bot)
+        bot.executeData(
+            SendLikeApi.create(
+                userId = id,
+                times = times
+            )
+        )
     }
 
     override suspend fun toStranger(): OneBotStranger =
-        GetStrangerInfoApi.create(userId = id)
-            .requestDataBy(bot)
-            .toStranger(bot)
+        bot.executeData(
+            GetStrangerInfoApi.create(userId = id)
+        ).toStranger(bot)
 
     override fun toString(): String = "OneBotFriend(id=$id, bot=${bot.id})"
 }

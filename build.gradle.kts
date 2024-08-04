@@ -108,8 +108,6 @@ tasks.withType<Detekt>().configureEach {
 }
 
 apiValidation {
-    // TODO 都差不多的时候别忘了去掉
-    validationDisabled = true
     ignoredPackages.add("*.internal.*")
 
     this.ignoredProjects.addAll(

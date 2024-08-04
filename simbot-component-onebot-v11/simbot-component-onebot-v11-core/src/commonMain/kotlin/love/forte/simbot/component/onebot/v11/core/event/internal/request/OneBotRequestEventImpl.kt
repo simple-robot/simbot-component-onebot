@@ -29,7 +29,6 @@ import love.forte.simbot.component.onebot.v11.core.api.SetFriendAddRequestApi
 import love.forte.simbot.component.onebot.v11.core.api.SetGroupAddRequestApi
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.bot.requestDataBy
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.request.*
 import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
@@ -70,18 +69,22 @@ internal class OneBotFriendRequestEventImpl(
                 as? OneBotFriendRequestAcceptOption.Remark
             )?.remark
 
-        SetFriendAddRequestApi.create(
-            flag = sourceEvent.flag,
-            approve = true,
-            remark = remark
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetFriendAddRequestApi.create(
+                flag = sourceEvent.flag,
+                approve = true,
+                remark = remark
+            )
+        )
     }
 
     override suspend fun doReject(options: Array<out RejectOption>) {
-        SetFriendAddRequestApi.create(
-            flag = sourceEvent.flag,
-            approve = false,
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetFriendAddRequestApi.create(
+                flag = sourceEvent.flag,
+                approve = false,
+            )
+        )
     }
 
     override fun toString(): String =
@@ -94,11 +97,13 @@ internal class OneBotGroupRequestEventImpl(
     override val bot: OneBotBotImpl,
 ) : OneBotRequestEventImpl(), OneBotGroupRequestEvent {
     override suspend fun doAccept(options: Array<out AcceptOption>) {
-        SetGroupAddRequestApi.create(
-            flag = sourceEvent.flag,
-            subType = sourceEvent.subType,
-            approve = true
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupAddRequestApi.create(
+                flag = sourceEvent.flag,
+                subType = sourceEvent.subType,
+                approve = true
+            )
+        )
     }
 
     override suspend fun doReject(options: Array<out RejectOption>) {
@@ -107,12 +112,14 @@ internal class OneBotGroupRequestEventImpl(
                 as? OneBotGroupRequestRejectOption.Reason
             )?.reason
 
-        SetGroupAddRequestApi.create(
-            flag = sourceEvent.flag,
-            subType = sourceEvent.subType,
-            approve = false,
-            reason = reason
-        ).requestDataBy(bot)
+        bot.executeData(
+            SetGroupAddRequestApi.create(
+                flag = sourceEvent.flag,
+                subType = sourceEvent.subType,
+                approve = false,
+                reason = reason
+            )
+        )
     }
 
     override suspend fun content(): OneBotGroup {
@@ -121,9 +128,10 @@ internal class OneBotGroupRequestEventImpl(
     }
 
     override suspend fun requester(): OneBotStranger {
-        return GetStrangerInfoApi
-            .create(sourceEvent.userId)
-            .requestDataBy(bot)
+        return bot.executeData(
+            GetStrangerInfoApi
+                .create(sourceEvent.userId)
+        )
             .toStranger(bot)
     }
 
