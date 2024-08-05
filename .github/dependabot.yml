@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    target-branch: "dev/main"
+    schedule:
+      interval: daily
+    labels:
+      - dependencies
+    assignees:
+      - ForteScarlet
+    open-pull-requests-limit: 10
