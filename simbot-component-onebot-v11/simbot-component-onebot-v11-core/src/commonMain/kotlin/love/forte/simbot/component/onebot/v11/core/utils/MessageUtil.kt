@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.utils
 
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.api.OneBotMessageOutgoing
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
@@ -29,7 +30,8 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
  *
  * @param messageType see [SendMsgApi]`.MESSAGE_TYPE_*`
  */
-internal fun sendTextMsgApi(
+@InternalOneBotAPI
+public fun sendTextMsgApi(
     messageType: String,
     target: ID,
     text: String,
@@ -58,7 +60,8 @@ internal fun sendTextMsgApi(
     }
 }
 
-internal fun sendPrivateTextMsgApi(
+@InternalOneBotAPI
+public fun sendPrivateTextMsgApi(
     target: ID,
     text: String,
     reply: ID? = null,
@@ -69,7 +72,8 @@ internal fun sendPrivateTextMsgApi(
     reply = reply,
 )
 
-internal fun sendGroupTextMsgApi(
+@InternalOneBotAPI
+public fun sendGroupTextMsgApi(
     target: ID,
     text: String,
     reply: ID? = null,
@@ -86,7 +90,8 @@ internal fun sendGroupTextMsgApi(
  *
  * @param messageType see [SendMsgApi]`.MESSAGE_TYPE_*`
  */
-internal fun sendMsgApi(
+@InternalOneBotAPI
+public fun sendMsgApi(
     messageType: String,
     target: ID,
     message: List<OneBotMessageSegment>,
@@ -112,7 +117,8 @@ internal fun sendMsgApi(
     }
 }
 
-internal fun resolveReplyMessageSegmentList(
+@InternalOneBotAPI
+public fun resolveReplyMessageSegmentList(
     message: List<OneBotMessageSegment>,
     reply: ID,
 ): List<OneBotMessageSegment> {
@@ -132,7 +138,8 @@ internal fun resolveReplyMessageSegmentList(
     return newMessage
 }
 
-internal fun sendPrivateMsgApi(
+@InternalOneBotAPI
+public fun sendPrivateMsgApi(
     target: ID,
     message: List<OneBotMessageSegment>,
     reply: ID? = null,
@@ -143,7 +150,8 @@ internal fun sendPrivateMsgApi(
     reply = reply,
 )
 
-internal fun sendGroupMsgApi(
+@InternalOneBotAPI
+public fun sendGroupMsgApi(
     target: ID,
     message: List<OneBotMessageSegment>,
     reply: ID? = null,

@@ -1,3 +1,5 @@
+package love.forte.simbot.component.onebot.v11.core
+
 import io.ktor.client.engine.java.Java
 import io.ktor.http.Url
 import love.forte.simbot.application.listeners
@@ -34,7 +36,7 @@ suspend fun main() {
                 eventServerHost = Url("ws://localhost:3001")
                 wsClientEngineFactory = Java
                 apiClientEngineFactory = Java
-                accessToken = "test"
+                accessToken("test")
             }
         )
 

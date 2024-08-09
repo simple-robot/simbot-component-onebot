@@ -1,10 +1,11 @@
+package love.forte.simbot.component.onebot.v11.core
+
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiExecutable
 import love.forte.simbot.component.onebot.v11.core.api.inExecutableScope
-import kotlin.test.Test
 
 /**
  *
