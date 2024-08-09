@@ -22,10 +22,12 @@ import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentElement
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.PlainText
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -54,6 +56,19 @@ public interface OneBotMessageContent : MessageContent {
      * @see OneBotMessageSegmentElement
      */
     override val messages: Messages
+
+    /**
+     * 寻找 [messages] 中第一个 [OneBotReply] 类型的元素，
+     * 如果没有则得到 `null`。
+     * 寻找的过程是即时的，不会发生挂起。
+     *
+     * @since 1.2.0
+     * @see messages
+     * @see OneBotReply
+     */
+    @STP
+    override suspend fun reference(): OneBotReply? =
+        messages.firstNotNullOfOrNull { it as? OneBotReply }
 
     /**
      * 消息中所有的 [文本消息][PlainText]
