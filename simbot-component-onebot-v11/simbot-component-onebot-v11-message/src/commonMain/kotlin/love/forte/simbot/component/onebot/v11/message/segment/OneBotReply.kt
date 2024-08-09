@@ -20,6 +20,7 @@ package love.forte.simbot.component.onebot.v11.message.segment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.message.MessageReference
 import kotlin.jvm.JvmStatic
 
 
@@ -32,14 +33,14 @@ import kotlin.jvm.JvmStatic
 @SerialName(OneBotReply.TYPE)
 public class OneBotReply private constructor(
     override val data: Data
-) : OneBotMessageSegment {
+) : OneBotMessageSegment, MessageReference {
 
     /**
      * The [Data.id].
      *
      * @see Data.id
      */
-    public val id: ID
+    override val id: ID
         get() = data.id
 
     public companion object Factory {
