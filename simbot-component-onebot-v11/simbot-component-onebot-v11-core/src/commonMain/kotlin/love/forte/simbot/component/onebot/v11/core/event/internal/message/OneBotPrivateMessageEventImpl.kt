@@ -71,7 +71,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
             return bot.executeData(
                 sendPrivateMsgApi(
                     target = sourceEvent.userId,
-                    message = sourceEvent.message,
+                    message = messageContent.sourceSegments,
                 )
             ).toReceipt(bot)
         }

@@ -76,7 +76,7 @@ internal abstract class OneBotGroupMessageEventImpl(
             return bot.executeData(
                 sendGroupMsgApi(
                     target = sourceEvent.groupId,
-                    message = sourceEvent.message,
+                    message = messageContent.sourceSegments,
                     reply = sourceEvent.messageId
                 )
             ).toReceipt(bot)
