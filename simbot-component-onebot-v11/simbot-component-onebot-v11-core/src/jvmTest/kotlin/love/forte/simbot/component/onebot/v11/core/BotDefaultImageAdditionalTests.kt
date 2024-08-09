@@ -1,7 +1,8 @@
+package love.forte.simbot.component.onebot.v11.core
+
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.component.onebot.v11.core.bot.firstOneBotBotManager
 import love.forte.simbot.component.onebot.v11.core.bot.register
-import love.forte.simbot.component.onebot.v11.core.useOneBot11
 import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegment
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.core.application.launchSimpleApplication
