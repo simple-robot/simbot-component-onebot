@@ -87,22 +87,23 @@ public suspend fun Message.Element.resolveToOneBotSegment(
         is Face -> OneBotFace.create(id)
         is At -> OneBotAt.create(target)
         is AtAll -> OneBotAt.createAtAll()
-        is Image -> {
-            when (this) {
-                // offline image
-                is OfflineImage -> suspendCancellableCoroutine<OneBotMessageSegment?> { continuation ->
-                    offlineImageResolver(defaultImageAdditionalParams)
-                        .resolve(this, continuation)
-                }
-
-                // remote images, OneBot组件中实际上没有此类型的实现
-                // 将它的 id 直接视为 file
-                is RemoteImage -> OneBotImage.create(id.literal)
-
-                // 其他未知类型，不管
-                else -> null
+        is Image -> when (this) {
+            // offline image
+            is OfflineImage -> suspendCancellableCoroutine<OneBotMessageSegment?> { continuation ->
+                offlineImageResolver(defaultImageAdditionalParams)
+                    .resolve(this, continuation)
             }
+
+            // remote images, OneBot组件中实际上没有此类型的实现
+            // 将它的 id 直接视为 file
+            is RemoteImage -> OneBotImage.create(id.literal)
+
+            // 其他未知类型，不管
+            else -> null
         }
+
+        // since 1.2.0
+        is MessageReference -> OneBotReply.create(id)
 
         // 其他未知类型，不管
         else -> null
