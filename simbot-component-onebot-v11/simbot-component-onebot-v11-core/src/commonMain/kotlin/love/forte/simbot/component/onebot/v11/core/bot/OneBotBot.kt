@@ -18,7 +18,6 @@
 package love.forte.simbot.component.onebot.v11.core.bot
 
 import io.ktor.client.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +41,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.EventResult
+import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmSynthetic
@@ -241,13 +241,50 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
      * 注意：此API是实验性的，未来可能会随时被变更或删除。
      *
      * @see GetMsgApi
-     * @throws Throwable 任何API请求过程中可能产生的异常，
-     * 例如消息不存在
+     * @throws RuntimeException 任何API请求过程中可能产生的异常，
+     * 例如消息不存在或反序列化错误。
      */
     @ST
     @ExperimentalOneBotAPI
     public suspend fun getMessageContent(messageId: ID): OneBotMessageContent
 
+    /**
+     * 根据 [id] 使用 [GetMsgApi] 查询消息内容，
+     * 并得到对应的 [OneBotMessageContent]。
+     *
+     * 注意：此API是实验性的，未来可能会随时被变更或删除，
+     * 同 [getMessageContent]。
+     *
+     * @see GetMsgApi
+     * @see getMessageContent
+     * @throws RuntimeException 任何API请求过程中可能产生的异常，
+     * 例如消息不存在或反序列化错误。
+     *
+     * @since 1.3.0
+     */
+    @ST
+    @ExperimentalOneBotAPI
+    override suspend fun messageFromId(id: ID): OneBotMessageContent = getMessageContent(id)
+
+    /**
+     * 根据消息引用的id使用 [GetMsgApi] 查询消息内容，
+     * 并得到对应的 [OneBotMessageContent]。
+     *
+     * 注意：此API是实验性的，未来可能会随时被变更或删除，
+     * 同 [getMessageContent]。
+     *
+     * @see getMessageContent
+     *
+     * @see GetMsgApi
+     * @throws RuntimeException 任何API请求过程中可能产生的异常，
+     * 例如消息不存在或反序列化错误。
+     *
+     * @since 1.3.0
+     */
+    @ST
+    @ExperimentalOneBotAPI
+    override suspend fun messageFromReference(reference: MessageReference): OneBotMessageContent =
+        getMessageContent(id)
 
 }
 
