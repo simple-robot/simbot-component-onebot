@@ -28,6 +28,7 @@ import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.PlainText
 import love.forte.simbot.suspendrunner.STP
+import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -71,6 +72,16 @@ public interface OneBotMessageContent : MessageContent {
         messages.firstNotNullOfOrNull { it as? OneBotReply }
 
     /**
+     * 根据 [消息引用][reference] 信息通过API查询对应引用的消息内容。
+     *
+     * @throws RuntimeException 任何可能在请求API过程中产生的异常
+     *
+     * @since 1.3.0
+     */
+    @STP
+    override suspend fun referenceMessage(): OneBotMessageContent?
+
+    /**
      * 消息中所有的 [文本消息][PlainText]
      * (或者说 [sourceSegments] 中所有的 [OneBotText])
      * 的合并结果。
@@ -88,6 +99,7 @@ public interface OneBotMessageContent : MessageContent {
      * @throws Exception 任何请求API过程中可能会产生的异常，
      * 例如因权限不足或消息不存在得到的请求错误
      */
+    @JvmSynthetic
     override suspend fun delete(vararg options: DeleteOption)
 }
 

@@ -21,10 +21,12 @@ import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.DeleteMsgApi
+import love.forte.simbot.component.onebot.v11.core.api.GetMsgApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.resolveToMessageElement
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.toMessages
@@ -54,6 +56,13 @@ internal class OneBotMessageContentImpl(
         }
 
         sb?.toString()
+    }
+
+    override suspend fun referenceMessage(): OneBotMessageContent? {
+        val ref = messages.firstNotNullOfOrNull { it as? OneBotReply }
+            ?: return null
+
+        return bot.getMessageContent(ref.id)
     }
 
     override suspend fun delete(vararg options: DeleteOption) {
