@@ -1,11 +1,20 @@
 public abstract interface class love/forte/simbot/component/onebot/v11/message/OneBotMessageContent : love/forte/simbot/message/MessageContent {
-	public abstract fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getMessages ()Llove/forte/simbot/message/Messages;
 	public abstract fun getPlainText ()Ljava/lang/String;
+	public fun getReference ()Llove/forte/simbot/component/onebot/v11/message/segment/OneBotReply;
+	public synthetic fun getReference ()Llove/forte/simbot/message/MessageReference;
+	public fun getReferenceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessage ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
+	public synthetic fun getReferenceMessage ()Llove/forte/simbot/message/MessageContent;
+	public fun getReferenceMessageAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessageReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceSegments ()Ljava/util/List;
-	public fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun reference$suspendImpl (Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/component/onebot/v11/message/OneBotMessageElement : love/forte/simbot/message/Message$Element {

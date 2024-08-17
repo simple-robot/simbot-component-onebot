@@ -1810,6 +1810,8 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getUserId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
+	public synthetic fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
+	public synthetic fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/message/MessageContent;
 	public abstract fun push (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
 	public fun pushAndLaunch (Ljava/lang/String;)Lkotlinx/coroutines/Job;
 	public abstract synthetic fun queryLoginInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
