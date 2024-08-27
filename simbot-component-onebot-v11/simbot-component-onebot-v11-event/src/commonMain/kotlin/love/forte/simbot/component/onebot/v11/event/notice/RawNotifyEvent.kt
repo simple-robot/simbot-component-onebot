@@ -33,7 +33,7 @@ import love.forte.simbot.component.onebot.v11.event.ExpectEventType
  *
  * @property subType 提示类型。
  * 可能的值: `honor`, `lucky_king`, `poke`
- * @property groupId 群号。
+ * @property groupId 群号。如果是代表私聊相关的事件（例如私聊戳一戳）则为 `null`。
  * @property honorType 荣誉类型，分别表示龙王、群聊之火、快乐源泉。
  * 可能的值: `talkative`、`performer`、`emotion`。
  * 当 [subType] 为 `honor` 时有值。
@@ -57,7 +57,7 @@ public data class RawNotifyEvent(
     @SerialName("sub_type")
     public val subType: String,
     @SerialName("group_id")
-    public val groupId: LongID,
+    public val groupId: LongID? = null,
     @SerialName("honor_type")
     public val honorType: String? = null,
     @SerialName("user_id")

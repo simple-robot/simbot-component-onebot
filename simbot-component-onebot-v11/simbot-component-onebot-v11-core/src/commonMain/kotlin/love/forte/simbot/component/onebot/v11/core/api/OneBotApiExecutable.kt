@@ -29,6 +29,8 @@ import kotlin.jvm.JvmInline
 /**
  * 可以用于执行 [OneBotApi] 的执行器接口描述。
  *
+ * _应仅由内部实现，第三方实现不保证稳定。_
+ *
  * @since 1.1.0
  *
  * @author ForteScarlet
@@ -41,7 +43,6 @@ public interface OneBotApiExecutable {
      *
      * @since 1.1.0
      *
-     * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
      * @see OneBotApi.request
      */
     @ST
@@ -90,11 +91,14 @@ public interface OneBotApiExecutable {
 }
 
 /**
- * 在 [OneBotApiExecutable] 的基础上提供更多作用域API。
+ * 在 [OneBotApiExecutable] 的基础上提供更多作用域API，
+ * 允许在 Kotlin 中使用DSL的风格请求API。
  *
  * @since 1.1.0
  *
  * @see OneBotApiExecutable
+ * @see withExecutableScope
+ * @see inExecutableScope
  */
 @JvmInline
 public value class OneBotApiExecutableScope(private val executable: OneBotApiExecutable) {
