@@ -91,11 +91,14 @@ public interface OneBotApiExecutable {
 }
 
 /**
- * 在 [OneBotApiExecutable] 的基础上提供更多作用域API。
+ * 在 [OneBotApiExecutable] 的基础上提供更多作用域API，
+ * 允许在 Kotlin 中使用DSL的风格请求API。
  *
  * @since 1.1.0
  *
  * @see OneBotApiExecutable
+ * @see withExecutableScope
+ * @see inExecutableScope
  */
 @JvmInline
 public value class OneBotApiExecutableScope(private val executable: OneBotApiExecutable) {
