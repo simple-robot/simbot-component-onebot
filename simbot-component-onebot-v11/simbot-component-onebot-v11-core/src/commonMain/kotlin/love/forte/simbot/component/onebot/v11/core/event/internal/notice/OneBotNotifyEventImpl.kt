@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.event.internal.notice
 
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
@@ -40,7 +41,18 @@ internal abstract class OneBotNotifyEventImpl(
         get() = with(sourceEvent) {
             "$postType-$noticeType-$subType-$groupId-$userId-$time"
         }.ID
+}
 
+/**
+ *
+ * @author ForteScarlet
+ */
+internal abstract class OneBotGroupNotifyEventImpl(
+    override val sourceEventRaw: String?,
+    override val groupId: LongID,
+    override val sourceEvent: RawNotifyEvent,
+    override val bot: OneBotBotImpl
+) : OneBotGroupNotifyEvent, OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot) {
     override suspend fun source(): OneBotGroup {
         return bot.groupRelation.group(groupId)
             ?: error("Group with id $groupId is not found")
@@ -48,7 +60,7 @@ internal abstract class OneBotNotifyEventImpl(
 
     override suspend fun content(): OneBotMember {
         return bot.groupRelation.member(
-            groupId = sourceEvent.groupId,
+            groupId = groupId,
             memberId = sourceEvent.userId
         ) ?: error(
             "Member with id ${sourceEvent.userId} " +
@@ -61,7 +73,7 @@ internal class OneBotHonorEventImpl(
     sourceEventRaw: String?,
     sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
-) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+) : OneBotGroupNotifyEventImpl(sourceEventRaw, sourceEvent.groupId!!, sourceEvent, bot),
     OneBotHonorEvent {
     override fun toString(): String =
         eventToString("OneBotHonorEvent")
@@ -71,7 +83,7 @@ internal class OneBotLuckyKingEventImpl(
     sourceEventRaw: String?,
     sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
-) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+) : OneBotGroupNotifyEventImpl(sourceEventRaw, sourceEvent.groupId!!, sourceEvent, bot),
     OneBotLuckyKingEvent {
     override fun toString(): String =
         eventToString("OneBotLuckyKingEvent")
@@ -81,7 +93,7 @@ internal class OneBotMemberPokeEventImpl(
     sourceEventRaw: String?,
     sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
-) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+) : OneBotGroupNotifyEventImpl(sourceEventRaw, sourceEvent.groupId!!, sourceEvent, bot),
     OneBotMemberPokeEvent {
     override fun toString(): String =
         eventToString("OneBotMemberPokeEvent")
@@ -91,8 +103,18 @@ internal class OneBotBotSelfPokeEventImpl(
     sourceEventRaw: String?,
     sourceEvent: RawNotifyEvent,
     bot: OneBotBotImpl
-) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+) : OneBotGroupNotifyEventImpl(sourceEventRaw, sourceEvent.groupId!!, sourceEvent, bot),
     OneBotBotSelfPokeEvent {
     override fun toString(): String =
         eventToString("OneBotBotSelfPokeEvent")
+}
+
+internal class OneBotPrivatePokeEventImpl(
+    sourceEventRaw: String?,
+    sourceEvent: RawNotifyEvent,
+    bot: OneBotBotImpl
+) : OneBotNotifyEventImpl(sourceEventRaw, sourceEvent, bot),
+    OneBotPrivatePokeEvent {
+    override fun toString(): String =
+        eventToString("OneBotPrivatePokeEvent")
 }

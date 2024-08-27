@@ -764,6 +764,7 @@ internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent
             RawNotifyEvent.SUB_TYPE_HONOR -> OneBotHonorEventImpl(raw, event, bot)
             RawNotifyEvent.SUB_TYPE_LUCKY_KING -> OneBotLuckyKingEventImpl(raw, event, bot)
             RawNotifyEvent.SUB_TYPE_POKE -> when {
+                event.groupId == null -> OneBotPrivatePokeEventImpl(raw, event, bot)
                 event.selfId.value == event.targetId?.value ->
                     OneBotBotSelfPokeEventImpl(raw, event, bot)
 
