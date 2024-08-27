@@ -34,7 +34,7 @@ import love.forte.simbot.suspendrunner.STP
  * @see OneBotPokeEvent
  * @author ForteScarlet
  */
-public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
+public interface OneBotNotifyEvent : OneBotNoticeEvent {
     override val sourceEvent: RawNotifyEvent
 
     /**
@@ -46,9 +46,9 @@ public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
         get() = sourceEvent.honorType
 
     /**
-     * 群号
+     * 群号。如果是代表私聊相关的事件（例如私聊戳一戳）则为 `null`。
      */
-    public val groupId: LongID
+    public val groupId: LongID?
         get() = sourceEvent.groupId
 
     /**
@@ -56,6 +56,21 @@ public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
      */
     public val userId: LongID
         get() = sourceEvent.userId
+
+}
+
+/**
+ * 群成员荣誉变更事件、红包人气王事件或戳一戳事件。
+ *
+ * @see OneBotNotifyEvent
+ *
+ * @since 1.4.0
+ */
+public interface OneBotGroupNotifyEvent : OneBotNotifyEvent, MemberEvent {
+    /**
+     * 事件发送的群号
+     */
+    override val groupId: LongID
 
     /**
      * 群
@@ -72,13 +87,12 @@ public interface OneBotNotifyEvent : OneBotNoticeEvent, MemberEvent {
      */
     @STP
     override suspend fun content(): OneBotMember
-
 }
 
 /**
  * 群成员荣誉变更事件
  */
-public interface OneBotHonorEvent : OneBotNotifyEvent {
+public interface OneBotHonorEvent : OneBotGroupNotifyEvent {
     /**
      * 荣誉类型.
      *
@@ -91,7 +105,7 @@ public interface OneBotHonorEvent : OneBotNotifyEvent {
 /**
  * 群红包运气王事件
  */
-public interface OneBotLuckyKingEvent : OneBotNotifyEvent {
+public interface OneBotLuckyKingEvent : OneBotGroupNotifyEvent {
     /**
      * 人气王用户ID
      */
@@ -100,7 +114,7 @@ public interface OneBotLuckyKingEvent : OneBotNotifyEvent {
 }
 
 /**
- * 群戳一戳事件
+ * 戳一戳事件
  *
  * @see OneBotMemberPokeEvent
  * @see OneBotBotSelfPokeEvent
@@ -116,9 +130,16 @@ public interface OneBotPokeEvent : OneBotNotifyEvent {
 /**
  * 群里Bot以外的群成员被戳一戳事件
  */
-public interface OneBotMemberPokeEvent : OneBotPokeEvent
+public interface OneBotMemberPokeEvent : OneBotPokeEvent, OneBotGroupNotifyEvent
 
 /**
  * 群里Bot被戳一戳事件，即 [targetId] == [selfId]。
  */
-public interface OneBotBotSelfPokeEvent : OneBotPokeEvent
+public interface OneBotBotSelfPokeEvent : OneBotPokeEvent, OneBotGroupNotifyEvent
+
+/**
+ * 私聊里的戳一戳事件，[groupId] == `null`。
+ *
+ * @since 1.4.0
+ */
+public interface OneBotPrivatePokeEvent : OneBotPokeEvent
