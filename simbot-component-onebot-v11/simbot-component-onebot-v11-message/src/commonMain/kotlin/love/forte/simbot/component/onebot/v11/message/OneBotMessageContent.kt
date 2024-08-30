@@ -20,10 +20,7 @@ package love.forte.simbot.component.onebot.v11.message
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentElement
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
+import love.forte.simbot.component.onebot.v11.message.segment.*
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.PlainText
@@ -69,7 +66,11 @@ public interface OneBotMessageContent : MessageContent {
      */
     @STP
     override suspend fun reference(): OneBotReply? =
-        messages.firstNotNullOfOrNull { it as? OneBotReply }
+        messages
+            .filterIsInstance<OneBotMessageElement>()
+            .firstNotNullOfOrNull {
+                it.oneBotSegmentOrNull<OneBotReply>()
+            }
 
     /**
      * 根据 [消息引用][reference] 信息通过API查询对应引用的消息内容。

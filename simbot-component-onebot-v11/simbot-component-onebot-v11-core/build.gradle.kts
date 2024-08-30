@@ -88,7 +88,6 @@ kotlin {
 
         jvmMain {
             dependencies {
-                compileOnly(libs.simbot.common.annotations)
                 compileOnly(libs.ktor.client.contentNegotiation)
             }
         }
