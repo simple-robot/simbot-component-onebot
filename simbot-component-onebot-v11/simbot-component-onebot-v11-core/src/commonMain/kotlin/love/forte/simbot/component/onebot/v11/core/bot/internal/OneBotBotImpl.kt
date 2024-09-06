@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.bot.internal
 
 import io.ktor.client.*
+import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -123,6 +124,9 @@ internal class OneBotBotImpl(
 
     override val apiClient: HttpClient
     private val wsClient: HttpClient?
+
+    @Volatile
+    private var running: Boolean = false
 
 
     init {
@@ -255,7 +259,20 @@ internal class OneBotBotImpl(
     private val startLock = Mutex()
 
 
-    override suspend fun start(): Unit = startLock.withLock {
+    override suspend fun start(): Unit {
+        while (true) {
+            if (!running) {
+                try {
+                    start0()
+                } catch (ex: SocketTimeoutException) {
+                    logger.error("Connect url {} timeout", apiHost)
+                }
+            }
+            delay(10.seconds)
+        }
+    }
+
+    private suspend fun start0() : Unit = startLock.withLock {
         job.ensureActive()
 
         // 更新个人信息
@@ -359,7 +376,7 @@ internal class OneBotBotImpl(
 
                 return null
             }
-
+            running = true
             return session
         }
 
@@ -397,9 +414,13 @@ internal class OneBotBotImpl(
                     }
                 }
 
-                kotlin.runCatching {
+                try {
                     receiveEvent(currentSession)
-                }.onFailure { ex ->
+                } catch (ex: CancellationException){
+                    logger.error("Event reception is interrupted: {}", ex.message, ex)
+                    running = false
+                    return
+                } catch (ex: Exception) {
                     logger.error("Event reception is interrupted: {}", ex.message, ex)
                 }
 
@@ -446,7 +467,7 @@ internal class OneBotBotImpl(
                     if (!frameResult.isSuccess) {
                         if (frameResult.isClosed) {
                             logger.debug("Session received Close frame result: {}", frameResult)
-                            break
+                            throw CancellationException("ChannelResult is Close")
                         }
                         if (frameResult.isFailure) {
                             val ex = frameResult.exceptionOrNull()
