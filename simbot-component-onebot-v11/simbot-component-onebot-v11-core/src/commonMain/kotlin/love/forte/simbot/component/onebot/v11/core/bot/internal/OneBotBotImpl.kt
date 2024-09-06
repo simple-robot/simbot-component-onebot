@@ -426,7 +426,12 @@ internal class OneBotBotImpl(
                 }
 
                 // 等待关闭完成
-                val reason = currentSession.closeReason.await()
+                val reason = kotlin.runCatching {
+                    currentSession.closeReason.await()
+                }.getOrElse { e ->
+                    logger.debug("Failed to get close reason for session: {}", e.message, e)
+                    null
+                }
                 logger.debug("Session {} done. The reason: {}", currentSession, reason)
             }
 
