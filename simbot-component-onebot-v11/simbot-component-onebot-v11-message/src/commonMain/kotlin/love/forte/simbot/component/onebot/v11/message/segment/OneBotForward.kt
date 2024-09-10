@@ -106,6 +106,8 @@ public class OneBotForwardNode private constructor(
                     id = null,
                     userId = userId,
                     nickname = nickname,
+                    name = nickname,
+                    uin = userId,
                     content = content,
                 )
             )
@@ -123,6 +125,8 @@ public class OneBotForwardNode private constructor(
         @SerialName("user_id")
         val userId: ID? = null,
         val nickname: String? = null,
+        val name: String? = null,
+        val uin: ID? = null,
         val content: List<OneBotMessageSegment>? = null,
     )
 }
