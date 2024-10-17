@@ -44,6 +44,9 @@ kotlin {
             "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
             "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI"
         )
+        freeCompilerArgs.addAll(
+            "-Xconsistent-data-class-copy-visibility"
+        )
     }
 
     configKotlinJvm()

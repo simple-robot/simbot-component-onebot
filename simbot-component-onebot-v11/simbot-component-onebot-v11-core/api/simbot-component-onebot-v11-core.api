@@ -126,9 +126,9 @@ public final class love/forte/simbot/component/onebot/v11/core/actor/OneBotGroup
 public abstract interface class love/forte/simbot/component/onebot/v11/core/actor/OneBotMember : love/forte/simbot/ability/DeleteSupport, love/forte/simbot/component/onebot/v11/core/actor/OneBotStrangerAware, love/forte/simbot/definition/Member {
 	public abstract synthetic fun ban (JLjava/util/concurrent/TimeUnit;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun ban-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun banAsync (JLjava/util/concurrent/TimeUnit;)Ljava/util/concurrent/CompletableFuture;
-	public abstract fun banBlocking (JLjava/util/concurrent/TimeUnit;)V
-	public abstract fun banReserve (JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun banAsync (JLjava/util/concurrent/TimeUnit;)Ljava/util/concurrent/CompletableFuture;
+	public fun banBlocking (JLjava/util/concurrent/TimeUnit;)V
+	public fun banReserve (JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getAvatar ()Ljava/lang/String;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
@@ -168,13 +168,13 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public static synthetic fun setSpecialTitle$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract synthetic fun setSpecialTitle-8Mi8wO0 (Ljava/lang/String;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setSpecialTitleAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
-	public abstract fun setSpecialTitleAsync (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Ljava/util/concurrent/CompletableFuture;
+	public fun setSpecialTitleAsync (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Ljava/util/concurrent/CompletableFuture;
 	public static synthetic fun setSpecialTitleAsync$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
 	public fun setSpecialTitleBlocking (Ljava/lang/String;)V
-	public abstract fun setSpecialTitleBlocking (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)V
+	public fun setSpecialTitleBlocking (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)V
 	public static synthetic fun setSpecialTitleBlocking$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;ILjava/lang/Object;)V
 	public fun setSpecialTitleReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
-	public abstract fun setSpecialTitleReserve (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun setSpecialTitleReserve (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun setSpecialTitleReserve$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun unban (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun unban$suspendImpl (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
