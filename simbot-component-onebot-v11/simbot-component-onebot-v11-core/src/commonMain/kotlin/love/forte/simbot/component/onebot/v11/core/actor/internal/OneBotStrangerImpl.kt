@@ -20,6 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.actor.internal
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoResult
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import kotlin.coroutines.CoroutineContext
 
@@ -50,7 +51,7 @@ internal class OneBotStrangerImpl(
 }
 
 internal fun GetStrangerInfoResult.toStranger(
-    bot: OneBotBotImpl,
+    bot: OneBotBot,
     coroutineContext: CoroutineContext = bot.subContext,
 ): OneBotStrangerImpl =
     OneBotStrangerImpl(coroutineContext, this)

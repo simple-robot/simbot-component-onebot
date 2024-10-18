@@ -24,6 +24,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toFriend
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
@@ -43,7 +44,7 @@ import love.forte.simbot.message.MessageContent
 
 internal abstract class OneBotPrivateMessageEventImpl(
     final override val sourceEvent: RawPrivateMessageEvent,
-    final override val bot: OneBotBotImpl,
+    final override val bot: OneBotBot,
 ) : OneBotPrivateMessageEvent {
     override val id: ID
         get() = "${sourceEvent.userId}-${sourceEvent.messageId}".ID
@@ -92,7 +93,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
 internal class OneBotFriendMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: RawPrivateMessageEvent,
-    bot: OneBotBotImpl,
+    bot: OneBotBot,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotFriendMessageEvent {
     override suspend fun content(): OneBotFriend {
@@ -106,7 +107,7 @@ internal class OneBotFriendMessageEventImpl(
 internal class OneBotGroupPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: RawPrivateMessageEvent,
-    bot: OneBotBotImpl,
+    bot: OneBotBot,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot),
     OneBotGroupPrivateMessageEvent {
     override suspend fun content(): OneBotMember {
@@ -125,7 +126,7 @@ internal class OneBotGroupPrivateMessageEventImpl(
 internal class OneBotDefaultPrivateMessageEventImpl(
     override val sourceEventRaw: String?,
     sourceEvent: RawPrivateMessageEvent,
-    bot: OneBotBotImpl,
+    bot: OneBotBot,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot) {
 
     override fun toString(): String =

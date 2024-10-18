@@ -69,7 +69,7 @@ internal class OneBotGroupMemberIncreaseEventImpl(
 internal class OneBotGroupMemberDecreaseEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: RawGroupDecreaseEvent,
-    override val bot: OneBotBotImpl
+    override val bot: OneBotBot
 ) : OneBotGroupChangeEventImpl(), OneBotGroupMemberDecreaseEvent {
 
     override fun toString(): String =

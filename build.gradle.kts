@@ -122,6 +122,7 @@ apiValidation {
         listOf(
             "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
             "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI",
+            "love.forte.simbot.component.onebot.v11.core.dialect.ExperimentalOneBotDialect",
 
             "love.forte.simbot.annotations.ExperimentalSimbotAPI",
             "love.forte.simbot.annotations.InternalSimbotAPI",

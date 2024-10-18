@@ -26,6 +26,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberDeleteOptio
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
@@ -47,7 +48,7 @@ internal abstract class OneBotMemberImpl(
     initialRole: OneBotMemberRole?,
     initialNick: String?
 ) : OneBotMember {
-    protected abstract val bot: OneBotBotImpl
+    protected abstract val bot: OneBotBot
     protected abstract val groupId: ID?
 
     protected inline val groupIdOrFailure: ID
@@ -267,7 +268,7 @@ internal abstract class OneBotMemberImpl(
 internal class OneBotMemberPrivateMessageEventSenderImpl(
     private val source: RawPrivateMessageEvent.Sender,
     override val groupId: ID?,
-    override val bot: OneBotBotImpl,
+    override val bot: OneBotBot,
     nick: String?,
     role: OneBotMemberRole?,
 ) : OneBotMemberImpl(
@@ -287,7 +288,7 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
     private val source: RawGroupMessageEvent.Sender,
     override val groupId: ID?,
     private val anonymous: RawGroupMessageEvent.Anonymous?,
-    override val bot: OneBotBotImpl,
+    override val bot: OneBotBot,
 ) : OneBotMemberImpl(
     initialRole = OneBotMemberRole.valueOfLenient(source.role)
         ?: OneBotMemberRole.MEMBER,
@@ -320,7 +321,7 @@ internal class OneBotMemberGroupMessageEventSenderImpl(
 }
 
 internal fun RawPrivateMessageEvent.Sender.toMember(
-    bot: OneBotBotImpl,
+    bot: OneBotBot,
     groupId: ID? = null,
     nick: String? = null,
     role: OneBotMemberRole? = null,
@@ -334,7 +335,7 @@ internal fun RawPrivateMessageEvent.Sender.toMember(
     )
 
 internal fun RawGroupMessageEvent.Sender.toMember(
-    bot: OneBotBotImpl,
+    bot: OneBotBot,
     groupId: ID,
     anonymous: RawGroupMessageEvent.Anonymous?
 ): OneBotMemberGroupMessageEventSenderImpl =

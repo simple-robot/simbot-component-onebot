@@ -26,6 +26,8 @@ import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
+import love.forte.simbot.component.onebot.v11.core.dialect.ExperimentalOneBotDialect
+import love.forte.simbot.component.onebot.v11.core.dialect.OneBotDialectFactory
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
@@ -252,4 +254,13 @@ public class OneBotBotConfiguration {
     public fun defaultImageAdditionalParams(params: OneBotImage.AdditionalParams?) {
         defaultImageAdditionalParamsProvider = { params }
     }
+
+    /**
+     * [OneBotDialectFactory] 实例。
+     * 默认为 [OneBotDialectFactory.Default]。
+     *
+     * @since 1.5.0
+     */
+    @ExperimentalOneBotDialect
+    public var dialectFactory: OneBotDialectFactory = OneBotDialectFactory
 }

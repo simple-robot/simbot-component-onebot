@@ -24,27 +24,18 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.long
 import kotlinx.serialization.modules.overwriteWith
-import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.flowCollectable
 import love.forte.simbot.common.coroutines.IOOrDefault
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
@@ -54,29 +45,15 @@ import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
-import love.forte.simbot.component.onebot.v11.core.bot.*
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotFriendRelation
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotGroupRelation
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
-import love.forte.simbot.component.onebot.v11.core.event.OneBotUnknownEvent
-import love.forte.simbot.component.onebot.v11.core.event.OneBotUnsupportedEvent
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.*
-import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotHeartbeatEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.meta.OneBotLifecycleEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.notice.*
-import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotFriendRequestEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
+import love.forte.simbot.component.onebot.v11.core.dialect.ExperimentalOneBotDialect
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
-import love.forte.simbot.component.onebot.v11.event.UnknownEvent
-import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
-import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
-import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
-import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
-import love.forte.simbot.component.onebot.v11.event.notice.*
-import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
-import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
-import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
-import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
@@ -94,6 +71,7 @@ import love.forte.simbot.component.onebot.v11.event.RawEvent as OBRawEvent
  * [OneBotBot] 的实现
  * @author ForteScarlet
  */
+@OptIn(ExperimentalOneBotDialect::class)
 internal class OneBotBotImpl(
     private val uniqueId: String,
     override val coroutineContext: CoroutineContext,
@@ -115,7 +93,9 @@ internal class OneBotBotImpl(
         }
     }
 
-    internal val logger = LoggerFactory.getLogger("$BASE_LOGGER_NAME.$uniqueId")
+    override val logger = LoggerFactory.getLogger("$BASE_LOGGER_NAME.$uniqueId")
+
+    override val dialect = configuration.dialectFactory.createDialect(this)
 
     private val eventServerHost = configuration.eventServerHost
     private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
@@ -222,9 +202,9 @@ internal class OneBotBotImpl(
     private var _loginInfoResult: GetLoginInfoResult? = null
 
     override suspend fun queryLoginInfo(): GetLoginInfoResult {
-        val result = this.executeData(GetLoginInfoApi.create())
-        _loginInfoResult = result
-        return result
+        return dialect.queryLoginInfo().also {
+            _loginInfoResult = it
+        }
     }
 
     private val loginInfoResult: GetLoginInfoResult
@@ -240,9 +220,7 @@ internal class OneBotBotImpl(
         get() = loginInfoResult.nickname
 
     override fun isMe(id: ID): Boolean {
-        if (id == this.id) return true
-        return _loginInfoResult?.let { id == it.userId }
-            ?: true
+        return dialect.checkIsMe(id, _loginInfoResult)
     }
 
     /**
@@ -522,22 +500,20 @@ internal class OneBotBotImpl(
     private inner class FriendRelationImpl : OneBotBotFriendRelation {
         override val contacts: Collectable<OneBotFriend>
             get() = flowCollectable {
-                val resultList = this@OneBotBotImpl.executeData(
-                    GetFriendListApi.create()
-                )
-
-                for (result in resultList) {
-                    emit(result.toFriend(this@OneBotBotImpl))
-                }
+                val flow = dialect.getFriends()
+                emitAll(flow.map { it.toFriend(this@OneBotBotImpl) })
             }
 
+        override suspend fun contact(id: ID): OneBotFriend? {
+            return dialect.getFriend(id)?.toFriend(this@OneBotBotImpl)
+        }
+
+        override suspend fun contactCount(): Int {
+            return dialect.getFriendCount()
+        }
+
         override suspend fun stranger(id: ID): OneBotStranger =
-            this@OneBotBotImpl
-                .executeData(
-                    GetStrangerInfoApi
-                        .create(userId = id)
-                )
-                .toStranger(this@OneBotBotImpl)
+            dialect.getStrangerInfo(id).toStranger(this@OneBotBotImpl)
     }
 
     // 与群聊相关的操作
@@ -546,39 +522,26 @@ internal class OneBotBotImpl(
     private inner class GroupRelationImpl : OneBotBotGroupRelation {
         override val groups: Collectable<OneBotGroup>
             get() = flowCollectable {
-                val resultList = this@OneBotBotImpl.executeData(
-                    GetGroupListApi.create()
-                )
-
-                for (groupInfoResult in resultList) {
-                    emit(
-                        groupInfoResult.toGroup(
-                            this@OneBotBotImpl,
-                            // TODO owner?
-                        )
-                    )
-                }
-
+                val flow = dialect.getGroups()
+                emitAll(flow.map { it.toGroup(this@OneBotBotImpl) })
             }
 
-        override suspend fun group(id: ID): OneBotGroup {
-            val result = this@OneBotBotImpl.executeResult(
-                GetGroupInfoApi.create(id)
-            )
+        override suspend fun group(id: ID): OneBotGroup? {
+            val info = dialect.getGroup(id)
 
-            // TODO 如何检测不存在？
-
-            return result.dataOrThrow.toGroup(
+            return info?.toGroup(
                 this@OneBotBotImpl,
                 // TODO owner?
             )
         }
 
+        override suspend fun groupCount(): Int {
+            return dialect.getGroupCount()
+        }
+
         override suspend fun member(groupId: ID, memberId: ID): OneBotMember {
-            // TODO 如何检测不存在？
-            return this@OneBotBotImpl.executeData(
-                GetGroupMemberInfoApi.create(groupId, userId)
-            ).toMember(this@OneBotBotImpl)
+            return dialect.getGroupMember(groupId, memberId)
+                .toMember(this@OneBotBotImpl)
         }
     }
 
@@ -657,131 +620,12 @@ internal class OneBotBotImpl(
 /**
  * 解析数据包字符串为 [Event]。
  */
-@OptIn(FragileSimbotAPI::class)
-internal fun OneBotBotImpl.resolveRawEvent(text: String): OBRawEvent {
-    val obj = OneBot11.DefaultJson.decodeFromString(
-        JsonObject.serializer(),
-        text
-    )
-
-    val postType = requireNotNull(obj["post_type"]?.jsonPrimitive?.content) {
-        "Missing required event property 'post_type'"
-    }
-
-    val subTypeFieldName = resolveEventSubTypeFieldName(postType) ?: "${postType}_type"
-    val subType = obj[subTypeFieldName]?.jsonPrimitive?.content
-
-    fun toUnknown(reason: Throwable? = null): UnknownEvent {
-        val time = obj["time"]?.jsonPrimitive?.long ?: -1L
-        val selfId = obj["self_id"]?.jsonPrimitive?.long?.ID ?: 0L.ID
-        return UnknownEvent(time, selfId, postType, text, obj, reason)
-    }
-
-    if (subType == null) {
-        // 一个不规则的 unknown event
-        return toUnknown()
-    }
-
-    resolveEventSerializer(postType, subType)?.let {
-        return try {
-            OneBot11.DefaultJson.decodeFromJsonElement(it, obj)
-        } catch (serEx: SerializationException) {
-            logger.error(
-                "Received raw event '{}' decode failed because of serialization: {}" +
-                    "It will be pushed as an UnknownEvent",
-                text,
-                serEx.message,
-                serEx
-            )
-
-            toUnknown(serEx)
-        } catch (argEx: IllegalArgumentException) {
-            logger.error(
-                "Received raw event '{}' decode failed because of illegal argument: {}" +
-                    "It will be pushed as an UnknownEvent",
-                text,
-                argEx.message,
-                argEx
-            )
-
-            toUnknown(argEx)
-        }
-    } ?: run {
-        return toUnknown()
-    }
+@OptIn(ExperimentalOneBotDialect::class)
+internal fun OneBotBot.resolveRawEvent(raw: String): OBRawEvent {
+    return dialect.resolveRawEvent(raw)
 }
 
-@OptIn(FragileSimbotAPI::class)
-internal fun OneBotBotImpl.resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {
-    val bot = this
-
-    fun unsupported(): OneBotUnsupportedEvent =
-        OneBotUnsupportedEvent(raw, event)
-
-    return when (event) {
-        //region 消息事件
-        // 群消息、匿名消息、系统消息
-        is RawGroupMessageEvent -> when (event.subType) {
-            RawGroupMessageEvent.SUB_TYPE_NORMAL ->
-                OneBotNormalGroupMessageEventImpl(raw, event, bot)
-
-            RawGroupMessageEvent.SUB_TYPE_ANONYMOUS ->
-                OneBotAnonymousGroupMessageEventImpl(raw, event, bot)
-
-            RawGroupMessageEvent.SUB_TYPE_NOTICE ->
-                OneBotNoticeGroupMessageEventImpl(raw, event, bot)
-
-            else -> OneBotDefaultGroupMessageEventImpl(raw, event, bot)
-        }
-
-        // 好友私聊消息、成员临时会话
-        is RawPrivateMessageEvent -> when (event.subType) {
-            RawPrivateMessageEvent.SUB_TYPE_FRIEND ->
-                OneBotFriendMessageEventImpl(raw, event, bot)
-
-            RawPrivateMessageEvent.SUB_TYPE_GROUP ->
-                OneBotGroupPrivateMessageEventImpl(raw, event, bot)
-
-            else -> OneBotDefaultPrivateMessageEventImpl(raw, event, bot)
-        }
-        //endregion
-
-        //region 元事件
-        is RawLifecycleEvent -> OneBotLifecycleEventImpl(raw, event, bot)
-        is RawHeartbeatEvent -> OneBotHeartbeatEventImpl(raw, event, bot)
-        //endregion
-
-        //region 申请事件
-        is RawFriendRequestEvent -> OneBotFriendRequestEventImpl(raw, event, bot)
-        is RawGroupRequestEvent -> OneBotGroupRequestEventImpl(raw, event, bot)
-        //endregion
-
-        //region notice events
-        is RawFriendAddEvent -> OneBotFriendAddEventImpl(raw, event, bot)
-        is RawFriendRecallEvent -> OneBotFriendRecallEventImpl(raw, event, bot)
-        is RawGroupAdminEvent -> OneBotGroupAdminEventImpl(raw, event, bot)
-        is RawGroupBanEvent -> OneBotGroupBanEventImpl(raw, event, bot)
-        is RawGroupIncreaseEvent -> OneBotGroupMemberIncreaseEventImpl(raw, event, bot)
-        is RawGroupDecreaseEvent -> OneBotGroupMemberDecreaseEventImpl(raw, event, bot)
-        is RawGroupRecallEvent -> OneBotGroupRecallEventImpl(raw, event, bot)
-        is RawGroupUploadEvent -> OneBotGroupUploadEventImpl(raw, event, bot)
-        is RawNotifyEvent -> when (event.subType) {
-            RawNotifyEvent.SUB_TYPE_HONOR -> OneBotHonorEventImpl(raw, event, bot)
-            RawNotifyEvent.SUB_TYPE_LUCKY_KING -> OneBotLuckyKingEventImpl(raw, event, bot)
-            RawNotifyEvent.SUB_TYPE_POKE -> when {
-                event.groupId == null -> OneBotPrivatePokeEventImpl(raw, event, bot)
-                event.selfId.value == event.targetId?.value ->
-                    OneBotBotSelfPokeEventImpl(raw, event, bot)
-
-                else -> OneBotMemberPokeEventImpl(raw, event, bot)
-            }
-
-            // Unsupported
-            else -> unsupported()
-        }
-
-        //endregion
-        is UnknownEvent -> OneBotUnknownEvent(raw, event)
-        else -> unsupported()
-    }
+@OptIn(ExperimentalOneBotDialect::class)
+internal fun OneBotBot.resolveRawEventToEvent(raw: String, event: OBRawEvent): Event {
+    return dialect.resolveRawEventToEvent(raw, event)
 }

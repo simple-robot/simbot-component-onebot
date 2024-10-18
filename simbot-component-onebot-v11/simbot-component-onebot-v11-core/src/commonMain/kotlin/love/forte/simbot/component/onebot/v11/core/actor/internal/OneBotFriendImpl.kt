@@ -23,6 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.GetFriendListResult
 import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
 import love.forte.simbot.component.onebot.v11.core.api.SendLikeApi
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
@@ -36,7 +37,7 @@ import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
 
 internal abstract class OneBotFriendImpl : OneBotFriend {
-    protected abstract val bot: OneBotBotImpl
+    protected abstract val bot: OneBotBot
 
     override suspend fun send(text: String): OneBotMessageReceipt {
         return bot.executeData(
@@ -92,7 +93,7 @@ internal abstract class OneBotFriendImpl : OneBotFriend {
  */
 internal class OneBotFriendEventSenderImpl(
     private val sender: RawPrivateMessageEvent.Sender,
-    override val bot: OneBotBotImpl,
+    override val bot: OneBotBot,
 ) : OneBotFriendImpl(), OneBotFriend {
     override val coroutineContext: CoroutineContext = bot.subContext
 
@@ -103,12 +104,12 @@ internal class OneBotFriendEventSenderImpl(
         get() = sender.nickname
 }
 
-internal fun RawPrivateMessageEvent.Sender.toFriend(bot: OneBotBotImpl): OneBotFriendEventSenderImpl =
+internal fun RawPrivateMessageEvent.Sender.toFriend(bot: OneBotBot): OneBotFriendEventSenderImpl =
     OneBotFriendEventSenderImpl(this, bot)
 
 internal class OneBotFriendApiResultImpl(
     private val result: GetFriendListResult,
-    override val bot: OneBotBotImpl,
+    override val bot: OneBotBot,
 ) : OneBotFriendImpl(), OneBotFriend {
     override val coroutineContext: CoroutineContext = bot.subContext
 
@@ -119,6 +120,6 @@ internal class OneBotFriendApiResultImpl(
         get() = result.userId
 }
 
-internal fun GetFriendListResult.toFriend(bot: OneBotBotImpl): OneBotFriendApiResultImpl =
+internal fun GetFriendListResult.toFriend(bot: OneBotBot): OneBotFriendApiResultImpl =
     OneBotFriendApiResultImpl(this, bot)
 

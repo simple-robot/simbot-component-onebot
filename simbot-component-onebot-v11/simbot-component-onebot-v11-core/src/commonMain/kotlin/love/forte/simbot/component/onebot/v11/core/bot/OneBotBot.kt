@@ -39,8 +39,11 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
+import love.forte.simbot.component.onebot.v11.core.dialect.ExperimentalOneBotDialect
+import love.forte.simbot.component.onebot.v11.core.dialect.OneBotDialect
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.EventResult
+import love.forte.simbot.logger.Logger
 import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
@@ -69,6 +72,10 @@ import kotlin.jvm.JvmSynthetic
 @OneBotInternalImplementationsOnly
 public interface OneBotBot : Bot, OneBotApiExecutable {
     override val coroutineContext: CoroutineContext
+    public val logger: Logger
+
+    @ExperimentalOneBotDialect
+    public val dialect: OneBotDialect
 
     /**
      * [OneBotBot] 会使用的 [Json]
@@ -313,8 +320,7 @@ public interface OneBotBotFriendRelation : ContactRelation {
         asyncBaseName = "getContact",
         reserveBaseName = "getContact"
     )
-    override suspend fun contact(id: ID): OneBotFriend? =
-        contacts.asFlow().firstOrNull { it.id == id }
+    override suspend fun contact(id: ID): OneBotFriend?
 
     /**
      * 获取好友的数量。
@@ -323,8 +329,7 @@ public interface OneBotBotFriendRelation : ContactRelation {
      * 获取全部列表并从内存中计数来达成此功能。
      */
     @JvmSynthetic
-    override suspend fun contactCount(): Int =
-        contacts.asFlow().count()
+    override suspend fun contactCount(): Int
 
     /**
      * 根据 [id] 查询对应的陌生人信息。
@@ -372,8 +377,7 @@ public interface OneBotBotGroupRelation : GroupRelation {
      * 获取全部列表并从内存中计数来达成此功能。
      */
     @JvmSynthetic
-    override suspend fun groupCount(): Int =
-        groups.asFlow().count()
+    override suspend fun groupCount(): Int
 
     /**
      * 根据ID查询某个群中的某个成员。

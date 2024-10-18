@@ -94,7 +94,7 @@ internal class OneBotFriendRequestEventImpl(
 internal class OneBotGroupRequestEventImpl(
     override val sourceEventRaw: String?,
     override val sourceEvent: RawGroupRequestEvent,
-    override val bot: OneBotBotImpl,
+    override val bot: OneBotBot,
 ) : OneBotRequestEventImpl(), OneBotGroupRequestEvent {
     override suspend fun doAccept(options: Array<out AcceptOption>) {
         bot.executeData(

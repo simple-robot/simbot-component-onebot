@@ -21,6 +21,7 @@ import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.DeleteMsgApi
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.resolveToMessageElement
@@ -37,7 +38,7 @@ import love.forte.simbot.message.toMessages
 internal class OneBotMessageContentImpl(
     override val id: ID,
     override val sourceSegments: List<OneBotMessageSegment>,
-    private val bot: OneBotBotImpl,
+    private val bot: OneBotBot,
 ) : OneBotMessageContent {
     override val messages: Messages by lazy(LazyThreadSafetyMode.PUBLICATION) {
         sourceSegments.map { it.resolveToMessageElement() }.toMessages()
