@@ -87,6 +87,20 @@ jobs:
     steps:
       # 检出仓库代码
       - uses: actions/checkout@v4
+      # setup Java
+      - uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Publish releases
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+          arguments: createChangelog
+
         # Create gitHub release
       - name: Create Github Release
         uses: softprops/action-gh-release@v2

@@ -20,6 +20,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier123
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -35,6 +36,13 @@ apply(plugin = "simbot-onebot-multiplatform-maven-publish")
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xconsistent-data-class-copy-visibility"
+        )
+    }
 
     configKotlinJvm()
 

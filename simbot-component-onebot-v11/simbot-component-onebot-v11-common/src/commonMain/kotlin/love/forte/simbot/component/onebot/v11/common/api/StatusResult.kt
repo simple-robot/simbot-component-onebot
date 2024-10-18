@@ -41,7 +41,7 @@ import love.forte.simbot.component.onebot.common.annotations.SourceEventConstruc
 public data class StatusResult
 @ApiResultConstructor
 @SourceEventConstructor
-constructor(
+internal constructor(
     public val online: Boolean? = null,
     public val good: Boolean = false,
 )

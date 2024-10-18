@@ -1,23 +1,23 @@
 [versions]
-kotlin = "2.0.10"
-kotlinx-coroutines = "1.8.1"
-kotlinx-serialization = "1.7.1"
+kotlin = "2.0.20"
+kotlinx-coroutines = "1.9.0"
+kotlinx-serialization = "1.7.3"
 dokka = "1.9.20"
 ktor = "2.3.12"
 openjdk-jmh = "1.37"
-log4j = "2.23.1"
+log4j = "2.24.1"
 # simbot
-simbot = "4.6.0"
-suspendTransform = "0.9.0"
+simbot = "4.6.1"
+suspendTransform = "2.0.20-0.9.3"
 gradleCommon = "0.6.0"
 # ksp
-ksp = "2.0.10-1.0.24"
+ksp = "2.0.20-1.0.25"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.18.1"
 # https://mockk.io/
-mockk = "1.13.12"
+mockk = "1.13.13"
 # https://detekt.dev/docs/intro
-detekt = "1.23.6"
+detekt = "1.23.7"
 
 [libraries]
 # simbot
@@ -36,7 +36,7 @@ simbot-common-ktor-inputfile = { group = "love.forte.simbot.common", name = "sim
 simbot-gradle = { group = "love.forte.simbot.gradle", name = "simbot-gradle-suspendtransforms", version.ref = "simbot" }
 
 # jetbrains-annotation
-jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
+jetbrains-annotations = "org.jetbrains:annotations:26.0.1"
 
 # kotlinx-coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
