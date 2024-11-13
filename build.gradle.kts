@@ -35,13 +35,20 @@ setup(P.ComponentOneBot)
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 }
-
 
 logger.info("=== Current version: {} ===", version)
 
 allprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+            mavenLocal()
+        }
+    }
+
     setup(P.ComponentOneBot)
     repositories {
         mavenCentral()
@@ -51,6 +58,7 @@ allprojects {
                 snapshotsOnly()
             }
         }
+        mavenLocal()
     }
 }
 

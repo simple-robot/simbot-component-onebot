@@ -285,7 +285,6 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
     @ExperimentalOneBotAPI
     override suspend fun messageFromReference(reference: MessageReference): OneBotMessageContent =
         getMessageContent(id)
-
 }
 
 /**
