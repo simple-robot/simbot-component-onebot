@@ -35,6 +35,7 @@ setup(P.ComponentOneBot)
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 }
 
@@ -51,6 +52,7 @@ allprojects {
                 snapshotsOnly()
             }
         }
+        mavenLocal()
     }
 }
 
