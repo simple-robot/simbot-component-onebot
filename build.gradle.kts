@@ -18,6 +18,8 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.core.repository.Repositories
+import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
+import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import util.isCi
 
 plugins {
@@ -28,14 +30,14 @@ plugins {
 
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
+    alias(libs.plugins.suspendTransform) apply false
 }
 
 setup(P.ComponentOneBot)
 
 buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
+    dependencies {
+        classpath(libs.suspend.transform.gradle)
     }
 }
 
@@ -53,6 +55,19 @@ allprojects {
             }
         }
         mavenLocal()
+    }
+}
+
+subprojects {
+    afterEvaluate {
+        if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
+            extensions.configure<SuspendTransformGradleExtension>("suspendTransform") {
+                includeRuntime = false
+                includeAnnotation = false
+
+                // TODO addSimbot?
+            }
+        }
     }
 }
 
