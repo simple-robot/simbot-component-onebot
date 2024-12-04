@@ -37,8 +37,8 @@ object P {
         override val description: String get() = DESCRIPTION
         override val homepage: String get() = HOMEPAGE
 
-        const val VERSION = "1.4.5"
-        const val NEXT_VERSION = "1.4.6"
+        const val VERSION = "1.5.0"
+        const val NEXT_VERSION = "1.5.0"
 
         override val snapshotVersion = "$NEXT_VERSION-SNAPSHOT"
         override val version = if (isSnapshot()) snapshotVersion else VERSION
@@ -91,5 +91,3 @@ private fun initIsSnapshot(): Boolean {
 fun isSnapshot(): Boolean = _isSnapshot
 
 fun isSimbotLocal(): Boolean = systemProp("SIMBOT_LOCAL").toBoolean()
-
-val isLinux: Boolean = systemProp("os.name")?.contains("linux", true) ?: false
