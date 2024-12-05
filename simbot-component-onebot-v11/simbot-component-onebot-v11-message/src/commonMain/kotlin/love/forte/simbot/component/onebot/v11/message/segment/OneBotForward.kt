@@ -106,6 +106,8 @@ public class OneBotForwardNode private constructor(
                     id = null,
                     userId = userId,
                     nickname = nickname,
+                    name = nickname,
+                    uin = userId,
                     content = content,
                 )
             )
@@ -115,6 +117,11 @@ public class OneBotForwardNode private constructor(
      * 一个普通的节点或一个自定义节点.
      * 如果没有 [id]，则应当存在 [userId]、[nickname]、[content]。
      *
+     * @property userId onebot标准 发送者QQ号
+     * @property nickname onebot标准 发送者名字
+     * @property name cqhttp标准 发送者显示名字
+     * @property uin cqhttp标准 发送者QQ号
+     *
      * @author ForteScarlet
      */
     @Serializable
@@ -123,6 +130,8 @@ public class OneBotForwardNode private constructor(
         @SerialName("user_id")
         val userId: ID? = null,
         val nickname: String? = null,
+        val name: String? = null,
+        val uin: ID? = null,
         val content: List<OneBotMessageSegment>? = null,
     )
 }
