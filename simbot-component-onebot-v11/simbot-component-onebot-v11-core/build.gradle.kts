@@ -27,7 +27,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     `simbot-onebot-dokka-partial-configure`
-    `simbot-onebot-suspend-transform-configure`
+    alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
 }
 

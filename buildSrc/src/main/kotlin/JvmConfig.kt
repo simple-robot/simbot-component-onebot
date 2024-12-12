@@ -18,20 +18,17 @@
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 import org.gradle.process.CommandLineArgumentProvider
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 inline fun KotlinJvmTarget.configJava(jdkVersion: Int, crossinline block: KotlinJvmTarget.() -> Unit = {}) {
     withJava()
     compilerOptions {
@@ -50,8 +47,7 @@ inline fun KotlinJvmTarget.configJava(jdkVersion: Int, crossinline block: Kotlin
     block()
 }
 
-
-fun KotlinTopLevelExtension.configJavaToolchain(jdkVersion: Int) {
+fun KotlinBaseExtension.configJavaToolchain(jdkVersion: Int) {
     jvmToolchain(jdkVersion)
 }
 
@@ -71,10 +67,12 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
 ) {
     configJavaToolchain(jdkVersion)
     compilerOptions {
-        javaParameters = true
+        javaParameters.set(true)
         jvmTarget.set(JvmTarget.fromTarget(jdkVersion.toString()))
-        // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
-        freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
+        freeCompilerArgs.addAll(
+            "-Xjvm-default=all",
+            "-Xjsr305=strict"
+        )
     }
     block()
 }
