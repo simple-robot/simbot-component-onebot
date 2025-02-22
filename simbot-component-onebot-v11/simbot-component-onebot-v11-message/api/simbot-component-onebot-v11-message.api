@@ -243,7 +243,7 @@ public final class love/forte/simbot/component/onebot/v11/message/segment/OneBot
 	public fun toElement ()Llove/forte/simbot/component/onebot/v11/message/segment/OneBotMessageSegmentElement;
 }
 
-public final class love/forte/simbot/component/onebot/v11/message/segment/OneBotDice$Element : love/forte/simbot/component/onebot/v11/message/segment/OneBotMessageSegmentElement, love/forte/simbot/message/MentionMessage {
+public final class love/forte/simbot/component/onebot/v11/message/segment/OneBotDice$Element : love/forte/simbot/component/onebot/v11/message/segment/OneBotMessageSegmentElement {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/message/segment/OneBotDice$Element;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getSegment ()Llove/forte/simbot/component/onebot/v11/message/segment/OneBotDice;
