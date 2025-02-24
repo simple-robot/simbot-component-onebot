@@ -23,6 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.event.OneBotCommonEvent
 import love.forte.simbot.event.BotRegisteredEvent
 import love.forte.simbot.event.BotStageEvent
 import love.forte.simbot.event.BotStartedEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 
 /**
@@ -30,6 +31,7 @@ import love.forte.simbot.event.BotStartedEvent
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotBotStageEvent : BotStageEvent, OneBotCommonEvent {
     override val bot: OneBotBot
 }
@@ -39,6 +41,7 @@ public interface OneBotBotStageEvent : BotStageEvent, OneBotCommonEvent {
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotBotRegisteredEvent : OneBotBotStageEvent, BotRegisteredEvent
 
 /**
@@ -46,4 +49,5 @@ public interface OneBotBotRegisteredEvent : OneBotBotStageEvent, BotRegisteredEv
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotBotStartedEvent : OneBotBotStageEvent, BotStartedEvent

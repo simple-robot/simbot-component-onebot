@@ -25,6 +25,7 @@ import love.forte.simbot.component.onebot.v11.core.event.stage.OneBotBotStageEve
 import love.forte.simbot.component.onebot.v11.core.utils.timestamp
 import love.forte.simbot.event.BotEvent
 import love.forte.simbot.event.Event
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 /**
  * OneBot11原始事件结构体类型。
@@ -38,6 +39,7 @@ public typealias OBSourceEvent = love.forte.simbot.component.onebot.v11.event.Ra
  * (例如 [OneBotBotStageEvent]) 的父类。
  */
 @OneBotInternalImplementationsOnly
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotCommonEvent : Event
 
 
@@ -49,6 +51,7 @@ public interface OneBotCommonEvent : Event
  * @author ForteScarlet
  */
 @OneBotInternalImplementationsOnly
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotEvent : OneBotCommonEvent {
     /**
      * 来自事件JSON的反序列化数据体。
@@ -84,6 +87,7 @@ public interface OneBotEvent : OneBotCommonEvent {
  * OneBot组件事件中的 [BotEvent]。
  */
 @OneBotInternalImplementationsOnly
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotBotEvent : OneBotEvent, BotEvent {
     override val bot: OneBotBot
 }

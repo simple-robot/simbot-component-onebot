@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.event.meta
 
 import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 
 /**
@@ -27,6 +28,7 @@ import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotLifecycleEvent : OneBotMetaEvent {
     override val sourceEvent: RawLifecycleEvent
 

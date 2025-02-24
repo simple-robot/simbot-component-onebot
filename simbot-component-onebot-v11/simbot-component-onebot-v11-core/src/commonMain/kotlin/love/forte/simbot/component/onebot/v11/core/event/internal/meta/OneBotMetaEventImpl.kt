@@ -26,11 +26,13 @@ import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotLifecycleEve
 import love.forte.simbot.component.onebot.v11.core.event.meta.OneBotMetaEvent
 import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 /**
  * OneBot中的元事件类型。
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 internal abstract class OneBotMetaEventImpl : OneBotMetaEvent {
     override val id: ID = UUID.random()
 }

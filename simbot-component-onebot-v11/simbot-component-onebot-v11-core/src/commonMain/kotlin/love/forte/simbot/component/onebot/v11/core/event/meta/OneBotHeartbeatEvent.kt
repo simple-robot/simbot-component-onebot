@@ -20,6 +20,7 @@ package love.forte.simbot.component.onebot.v11.core.event.meta
 import love.forte.simbot.component.onebot.v11.common.api.StatusResult
 import love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent
 import love.forte.simbot.component.onebot.v11.event.meta.RawMetaEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -31,6 +32,7 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotHeartbeatEvent : OneBotMetaEvent {
     override val sourceEvent: RawHeartbeatEvent
 

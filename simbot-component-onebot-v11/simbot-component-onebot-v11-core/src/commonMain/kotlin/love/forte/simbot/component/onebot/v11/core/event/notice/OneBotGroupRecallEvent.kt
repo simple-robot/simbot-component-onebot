@@ -22,6 +22,7 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.event.notice.RawGroupRecallEvent
 import love.forte.simbot.event.ChatGroupEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.suspendrunner.STP
 
 
@@ -32,6 +33,7 @@ import love.forte.simbot.suspendrunner.STP
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupRecallEvent : OneBotNoticeEvent, ChatGroupEvent {
     override val sourceEvent: RawGroupRecallEvent
 
