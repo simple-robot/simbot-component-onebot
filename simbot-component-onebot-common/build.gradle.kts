@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
-    `simbot-onebot-dokka-partial-configure`
+    id("org.jetbrains.dokka")
 }
 
 setup(P.ComponentOneBot)
