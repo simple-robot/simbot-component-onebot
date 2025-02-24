@@ -154,30 +154,32 @@ apiValidation {
 
 // region Dokka
 
-childProjects.values.forEach { childProject ->
-    childProject.afterEvaluate {
-        if (childProject.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
-            dokka {
-                configSourceSets(childProject)
-                configHtmlCustoms(childProject)
-            }
-            rootProject.dependencies.dokka(childProject)
-        }
-    }
-}
-
-// subprojects {
-//     afterEvaluate {
-//         val p = this
-//         if (plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+// childProjects.values.forEach { childProject ->
+//     childProject.afterEvaluate {
+//         if (childProject.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
 //             dokka {
-//                 configSourceSets(p)
-//                 configHtmlCustoms(p)
+//                 configSourceSets(childProject)
+//                 configHtmlCustoms(childProject)
 //             }
-//             rootProject.dependencies.dokka(p)
+//             rootProject.dependencies.dokka(childProject)
 //         }
 //     }
 // }
+
+subprojects {
+    afterEvaluate {
+        val p = this
+        if (plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+            dokka {
+                configSourceSets(p)
+                pluginsConfiguration.html {
+                    configHtmlCustoms(project)
+                }
+            }
+            rootProject.dependencies.dokka(p)
+        }
+    }
+}
 
 dokka {
     moduleName = "Simple Robot 组件 | OneBot"
@@ -191,6 +193,9 @@ dokka {
 
     configSourceSets(project)
 
-    configHtmlCustoms(project)
+    pluginsConfiguration.html {
+        configHtmlCustoms(project)
+    }
 }
 // endregion
+

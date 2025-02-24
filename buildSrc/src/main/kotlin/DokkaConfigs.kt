@@ -1,9 +1,9 @@
-import gradle.kotlin.dsl.accessors._f907feec8c76a07e07390d77a722d2df.html
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
 import java.io.File
 import java.net.URI
 import java.time.Year
@@ -104,27 +104,25 @@ fun DokkaSourceSetSpec.configExternalDocumentations() {
     )
 }
 
-fun DokkaExtension.configHtmlCustoms(project: Project) {
-    pluginsConfiguration.html {
-        customAssets.from(
-            project.rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
-            project.rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
-        )
+fun DokkaHtmlPluginParameters.configHtmlCustoms(project: Project) {
+    customAssets.from(
+        project.rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
+        project.rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
+    )
 
-        customStyleSheets.from(project.rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
+    customStyleSheets.from(project.rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
 
-        if (!isSimbotLocal()) {
-            templatesDir.set(project.rootProject.file(".simbot/dokka-templates"))
-        }
-
-        val now = Year.now().value
-        footerMessage.set(
-            "© 2024-$now " +
-                "<a href='https://github.com/simple-robot'>Simple Robot</a>. All rights reserved."
-        )
-
-        separateInheritedMembers.set(true)
-        mergeImplicitExpectActualDeclarations.set(true)
-        homepageLink.set(P.ComponentOneBot.HOMEPAGE)
+    if (!isSimbotLocal()) {
+        templatesDir.set(project.rootProject.file(".simbot/dokka-templates"))
     }
+
+    val now = Year.now().value
+    footerMessage.set(
+        "© 2024-$now " +
+            "<a href='https://github.com/simple-robot'>Simple Robot</a>. All rights reserved."
+    )
+
+    separateInheritedMembers.set(true)
+    mergeImplicitExpectActualDeclarations.set(true)
+    homepageLink.set(P.ComponentOneBot.HOMEPAGE)
 }
