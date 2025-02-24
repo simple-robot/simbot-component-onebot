@@ -22,6 +22,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.notice.RawGroupDecreaseEvent
 import love.forte.simbot.component.onebot.v11.event.notice.RawGroupIncreaseEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.MemberDecreaseEvent
 import love.forte.simbot.event.MemberIncreaseEvent
 import love.forte.simbot.event.MemberIncreaseOrDecreaseEvent
@@ -33,6 +34,7 @@ import love.forte.simbot.suspendrunner.STP
  * @see OneBotGroupMemberIncreaseEvent
  * @see OneBotGroupMemberDecreaseEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupChangeEvent : OneBotNoticeEvent, MemberIncreaseOrDecreaseEvent {
     /**
      * 群号
@@ -66,6 +68,7 @@ public interface OneBotGroupChangeEvent : OneBotNoticeEvent, MemberIncreaseOrDec
  *
  * @see RawGroupIncreaseEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupMemberIncreaseEvent : OneBotGroupChangeEvent, MemberIncreaseEvent {
     override val sourceEvent: RawGroupIncreaseEvent
 
@@ -101,6 +104,7 @@ public interface OneBotGroupMemberIncreaseEvent : OneBotGroupChangeEvent, Member
  *
  * @see RawGroupDecreaseEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupMemberDecreaseEvent : OneBotGroupChangeEvent, MemberDecreaseEvent {
     override val sourceEvent: RawGroupDecreaseEvent
 

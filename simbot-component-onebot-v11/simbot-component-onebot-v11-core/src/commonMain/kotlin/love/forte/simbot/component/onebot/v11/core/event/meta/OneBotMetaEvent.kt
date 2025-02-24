@@ -19,12 +19,14 @@ package love.forte.simbot.component.onebot.v11.core.event.meta
 
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
 import love.forte.simbot.component.onebot.v11.event.meta.RawMetaEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 
 /**
  * OneBot中的元事件类型。
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotMetaEvent : OneBotBotEvent {
     override val sourceEvent: RawMetaEvent
 }

@@ -53,7 +53,6 @@ kotlin {
             implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
         }
-        libs
 
         commonTest.dependencies {
             api(libs.simbot.core)

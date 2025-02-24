@@ -22,6 +22,7 @@ import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -37,6 +38,7 @@ public typealias OBSourceMessageEvent = love.forte.simbot.component.onebot.v11.e
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotMessageEvent : OneBotBotEvent, MessageEvent {
     override val bot: OneBotBot
     override val sourceEvent: OBSourceMessageEvent

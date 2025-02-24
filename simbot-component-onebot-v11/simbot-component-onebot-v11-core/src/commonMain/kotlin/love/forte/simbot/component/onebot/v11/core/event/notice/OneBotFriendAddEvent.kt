@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.event.notice.RawFriendAddEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 
 /**
@@ -26,6 +27,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.RawFriendAddEvent
  *
  * @see RawFriendAddEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotFriendAddEvent : OneBotNoticeEvent {
     override val sourceEvent: RawFriendAddEvent
 

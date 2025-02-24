@@ -21,6 +21,7 @@ import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 
 /**
@@ -33,6 +34,7 @@ import love.forte.simbot.component.onebot.v11.event.UnknownEvent
  * @author ForteScarlet
  */
 @FragileSimbotAPI
+@OptIn(FuzzyEventTypeImplementation::class)
 public data class OneBotUnknownEvent(
     override val sourceEventRaw: String?,
     override val sourceEvent: UnknownEvent

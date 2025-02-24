@@ -62,8 +62,10 @@ kotlin {
             implementation(project(":simbot-component-onebot-common"))
             implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
+            implementation(libs.kotlinx.io.core)
             api(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.jetbrains.annotations)
         }
 
         commonTest.dependencies {
@@ -75,6 +77,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.jetbrains.annotations)
             }
         }
 

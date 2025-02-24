@@ -13,7 +13,6 @@ public abstract interface class love/forte/simbot/component/onebot/v11/message/O
 	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceSegments ()Ljava/util/List;
 	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun reference$suspendImpl (Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

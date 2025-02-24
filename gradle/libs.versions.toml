@@ -2,14 +2,15 @@
 kotlin = "2.1.0"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
-kotlinx-io = "0.6.0"
+# kotlinx-io = "0.6.0"
+kotlinx-io = { prefer = "0.6.0" }
 dokka = "1.9.20"
 ktor = "2.3.12"
 openjdk-jmh = "1.37"
 log4j = "2.24.3"
 # simbot
-simbot = "4.9.0"
-suspendTransform = "2.1.0-0.9.4"
+simbot = { prefer = "4.11.0" }
+suspendTransform = "2.1.0-0.11.0"
 gradleCommon = "0.6.0"
 # ksp
 ksp = "2.1.0-1.0.29"
@@ -112,7 +113,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # binary-compatibility-validator
 # https://github.com/Kotlin/binary-compatibility-validator
-kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
+kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.17.0" }
 suspendTransform = { id = "love.forte.plugin.suspend-transform", version.ref = "suspendTransform" }
 
 [bundles]
