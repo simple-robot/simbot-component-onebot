@@ -24,9 +24,10 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.message.segment.*
 import love.forte.simbot.message.*
-import love.forte.simbot.resource.*
+import love.forte.simbot.resource.Resource
+import love.forte.simbot.resource.toResource
+import org.jetbrains.annotations.ApiStatus
 import kotlin.jvm.JvmName
-import kotlin.jvm.JvmSynthetic
 
 /**
  * 将事件中接收到的 [OneBotMessageSegment] 解析为 [Message.Element]。
@@ -38,6 +39,7 @@ import kotlin.jvm.JvmSynthetic
  * | 其他 | 使用 [toElement] 转化 |
  */
 @InternalOneBotAPI
+@ApiStatus.Internal // since 1.6.0
 public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
     return when (this) {
         is OneBotAt -> if (isAll) AtAll else At(data.qq.ID)
@@ -52,8 +54,9 @@ public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
  * @see resolveToOneBotSegment
  */
 @InternalOneBotAPI
-@JvmSynthetic
-public suspend fun Message.resolveToOneBotSegmentList(
+@ApiStatus.Internal // since 1.6.0
+// @JvmSynthetic // since 1.6.0 不再向Java隐藏，且不再挂起
+public fun Message.resolveToOneBotSegmentList(
     defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)? = null,
 ): List<OneBotMessageSegment> {
     return when (this) {
@@ -69,8 +72,9 @@ public suspend fun Message.resolveToOneBotSegmentList(
  * 将一个 [Message.Element] 转化为用于API请求的 [OneBotMessageSegment]。
  */
 @InternalOneBotAPI
-@JvmSynthetic
-public suspend fun Message.Element.resolveToOneBotSegment(
+@ApiStatus.Internal // since 1.6.0
+// @JvmSynthetic // since 1.6.0 不再向Java隐藏，且不再挂起
+public fun Message.Element.resolveToOneBotSegment(
     defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)? = null,
 ): OneBotMessageSegment? {
     return when (this) {

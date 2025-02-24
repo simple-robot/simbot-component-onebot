@@ -65,6 +65,7 @@ kotlin {
             implementation(libs.kotlinx.io.core)
             api(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.jetbrains.annotations)
         }
 
         commonTest.dependencies {
@@ -76,6 +77,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.jetbrains.annotations)
             }
         }
 
