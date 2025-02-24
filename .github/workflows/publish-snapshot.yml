@@ -113,7 +113,7 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
-            dokkaHtmlMultiModule 
+            dokkaGenerate 
             -Porg.gradle.jvmargs="-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
             -Porg.gradle.daemon=false
             --info 

@@ -24,10 +24,9 @@ import util.isCi
 
 plugins {
     idea
+    id("org.jetbrains.dokka")
     `simbot-onebot-nexus-publish`
-    `simbot-onebot-dokka-multi-module`
     `simbot-onebot-changelog-generator`
-
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
     alias(libs.plugins.suspendTransform) apply false
@@ -86,7 +85,7 @@ idea {
     }
 }
 
-// detekt
+//region detekt
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${libs.versions.detekt.get()}")
 }
@@ -125,6 +124,7 @@ tasks.withType<Detekt>().configureEach {
     exclude("**/test/kotlin/")
     exclude("**/test/java/")
 }
+//endregion
 
 apiValidation {
     ignoredPackages.add("*.internal.*")
@@ -151,3 +151,46 @@ apiValidation {
 
     apiDumpDirectory = "api"
 }
+
+// region Dokka
+
+childProjects.values.forEach { childProject ->
+    childProject.afterEvaluate {
+        if (childProject.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+            dokka {
+                configSourceSets(childProject)
+                configHtmlCustoms(childProject)
+            }
+            rootProject.dependencies.dokka(childProject)
+        }
+    }
+}
+
+// subprojects {
+//     afterEvaluate {
+//         val p = this
+//         if (plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+//             dokka {
+//                 configSourceSets(p)
+//                 configHtmlCustoms(p)
+//             }
+//             rootProject.dependencies.dokka(p)
+//         }
+//     }
+// }
+
+dokka {
+    moduleName = "Simple Robot 组件 | OneBot"
+
+    dokkaPublications.all {
+        if (isSimbotLocal()) {
+            logger.info("Is 'SIMBOT_LOCAL', offline")
+            offlineMode = true
+        }
+    }
+
+    configSourceSets(project)
+
+    configHtmlCustoms(project)
+}
+// endregion

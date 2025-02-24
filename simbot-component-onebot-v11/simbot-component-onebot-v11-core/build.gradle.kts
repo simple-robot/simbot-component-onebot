@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    `simbot-onebot-dokka-partial-configure`
+    id("org.jetbrains.dokka")
     alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
 }

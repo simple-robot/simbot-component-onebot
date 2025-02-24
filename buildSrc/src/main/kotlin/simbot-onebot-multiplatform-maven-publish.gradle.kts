@@ -20,27 +20,25 @@ import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.publication.configure.configPublishMaven
-import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
 import love.forte.gradle.common.publication.configure.publishingExtension
 import love.forte.gradle.common.publication.configure.setupPom
 
 plugins {
+    id("org.jetbrains.dokka")
     signing
     `maven-publish`
 }
 
 setup(P.ComponentOneBot)
 
-val p = project
 val isSnapshot = project.version.toString().contains("SNAPSHOT", true)
 
 val jarJavadoc by tasks.registering(Jar::class) {
     group = "documentation"
     archiveClassifier.set("javadoc")
     if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-        dependsOn(tasks.dokkaHtml)
-        from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-        // from(tasks.findByName("dokkaHtml"))
+        dependsOn(tasks.dokkaGeneratePublicationHtml)
+        from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
     }
 }
 
@@ -71,62 +69,6 @@ signing {
     useInMemoryPgpKeys(keyId, secretKey, password)
     sign(publishingExtension.publications)
 }
-
-
-// multiplatformConfigPublishing {
-//     project = P.ComponentOneBot
-//     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
-//     releasesRepository = ReleaseRepository
-//     snapshotRepository = SnapshotRepository
-//     gpg = Gpg.ofSystemPropOrNull()
-//
-//     // publishing {
-//     //     publications.withType<MavenPublication> {
-//     //         val dokkaJar = p.tasks.register("${name}DokkaJar", Jar::class) {
-//     //             group = JavaBasePlugin.DOCUMENTATION_GROUP
-//     //             description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
-//     //             archiveClassifier.set("javadoc")
-//     //             from(tasks.named("dokkaHtml"))
-//     //
-//     //             // Each archive name should be distinct, to avoid implicit dependency issues.
-//     //             // We use the same format as the sources Jar tasks.
-//     //             // https://youtrack.jetbrains.com/issue/KT-46466
-//     //             archiveBaseName.set("${archiveBaseName.get()}-${name}")
-//     //         }
-//     //         artifact(dokkaJar)
-//     //     }
-//     // }
-//
-//     // val jarJavadoc by tasks.registering(Jar::class) {
-//     //     group = "documentation"
-//     //     archiveClassifier.set("javadoc")
-//     //     if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-//     //         dependsOn(tasks.dokkaHtml)
-//     //         from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-//     //         // from(tasks.findByName("dokkaHtml"))
-//     //     }
-//     // }
-//
-//
-//     // val dokkaJar = p.tasks.register("${publication.name}DokkaJar", Jar::class) {
-//     //     group = JavaBasePlugin.DOCUMENTATION_GROUP
-//     //     description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
-//     //     archiveClassifier.set("javadoc")
-//     //     from(tasks.named("dokkaHtml"))
-//     //
-//     //     // Each archive name should be distinct, to avoid implicit dependency issues.
-//     //     // We use the same format as the sources Jar tasks.
-//     //     // https://youtrack.jetbrains.com/issue/KT-46466
-//     //     archiveBaseName.set("${archiveBaseName.get()}-${publication.name}")
-//     // }
-//
-//     artifact(jarJavadoc)
-//
-//     if (isSimbotLocal()) {
-//         logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
-//         mainHost = null
-//     }
-// }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
 val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
@@ -177,10 +119,3 @@ fun show() {
         systemProp("os.name")
     )
 }
-
-
-inline val Project.sourceSets: SourceSetContainer
-    get() = extensions.getByName("sourceSets") as SourceSetContainer
-
-internal val TaskContainer.dokkaHtml: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
-    get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml")
