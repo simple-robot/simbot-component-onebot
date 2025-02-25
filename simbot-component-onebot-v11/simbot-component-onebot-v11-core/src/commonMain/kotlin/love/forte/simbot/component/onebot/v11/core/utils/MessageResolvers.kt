@@ -22,7 +22,7 @@ import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.message.Message
 
-internal suspend fun Message.resolveToOneBotSegmentList(
+internal fun Message.resolveToOneBotSegmentList(
     bot: OneBotBot,
 ): List<OneBotMessageSegment> = resolveToOneBotSegmentList(
     defaultImageAdditionalParams = bot.configuration.defaultImageAdditionalParamsProvider

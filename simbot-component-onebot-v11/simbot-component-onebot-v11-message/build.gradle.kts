@@ -58,11 +58,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":simbot-component-onebot-common"))
             implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
-            implementation(libs.kotlinx.io.core)
+            api(project(":simbot-component-onebot-common"))
+            api(libs.simbot.common.annotations)
+
             api(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.io.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.jetbrains.annotations)
         }
@@ -76,6 +77,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.simbot.api)
                 compileOnly(libs.jetbrains.annotations)
             }
         }

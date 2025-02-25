@@ -2140,6 +2140,16 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
 }
 
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/OneBotInternalEvent : love/forte/simbot/component/onebot/v11/core/event/OneBotCommonEvent, love/forte/simbot/event/InternalEvent {
+}
+
+public class love/forte/simbot/component/onebot/v11/core/event/OneBotInternalInterceptionException : love/forte/simbot/event/InternalInterceptionException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
 public final class love/forte/simbot/component/onebot/v11/core/event/OneBotUnknownEvent : love/forte/simbot/component/onebot/v11/core/event/OneBotEvent {
 	public fun <init> (Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/event/UnknownEvent;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -2294,6 +2304,57 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getMessageType ()Ljava/lang/String;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent;
 	public fun getSubType ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotGroupInteractionEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportInteractionEvent, love/forte/simbot/event/ChatGroupInteractionEvent {
+	public abstract fun getContent ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotGroupPostSendEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotGroupInteractionEvent, love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportPostSendEvent, love/forte/simbot/event/ChatGroupPostSendEvent {
+	public abstract fun getContent ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotGroupPreSendEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotGroupInteractionEvent, love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportPreSendEvent, love/forte/simbot/event/ChatGroupPreSendEvent {
+	public abstract fun getContent ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
+	public abstract fun getCurrentMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public abstract fun getMessage ()Llove/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage;
+	public abstract fun setCurrentMessage (Llove/forte/simbot/event/InteractionMessage;)V
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotInternalMessageInteractionEvent : love/forte/simbot/event/InternalMessageInteractionEvent {
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotInternalMessagePostSendEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotInternalMessageInteractionEvent {
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotInternalMessagePreSendEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotInternalMessageInteractionEvent {
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage : love/forte/simbot/event/InteractionMessage$Extension {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage$Companion;
+	public synthetic fun <init> (Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun create (Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;)Llove/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public final fun getSegments ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage$Companion {
+	public final fun create (Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;)Llove/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage;
+	public static synthetic fun create$default (Llove/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage$Companion;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSegmentsInteractionMessage;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportInteractionEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotInternalMessageInteractionEvent, love/forte/simbot/event/SendSupportInteractionEvent {
+	public abstract fun getBot ()Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;
+	public abstract fun getContent ()Llove/forte/simbot/ability/SendSupport;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportPostSendEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportInteractionEvent, love/forte/simbot/event/SendSupportPostSendEvent {
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportPreSendEvent : love/forte/simbot/component/onebot/v11/core/event/messageinteraction/OneBotSendSupportInteractionEvent, love/forte/simbot/event/SendSupportPreSendEvent {
 }
 
 public abstract interface class love/forte/simbot/component/onebot/v11/core/event/meta/OneBotHeartbeatEvent : love/forte/simbot/component/onebot/v11/core/event/meta/OneBotMetaEvent {

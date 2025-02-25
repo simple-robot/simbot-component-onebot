@@ -51,7 +51,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
+            api(libs.simbot.common.annotations)
         }
 
         commonTest.dependencies {
@@ -61,6 +61,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.simbot.api)
             }
         }
 

@@ -24,6 +24,7 @@ import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
+import org.jetbrains.annotations.ApiStatus
 
 /**
  * 构建一个用于发送的纯文本消息。
@@ -31,6 +32,7 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
  * @param messageType see [SendMsgApi]`.MESSAGE_TYPE_*`
  */
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun sendTextMsgApi(
     messageType: String,
     target: ID,
@@ -61,6 +63,7 @@ public fun sendTextMsgApi(
 }
 
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun sendPrivateTextMsgApi(
     target: ID,
     text: String,
@@ -73,6 +76,7 @@ public fun sendPrivateTextMsgApi(
 )
 
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun sendGroupTextMsgApi(
     target: ID,
     text: String,
@@ -91,6 +95,7 @@ public fun sendGroupTextMsgApi(
  * @param messageType see [SendMsgApi]`.MESSAGE_TYPE_*`
  */
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun sendMsgApi(
     messageType: String,
     target: ID,
@@ -118,6 +123,7 @@ public fun sendMsgApi(
 }
 
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun resolveReplyMessageSegmentList(
     message: List<OneBotMessageSegment>,
     reply: ID,
@@ -139,6 +145,7 @@ public fun resolveReplyMessageSegmentList(
 }
 
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun sendPrivateMsgApi(
     target: ID,
     message: List<OneBotMessageSegment>,
@@ -151,6 +158,7 @@ public fun sendPrivateMsgApi(
 )
 
 @InternalOneBotAPI
+@ApiStatus.Internal
 public fun sendGroupMsgApi(
     target: ID,
     message: List<OneBotMessageSegment>,
