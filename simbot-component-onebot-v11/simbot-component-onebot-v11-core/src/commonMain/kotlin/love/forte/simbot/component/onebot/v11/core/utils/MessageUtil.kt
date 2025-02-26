@@ -21,9 +21,15 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.api.OneBotMessageOutgoing
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
+import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractMessagePreSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.message.Message
 import org.jetbrains.annotations.ApiStatus
 
 /**
@@ -169,3 +175,85 @@ public fun sendGroupMsgApi(
     message = message,
     reply = reply,
 )
+
+
+internal suspend fun OneBotBotImpl.emitMessagePreSendEventAndUseCurrentMessage(
+    event: AbstractMessagePreSendEventImpl
+): InteractionMessage {
+    emitMessagePreSendEvent(event)
+    return event.useCurrentMessage()
+}
+
+internal inline fun <T> resolveInteractionMessage(
+    interactionMessage: InteractionMessage,
+    allowSegmentMessage: Boolean = true,
+    onSegments: (List<OneBotMessageSegment>) -> T,
+    onMessage: (Message) -> T,
+    onText: (String) -> T,
+    onOther: (InteractionMessage) -> T = {
+        error("Unknown InteractionMessage type: $interactionMessage")
+    },
+): T {
+    if (!allowSegmentMessage) {
+        return resolveInteractionMessageDisallowSegmentMessage(
+            interactionMessage = interactionMessage,
+            onSegments = onSegments,
+            onMessage = onMessage,
+            onText = onText,
+            onOther = onOther
+        )
+    }
+
+    return when (interactionMessage) {
+        is InteractionMessage.Message -> onMessage(interactionMessage.message)
+        is InteractionMessage.MessageContent -> {
+            val messageContent = interactionMessage.messageContent
+            if (messageContent is OneBotMessageContent) {
+                onSegments(messageContent.sourceSegments)
+            } else {
+                onMessage(messageContent.messages)
+            }
+        }
+
+        is InteractionMessage.Text -> onText(interactionMessage.text)
+        is OneBotSegmentsInteractionMessage -> resolveInteractionMessageDisallowSegmentMessage(
+            interactionMessage = interactionMessage.message,
+            onSegments = onSegments,
+            onMessage = onMessage,
+            onText = onText,
+            onOther = onOther
+        )
+
+        else -> onOther(interactionMessage)
+    }
+}
+
+private inline fun <T> resolveInteractionMessageDisallowSegmentMessage(
+    interactionMessage: InteractionMessage,
+    onSegments: (List<OneBotMessageSegment>) -> T,
+    onMessage: (Message) -> T,
+    onText: (String) -> T,
+    onOther: (InteractionMessage) -> T
+): T {
+    return when (interactionMessage) {
+        is InteractionMessage.Message -> onMessage(interactionMessage.message)
+        is InteractionMessage.MessageContent -> {
+            val messageContent = interactionMessage.messageContent
+            if (messageContent is OneBotMessageContent) {
+                onSegments(messageContent.sourceSegments)
+            } else {
+                onMessage(messageContent.messages)
+            }
+        }
+
+        is InteractionMessage.Text -> onText(interactionMessage.text)
+        is OneBotSegmentsInteractionMessage -> {
+            error(
+                "InteractionMessage.message does not support the type OneBotSegmentsInteractionMessage, " +
+                    "but $interactionMessage"
+            )
+        }
+
+        else -> onOther(interactionMessage)
+    }
+}

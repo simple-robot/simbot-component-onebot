@@ -18,6 +18,7 @@
 package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.event.*
@@ -113,4 +114,53 @@ public interface OneBotGroupPostSendEvent :
 }
 //endregion
 
+//region OneBotFriend
 
+/**
+ * OneBot组件针对 [OneBotFriend] 的交互事件。
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotFriendInteractionEvent : OneBotSendSupportInteractionEvent, ContactInteractionEvent {
+    override val content: OneBotFriend
+}
+
+/**
+ * OneBot组件针对 [OneBotFriend.send] 的拦截事件。
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotFriendPreSendEvent :
+    OneBotSendSupportPreSendEvent,
+    OneBotFriendInteractionEvent,
+    ContactPreSendEvent {
+    override val content: OneBotFriend
+
+    /**
+     * 拦截事件中的消息内容。
+     */
+    override val message: OneBotSegmentsInteractionMessage
+
+    /**
+     * 可修改的 [message]，初始为 [message]，
+     * 修改后会在事件处理完成后被替换为原本的参数。
+     *
+     * 如果被设置为 [OneBotSegmentsInteractionMessage]
+     * 之外的类型，效果同设置了一个 [OneBotSegmentsInteractionMessage.segments] 为 `null` 的值，
+     * 最终都会在需要的情况下重新解析 [OneBotSegmentsInteractionMessage.segments]。
+     */
+    override var currentMessage: InteractionMessage
+}
+
+/**
+ * OneBot组件针对 [OneBotFriend.send] 的通知事件。
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotFriendPostSendEvent :
+    OneBotSendSupportPostSendEvent,
+    OneBotFriendInteractionEvent,
+    ContactPostSendEvent {
+    override val content: OneBotFriend
+}
+//endregion

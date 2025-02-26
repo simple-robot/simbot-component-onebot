@@ -11,15 +11,14 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.id.IntID.Companion.ID
-import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 import love.forte.simbot.component.onebot.v11.core.OneBot11
-import love.forte.simbot.component.onebot.v11.core.actor.internal.OneBotGroupApiResultImpl
+import love.forte.simbot.component.onebot.v11.core.actor.internal.OneBotFriendApiResultImpl
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupPostSendEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotFriendPostSendEvent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.event.*
@@ -33,7 +32,7 @@ import kotlin.test.*
  * @author ForteScarlet
  */
 @OptIn(ApiResultConstructor::class)
-class GroupSendInteractionTests {
+class FriendSendInteractionTests {
     private fun spykBot(dispatcher: EventDispatcher): OneBotBotImpl {
         return spyk(
             OneBotBotImpl(
@@ -54,19 +53,18 @@ class GroupSendInteractionTests {
     @Test
     fun testSendTextInterception() {
         val bot: OneBotBotImpl = spykBot(mockk(relaxed = true, relaxUnitFun = true))
-        val group = spyk(
-            OneBotGroupApiResultImpl(
-                source = mockk(relaxed = true),
+        val friend = spyk(
+            OneBotFriendApiResultImpl(
+                result = mockk(relaxed = true),
                 bot = bot,
-                ownerId = UUID.random()
             ),
         )
 
         coEvery { bot.executeData<SendMsgResult>(any()) } returns SendMsgResult(114.ID)
 
-        runBlocking { group.send("Hello World") }
+        runBlocking { friend.send("Hello World") }
 
-        coVerify { group.send("Hello World") }
+        coVerify { friend.send("Hello World") }
         coVerify {
             bot.emitMessagePreSendEvent(
                 match {
@@ -92,17 +90,16 @@ class GroupSendInteractionTests {
 
         val bot = spykBot(dispatcher)
 
-        val group = spyk(
-            OneBotGroupApiResultImpl(
-                source = mockk(relaxed = true),
+        val friend = spyk(
+            OneBotFriendApiResultImpl(
+                result = mockk(relaxed = true),
                 bot = bot,
-                ownerId = UUID.random()
             ),
         )
         coEvery { bot.executeData<SendMsgResult>(any()) } returns SendMsgResult(114.ID)
 
         val error = assertFailsWith<OneBotInternalInterceptionException> {
-            runBlocking { group.send("Hello World") }
+            runBlocking { friend.send("Hello World") }
         }
 
         assertEquals(2, error.suppressed.size)
@@ -111,7 +108,7 @@ class GroupSendInteractionTests {
         assertIs<IllegalArgumentException>(error.suppressed[1])
         assertEquals("ERROR2", error.suppressed[1].message)
 
-        coVerify { group.send("Hello World") }
+        coVerify { friend.send("Hello World") }
         coVerify {
             bot.emitMessagePreSendEvent(
                 match {
@@ -142,19 +139,18 @@ class GroupSendInteractionTests {
 
         val bot = spykBot(app.eventDispatcher)
 
-        val group = spyk(
-            OneBotGroupApiResultImpl(
-                source = mockk(relaxed = true),
+        val friend = spyk(
+            OneBotFriendApiResultImpl(
+                result = mockk(relaxed = true),
                 bot = bot,
-                ownerId = UUID.random()
             ),
             recordPrivateCalls = true
         )
         coEvery { bot.executeData<SendMsgResult>(any()) } returns SendMsgResult(114.ID)
 
-        runBlocking { group.send("Hello") }
+        runBlocking { friend.send("Hello") }
 
-        coVerify { group.send("Hello") }
+        coVerify { friend.send("Hello") }
         coVerify {
             bot.emitMessagePreSendEvent(
                 match {
@@ -167,16 +163,16 @@ class GroupSendInteractionTests {
             )
         }
 
-        coVerify { group invoke "sendText" withArguments listOf("Hello World") }
+        coVerify { friend invoke "sendText" withArguments listOf("Hello World") }
     }
 
     @Test
-    fun testGroupPostSend() = runTest {
+    fun testFriendPostSend() = runTest {
         val app = launchSimpleApplication()
 
         val receiptFromEvent = CompletableDeferred<MessageReceipt>()
 
-        app.eventDispatcher.process<OneBotGroupPostSendEvent> { event ->
+        app.eventDispatcher.process<OneBotFriendPostSendEvent> { event ->
             receiptFromEvent.complete(event.receipt)
         }
 
@@ -184,18 +180,17 @@ class GroupSendInteractionTests {
 
         val bot = spykBot(dispatcher)
 
-        val group = spyk(
-            OneBotGroupApiResultImpl(
-                source = mockk(relaxed = true),
+        val friend = spyk(
+            OneBotFriendApiResultImpl(
+                result = mockk(relaxed = true),
                 bot = bot,
-                ownerId = UUID.random()
             ),
         )
 
         coEvery { bot.executeData<SendMsgResult>(any()) } returns SendMsgResult(114.ID)
-        val receiptFromSend = group.send("Hello World")
+        val receiptFromSend = friend.send("Hello World")
 
-        coVerify { group.send("Hello World") }
+        coVerify { friend.send("Hello World") }
 
         assertSame(receiptFromSend, receiptFromEvent.await())
     }

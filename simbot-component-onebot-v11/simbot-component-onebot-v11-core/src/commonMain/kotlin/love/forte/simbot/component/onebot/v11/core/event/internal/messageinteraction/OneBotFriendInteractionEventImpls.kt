@@ -17,22 +17,22 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction
 
-import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupPostSendEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupPreSendEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotFriendPostSendEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotFriendPreSendEvent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 
-internal class OneBotGroupPreSendEventImpl(
-    override val content: OneBotGroup,
+internal class OneBotFriendPreSendEventImpl(
+    override val content: OneBotFriend,
     override val bot: OneBotBot,
     message: OneBotSegmentsInteractionMessage
-) : AbstractMessagePreSendEventImpl(message), OneBotGroupPreSendEvent
+) : AbstractMessagePreSendEventImpl(message), OneBotFriendPreSendEvent
 
-internal class OneBotGroupPostSendEventImpl(
-    override val content: OneBotGroup,
+internal class OneBotFriendPostSendEventImpl(
+    override val content: OneBotFriend,
     override val bot: OneBotBot,
     override val receipt: OneBotMessageReceipt,
-    override val message: OneBotSegmentsInteractionMessage
-) : AbstractMessagePostSendEventImpl(), OneBotGroupPostSendEvent
+    override val message: OneBotSegmentsInteractionMessage,
+) : AbstractMessagePostSendEventImpl(), OneBotFriendPostSendEvent

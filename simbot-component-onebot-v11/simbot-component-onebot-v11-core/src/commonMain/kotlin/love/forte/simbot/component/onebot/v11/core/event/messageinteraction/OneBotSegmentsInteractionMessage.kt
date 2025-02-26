@@ -15,10 +15,20 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:JvmName("OneBotSegmentsInteractionMessages")
+@file:JvmMultifileClass
+
 package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
+import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 
@@ -74,16 +84,16 @@ public class OneBotSegmentsInteractionMessage private constructor(
             message: InteractionMessage,
             segments: List<OneBotMessageSegment>? = null
         ): OneBotSegmentsInteractionMessage {
-            if (segments == null) {
-                require(
+            // segments not null or message's type is Text, Message or MessageContent
+            require(
+                segments != null ||
                     message is Text ||
-                        message is Message ||
-                        message is MessageContent
-                ) {
-                    "`message` only support InteractionMessage.Text, " +
-                        "InteractionMessage.Message or " +
-                        "InteractionMessage.MessageContent, but $message"
-                }
+                    message is Message ||
+                    message is MessageContent
+            ) {
+                "`message` only support InteractionMessage.Text, " +
+                    "InteractionMessage.Message or " +
+                    "InteractionMessage.MessageContent, but: $message"
             }
             return OneBotSegmentsInteractionMessage(message, segments)
         }
@@ -114,3 +124,24 @@ internal fun InteractionMessage.toOneBotSegmentsInteractionMessage(): OneBotSegm
     return this as? OneBotSegmentsInteractionMessage
         ?: OneBotSegmentsInteractionMessage.create(this, null)
 }
+
+internal fun OneBotSegmentsInteractionMessage(text: String): OneBotSegmentsInteractionMessage {
+    return OneBotSegmentsInteractionMessage.create(InteractionMessage.valueOf(text), null)
+}
+
+internal fun OneBotSegmentsInteractionMessage(content: MessageContent): OneBotSegmentsInteractionMessage {
+    return OneBotSegmentsInteractionMessage.create(
+        message = InteractionMessage.valueOf(content),
+        segments = (content as? OneBotMessageContent)?.sourceSegments
+    )
+}
+
+internal fun OneBotSegmentsInteractionMessage(message: Message, bot: OneBotBot): OneBotSegmentsInteractionMessage {
+    return OneBotSegmentsInteractionMessage.create(
+        message = InteractionMessage.valueOf(message),
+        segments = message.resolveToOneBotSegmentList(bot)
+    )
+}
+
+internal inline val InteractionMessage.segmentsOrNull: List<OneBotMessageSegment>?
+    get() = (this as? OneBotSegmentsInteractionMessage)?.segments

@@ -19,6 +19,8 @@ package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
 import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.InternalMessageInteractionEvent
+import love.forte.simbot.event.InternalMessagePostSendEvent
+import love.forte.simbot.event.InternalMessagePreSendEvent
 import love.forte.simbot.message.Message
 
 /**
@@ -39,7 +41,9 @@ public interface OneBotInternalMessageInteractionEvent : InternalMessageInteract
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface OneBotInternalMessagePreSendEvent : OneBotInternalMessageInteractionEvent
+public interface OneBotInternalMessagePreSendEvent :
+    OneBotInternalMessageInteractionEvent,
+    InternalMessagePreSendEvent
 
 /**
  * OneBot 组件针对消息发送后的通知事件。
@@ -49,4 +53,6 @@ public interface OneBotInternalMessagePreSendEvent : OneBotInternalMessageIntera
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface OneBotInternalMessagePostSendEvent : OneBotInternalMessageInteractionEvent
+public interface OneBotInternalMessagePostSendEvent :
+    OneBotInternalMessageInteractionEvent,
+    InternalMessagePostSendEvent

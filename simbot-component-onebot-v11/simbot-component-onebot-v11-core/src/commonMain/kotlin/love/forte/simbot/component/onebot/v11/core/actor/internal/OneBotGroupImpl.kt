@@ -30,12 +30,14 @@ import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotGroupPostSendEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotGroupPreSendEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.segmentsOrNull
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
+import love.forte.simbot.component.onebot.v11.core.utils.emitMessagePreSendEventAndUseCurrentMessage
+import love.forte.simbot.component.onebot.v11.core.utils.resolveInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.event.InteractionMessage
@@ -94,29 +96,17 @@ internal abstract class OneBotGroupImpl(
     }
 
     override suspend fun send(text: String): OneBotMessageReceipt {
-        val interactionMessage = OneBotSegmentsInteractionMessage.create(
-            message = InteractionMessage.valueOf(text),
-            segments = null
-        )
-
+        val interactionMessage = OneBotSegmentsInteractionMessage(text)
         return interceptionAndSend(interactionMessage)
     }
 
     override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
-        val interactionMessage = OneBotSegmentsInteractionMessage.create(
-            message = InteractionMessage.valueOf(messageContent),
-            segments = (messageContent as? OneBotMessageContent)?.sourceSegments
-        )
-
+        val interactionMessage = OneBotSegmentsInteractionMessage(messageContent)
         return interceptionAndSend(interactionMessage)
     }
 
     override suspend fun send(message: Message): OneBotMessageReceipt {
-        val interactionMessage = OneBotSegmentsInteractionMessage.create(
-            message = InteractionMessage.valueOf(message),
-            segments = message.resolveToOneBotSegmentList(bot)
-        )
-
+        val interactionMessage = OneBotSegmentsInteractionMessage(message = message, bot = bot)
         return interceptionAndSend(interactionMessage)
     }
 
@@ -129,9 +119,8 @@ internal abstract class OneBotGroupImpl(
             interactionMessage
         )
 
-        bot.emitMessagePreSendEvent(event)
-        val currentMessage = event.useCurrentMessage()
-        val segments = (currentMessage as? OneBotSegmentsInteractionMessage)?.segments
+        val currentMessage = bot.emitMessagePreSendEventAndUseCurrentMessage(event)
+        val segments = currentMessage.segmentsOrNull
         if (segments != null) {
             return sendSegments(segments).toReceipt(bot).alsoPostSend(currentMessage)
         }
@@ -143,37 +132,14 @@ internal abstract class OneBotGroupImpl(
      * 解析一个 InteractionMessage 为一个 OneBotMessageSegment 的列表并发送。
      * 始终认为 `segments` 为 `null`。
      */
-    private suspend fun sendByInteractionMessage(
-        interactionMessage: InteractionMessage,
-        allowSegmentMessage: Boolean = true
-    ): SendMsgResult {
-        return when (interactionMessage) {
-            is InteractionMessage.Message -> sendMessage(interactionMessage.message)
-            is InteractionMessage.MessageContent -> {
-                val messageContent = interactionMessage.messageContent
-                if (messageContent is OneBotMessageContent) {
-                    sendSegments(messageContent.sourceSegments)
-                } else {
-                    sendMessage(messageContent.messages)
-                }
-            }
-
-            is InteractionMessage.Text -> sendText(interactionMessage.text)
-            is OneBotSegmentsInteractionMessage -> {
-                if (!allowSegmentMessage) {
-                    error(
-                        "InteractionMessage.message does not support the type OneBotSegmentsInteractionMessage, " +
-                            "but $interactionMessage"
-                    )
-                }
-
-                sendByInteractionMessage(interactionMessage.message, false)
-            }
-
-            else -> error("Unknown InteractionMessage type: $interactionMessage")
-        }
+    private suspend fun sendByInteractionMessage(interactionMessage: InteractionMessage): SendMsgResult {
+        return resolveInteractionMessage(
+            interactionMessage = interactionMessage,
+            onSegments = { sendSegments(it) },
+            onMessage = { sendMessage(it) },
+            onText = { sendText(it) },
+        )
     }
-
 
     private suspend fun sendText(text: String): SendMsgResult {
         return bot.executeData(
