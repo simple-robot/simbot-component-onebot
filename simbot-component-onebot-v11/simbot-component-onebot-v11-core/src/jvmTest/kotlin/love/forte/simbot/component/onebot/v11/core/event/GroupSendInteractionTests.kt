@@ -4,8 +4,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.spyk
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.id.IntID.Companion.ID
@@ -17,16 +19,20 @@ import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupPostSendEvent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.event.process
+import love.forte.simbot.message.MessageReceipt
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
+import kotlin.test.assertSame
 
 
 /**
@@ -122,5 +128,35 @@ class GroupSendInteractionTests {
                 }
             )
         }
+    }
+
+    @Test
+    fun testGroupPostSend() = runTest {
+        val app = launchSimpleApplication()
+
+        val receiptFromEvent = CompletableDeferred<MessageReceipt>()
+
+        app.eventDispatcher.process<OneBotGroupPostSendEvent> { event ->
+            receiptFromEvent.complete(event.receipt)
+        }
+
+        val dispatcher = spyk(app.eventDispatcher, recordPrivateCalls = true)
+
+        val bot = spykBot(dispatcher)
+
+        val group = spyk(
+            OneBotGroupApiResultImpl(
+                source = mockk(relaxed = true),
+                bot = bot,
+                ownerId = UUID.random()
+            ),
+        )
+
+        coEvery { bot.executeData<SendMsgResult>(any()) } returns SendMsgResult(114.ID)
+        val receiptFromSend = group.send("Hello World")
+
+        coVerify { group.send("Hello World") }
+
+        assertSame(receiptFromSend, receiptFromEvent.await())
     }
 }
