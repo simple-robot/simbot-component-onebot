@@ -15,7 +15,7 @@ gradleCommon = "0.6.0"
 # ksp
 ksp = "2.1.0-1.0.29"
 # https://square.github.io/kotlinpoet/
-kotlinPoet = "2.0.0"
+kotlinPoet = "2.1.0"
 # https://mockk.io/
 mockk = "1.13.16"
 # https://detekt.dev/docs/intro
