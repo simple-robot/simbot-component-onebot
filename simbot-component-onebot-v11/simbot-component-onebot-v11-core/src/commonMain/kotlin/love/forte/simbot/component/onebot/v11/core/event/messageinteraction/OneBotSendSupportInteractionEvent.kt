@@ -164,3 +164,11 @@ public interface OneBotFriendPostSendEvent :
     override val content: OneBotFriend
 }
 //endregion
+
+//region OneBotMember
+// TODO
+//endregion
+
+//region OneBotMember
+// TODO
+//endregion
