@@ -17,15 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
-import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.event.FuzzyEventTypeImplementation
-import love.forte.simbot.event.MessageEvent
-import love.forte.simbot.event.MessageEventInteractionEvent
+import love.forte.simbot.component.onebot.v11.core.event.message.*
+import love.forte.simbot.event.*
 
 
 /**
- * OneBot组件中针对 [ReplySupport]（通常是 [MessageEvent]）的拦截或通知事件。
+ * OneBot组件中针对 [MessageEvent] 的拦截或通知事件。
  *
  * @see love.forte.simbot.component.onebot.v11.core.event.message.OneBotMessageEvent
  *
@@ -38,7 +36,165 @@ public interface OneBotMessageEventInteractionEvent :
     MessageEventInteractionEvent,
     OneBotInternalMessageInteractionEvent {
     override val bot: OneBotBot
-    override val content: MessageEvent
+    override val content: OneBotMessageEvent
 }
 
-// TODO
+/**
+ * OneBot组件中针对 [MessageEvent.reply] 的拦截事件。
+ * 可以对其中的参数进行修改。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OnebotMessageEventPreReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPreReplyEvent {
+    override val content: OneBotMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [MessageEvent.reply] 的通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OnebotMessageEventPostReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPostReplyEvent {
+    override val content: OneBotMessageEvent
+}
+
+//region Group
+
+/**
+ * OneBot组件中针对 [ChatGroupMessageEvent] 的拦截或通知事件。
+ *
+ * @since 1.6.0
+ * @see love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMessageEvent
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotGroupMessageEventInteractionEvent :
+    OneBotMessageEventInteractionEvent {
+    override val content: OneBotGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [ChatGroupMessageEvent.reply] 的拦截事件。
+ * 可以对其中的参数进行修改。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OnebotGroupMessageEventPreReplyEvent :
+    OneBotGroupMessageEventInteractionEvent,
+    MessageEventPreReplyEvent {
+    override val content: OneBotGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [ChatGroupMessageEvent.reply] 的通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OnebotGroupMessageEventPostReplyEvent :
+    OneBotGroupMessageEventInteractionEvent,
+    MessageEventPostReplyEvent {
+    override val content: OneBotGroupMessageEvent
+}
+
+// OneBotNormalGroupMessageEvent
+
+/**
+ * OneBot组件中针对 [OneBotNormalGroupMessageEvent] 的拦截或通知事件。
+ * @since 1.6.0
+ */
+public interface OneBotNormalGroupMessageEventInteractionEvent :
+    OneBotGroupMessageEventInteractionEvent,
+    ChatGroupMessageEventInteractionEvent {
+    override val content: OneBotNormalGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotNormalGroupMessageEvent.reply] 的拦截事件。
+ *
+ * @since 1.6.0
+ */
+public interface OneBotNormalGroupMessageEventPreReplyEvent :
+    OneBotNormalGroupMessageEventInteractionEvent,
+    OnebotGroupMessageEventPreReplyEvent {
+    override val content: OneBotNormalGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotNormalGroupMessageEvent.reply] 的通知事件。
+ * @since 1.6.0
+ */
+public interface OneBotNormalGroupMessageEventPostReplyEvent :
+    OneBotNormalGroupMessageEventInteractionEvent,
+    OnebotGroupMessageEventPostReplyEvent {
+    override val content: OneBotNormalGroupMessageEvent
+}
+
+// OneBotAnonymousGroupMessageEvent
+
+/**
+ * OneBot组件中针对 [OneBotAnonymousGroupMessageEvent] 的拦截或通知事件。
+ * @since 1.6.0
+ */
+public interface OneBotAnonymousGroupMessageEventInteractionEvent :
+    OneBotGroupMessageEventInteractionEvent,
+    ChatGroupMessageEventInteractionEvent {
+    override val content: OneBotAnonymousGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotAnonymousGroupMessageEvent.reply] 的拦截事件。
+ *
+ * @since 1.6.0
+ */
+public interface OneBotAnonymousGroupMessageEventPreReplyEvent :
+    OneBotAnonymousGroupMessageEventInteractionEvent,
+    OnebotGroupMessageEventPreReplyEvent {
+    override val content: OneBotAnonymousGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotAnonymousGroupMessageEvent.reply] 的通知事件。
+ * @since 1.6.0
+ */
+public interface OneBotAnonymousGroupMessageEventPostReplyEvent :
+    OneBotAnonymousGroupMessageEventInteractionEvent,
+    OnebotGroupMessageEventPostReplyEvent {
+    override val content: OneBotAnonymousGroupMessageEvent
+}
+
+// OneBotNoticeGroupMessageEvent
+
+/**
+ * OneBot组件中针对 [OneBotNoticeGroupMessageEvent] 的拦截或通知事件。
+ * @since 1.6.0
+ */
+public interface OneBotNoticeGroupMessageEventInteractionEvent :
+    OneBotGroupMessageEventInteractionEvent {
+    override val content: OneBotNoticeGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotNoticeGroupMessageEvent.reply] 的拦截事件。
+ *
+ * @since 1.6.0
+ */
+public interface OneBotNoticeGroupMessageEventPreReplyEvent :
+    OneBotNoticeGroupMessageEventInteractionEvent,
+    OnebotGroupMessageEventPreReplyEvent {
+    override val content: OneBotNoticeGroupMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotNoticeGroupMessageEvent.reply] 的通知事件。
+ * @since 1.6.0
+ */
+public interface OneBotNoticeGroupMessageEventPostReplyEvent :
+    OneBotNoticeGroupMessageEventInteractionEvent,
+    OnebotGroupMessageEventPostReplyEvent {
+    override val content: OneBotNoticeGroupMessageEvent
+}
+
+//endregion

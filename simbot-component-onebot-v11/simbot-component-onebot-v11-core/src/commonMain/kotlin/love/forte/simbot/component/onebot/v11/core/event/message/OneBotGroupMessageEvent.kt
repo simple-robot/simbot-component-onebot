@@ -88,6 +88,7 @@ public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
  * 即 [subType] == `normal`
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup
@@ -99,6 +100,7 @@ public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGr
  * 即 [subType] == `anonymous`
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup
