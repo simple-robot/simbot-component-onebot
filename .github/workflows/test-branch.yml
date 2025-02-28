@@ -28,6 +28,10 @@ jobs:
         os: [ macos-latest, windows-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
+      # https://github.com/actions/checkout/issues/242#issuecomment-627501270
+      # fix `Filename too long` 👆
+      - name: git configure long path
+        run: git config --global core.longpaths true
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
