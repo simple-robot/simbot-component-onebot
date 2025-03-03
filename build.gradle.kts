@@ -154,18 +154,6 @@ apiValidation {
 
 // region Dokka
 
-// childProjects.values.forEach { childProject ->
-//     childProject.afterEvaluate {
-//         if (childProject.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
-//             dokka {
-//                 configSourceSets(childProject)
-//                 configHtmlCustoms(childProject)
-//             }
-//             rootProject.dependencies.dokka(childProject)
-//         }
-//     }
-// }
-
 subprojects {
     afterEvaluate {
         val p = this
@@ -173,7 +161,7 @@ subprojects {
             dokka {
                 configSourceSets(p)
                 pluginsConfiguration.html {
-                    configHtmlCustoms(project)
+                    configHtmlCustoms(p)
                 }
             }
             rootProject.dependencies.dokka(p)
