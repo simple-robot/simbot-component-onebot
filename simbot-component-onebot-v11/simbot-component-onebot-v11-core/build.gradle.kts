@@ -60,8 +60,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            // JVM compileOnly
             implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
+            implementation(libs.jetbrains.annotations)
+
+            api(libs.simbot.common.annotations)
+            implementation(libs.simbot.common.atomic)
 
             api(project(":simbot-component-onebot-common"))
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-common"))
@@ -88,7 +92,9 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.simbot.api)
                 compileOnly(libs.ktor.client.contentNegotiation)
+                compileOnly(libs.jetbrains.annotations)
             }
         }
 

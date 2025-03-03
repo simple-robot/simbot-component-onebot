@@ -27,14 +27,17 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroupDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
-import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractMessagePreSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotGroupPostSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotGroupPreSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotInternalMessagePostSendEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessageContent
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.event.InteractionMessage
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
@@ -42,8 +45,8 @@ import kotlin.jvm.JvmInline
 
 internal abstract class OneBotGroupImpl(
     initialName: String
-) : OneBotGroup {
-    protected abstract val bot: OneBotBotImpl
+) : AbstractSendSupport(), OneBotGroup {
+    abstract override val bot: OneBotBotImpl
 
     @Volatile
     override var name: String = initialName
@@ -76,7 +79,6 @@ internal abstract class OneBotGroupImpl(
         return result.dataOrThrow.toMember(bot)
     }
 
-
     override suspend fun setAnonymous(enable: Boolean) {
         bot.executeData(
             SetGroupAnonymousApi.create(
@@ -86,35 +88,42 @@ internal abstract class OneBotGroupImpl(
         )
     }
 
-    override suspend fun send(text: String): OneBotMessageReceipt {
+    override fun preSendEvent(interactionMessage: OneBotSegmentsInteractionMessage): AbstractMessagePreSendEventImpl {
+        return OneBotGroupPreSendEventImpl(
+            this,
+            bot,
+            interactionMessage
+        )
+    }
+
+
+    override suspend fun sendText(text: String): SendMsgResult {
         return bot.executeData(
             sendGroupTextMsgApi(
                 target = id,
                 text = text,
             )
-        ).toReceipt(bot)
+        )
     }
 
-    override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
-        if (messageContent is OneBotMessageContent) {
-            return bot.executeData(
-                sendGroupMsgApi(
-                    target = id,
-                    message = messageContent.sourceSegments,
-                )
-            ).toReceipt(bot)
-        }
-
-        return send(messageContent.messages)
-    }
-
-    override suspend fun send(message: Message): OneBotMessageReceipt {
+    override suspend fun sendSegments(segments: List<OneBotMessageSegment>): SendMsgResult {
         return bot.executeData(
             sendGroupMsgApi(
                 target = id,
-                message = message.resolveToOneBotSegmentList(bot)
+                message = segments,
             )
-        ).toReceipt(bot)
+        )
+    }
+
+    override fun OneBotMessageReceipt.postSendEvent(
+        interactionMessage: InteractionMessage
+    ): OneBotInternalMessagePostSendEvent {
+        return OneBotGroupPostSendEventImpl(
+            content = this@OneBotGroupImpl,
+            bot = bot,
+            receipt = this,
+            message = interactionMessage.toOneBotSegmentsInteractionMessage()
+        )
     }
 
     override suspend fun delete(vararg options: DeleteOption) {
@@ -206,6 +215,23 @@ internal abstract class OneBotGroupImpl(
         bot.executeData(GetGroupHonorInfoApi.create(groupId = id, type = type))
 
     override fun toString(): String = "OneBotGroup(id=$id, bot=${bot.id})"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OneBotGroupImpl) return false
+
+        if (name != other.name) return false
+        if (bot != other.bot) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + bot.hashCode()
+        return result
+    }
+
+
 }
 
 /**

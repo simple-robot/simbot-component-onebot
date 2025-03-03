@@ -27,16 +27,19 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotMemberRole
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
-import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractMessagePreSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotMemberPostSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotMemberPreSendEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotInternalMessagePostSendEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessageContent
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.event.InteractionMessage
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
@@ -46,8 +49,8 @@ import kotlin.time.Duration
 internal abstract class OneBotMemberImpl(
     initialRole: OneBotMemberRole?,
     initialNick: String?
-) : OneBotMember {
-    protected abstract val bot: OneBotBotImpl
+) : AbstractSendSupport(), OneBotMember {
+    abstract override val bot: OneBotBotImpl
     protected abstract val groupId: ID?
 
     protected inline val groupIdOrFailure: ID
@@ -60,35 +63,41 @@ internal abstract class OneBotMemberImpl(
     @Volatile
     override var nick: String? = initialNick
 
-    override suspend fun send(text: String): OneBotMessageReceipt {
+    override fun preSendEvent(interactionMessage: OneBotSegmentsInteractionMessage): AbstractMessagePreSendEventImpl {
+        return OneBotMemberPreSendEventImpl(
+            this,
+            bot,
+            interactionMessage
+        )
+    }
+
+    override suspend fun sendText(text: String): SendMsgResult {
         return bot.executeData(
             sendPrivateTextMsgApi(
                 target = id,
                 text = text,
             )
-        ).toReceipt(bot)
+        )
     }
 
-    override suspend fun send(messageContent: MessageContent): OneBotMessageReceipt {
-        if (messageContent is OneBotMessageContent) {
-            return bot.executeData(
-                sendPrivateMsgApi(
-                    target = id,
-                    message = messageContent.sourceSegments,
-                )
-            ).toReceipt(bot)
-        }
-
-        return send(messageContent.messages)
-    }
-
-    override suspend fun send(message: Message): OneBotMessageReceipt {
+    override suspend fun sendSegments(segments: List<OneBotMessageSegment>): SendMsgResult {
         return bot.executeData(
             sendPrivateMsgApi(
                 target = id,
-                message = message.resolveToOneBotSegmentList(bot)
+                message = segments,
             )
-        ).toReceipt(bot)
+        )
+    }
+
+    override fun OneBotMessageReceipt.postSendEvent(
+        interactionMessage: InteractionMessage
+    ): OneBotInternalMessagePostSendEvent {
+        return OneBotMemberPostSendEventImpl(
+            content = this@OneBotMemberImpl,
+            bot = bot,
+            receipt = this,
+            message = interactionMessage.toOneBotSegmentsInteractionMessage()
+        )
     }
 
     override suspend fun delete(vararg options: DeleteOption) {

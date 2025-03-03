@@ -24,9 +24,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.SerializationException
@@ -54,8 +52,12 @@ import love.forte.simbot.component.onebot.v11.core.actor.internal.toGroup
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.actor.internal.toStranger
 import love.forte.simbot.component.onebot.v11.core.api.*
-import love.forte.simbot.component.onebot.v11.core.bot.*
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotFriendRelation
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotGroupRelation
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
+import love.forte.simbot.component.onebot.v11.core.event.OneBotInternalInterceptionException
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnknownEvent
 import love.forte.simbot.component.onebot.v11.core.event.OneBotUnsupportedEvent
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.*
@@ -78,9 +80,7 @@ import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventProcessor
-import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.*
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
@@ -298,7 +298,6 @@ internal class OneBotBotImpl(
         // 直接连接、断线重连
         return WsEventSession(wsClient, host)
     }
-
 
     private inner class WsEventSession(
         val wsClient: HttpClient,
@@ -643,10 +642,28 @@ internal class OneBotBotImpl(
         return pushEvent(resolveRawEventToEvent(rawEvent, event))
     }
 
-    private fun pushEvent(event: Event): Flow<EventResult> {
+    internal fun pushEvent(event: Event): Flow<EventResult> {
         return eventProcessor
             .push(event)
             .onEachErrorLog(logger)
+    }
+
+    internal fun pushEventAndLaunch(event: Event): Job {
+        return pushEvent(event).launchIn(this)
+    }
+
+    internal suspend fun emitMessagePreSendEvent(event: InternalMessagePreSendEvent) {
+        val errors = eventProcessor
+            .push(event)
+            .filterIsInstance<StandardEventResult.Error>()
+            .toList()
+
+        if (errors.isNotEmpty()) {
+            val ex = OneBotInternalInterceptionException("Internal message pre send event process failed")
+            errors.forEach { ex.addSuppressed(it.content) }
+            logger.error("Internal message pre send event process failed", ex)
+            throw ex
+        }
     }
 
     override fun toString(): String =
