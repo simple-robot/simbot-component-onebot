@@ -68,7 +68,9 @@ internal abstract class OneBotFriendImpl : AbstractSendSupport(), OneBotFriend {
         )
     }
 
-    override fun OneBotMessageReceipt.postSendEvent(interactionMessage: InteractionMessage): OneBotInternalMessagePostSendEvent {
+    override fun OneBotMessageReceipt.postSendEvent(
+        interactionMessage: InteractionMessage
+    ): OneBotInternalMessagePostSendEvent {
         return OneBotFriendPostSendEventImpl(
             content = this@OneBotFriendImpl,
             bot = bot,
