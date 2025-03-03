@@ -46,7 +46,7 @@ public interface OneBotMessageEventInteractionEvent :
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface OnebotMessageEventPreReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPreReplyEvent {
+public interface OneBotMessageEventPreReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: OneBotMessageEvent
 }
 
@@ -56,8 +56,9 @@ public interface OnebotMessageEventPreReplyEvent : OneBotMessageEventInteraction
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface OnebotMessageEventPostReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPostReplyEvent {
+public interface OneBotMessageEventPostReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: OneBotMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
 }
 
 //region Group
@@ -81,9 +82,9 @@ public interface OneBotGroupMessageEventInteractionEvent :
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface OnebotGroupMessageEventPreReplyEvent :
+public interface OneBotGroupMessageEventPreReplyEvent :
     OneBotGroupMessageEventInteractionEvent,
-    MessageEventPreReplyEvent {
+    OneBotMessageEventPreReplyEvent {
     override val content: OneBotGroupMessageEvent
 }
 
@@ -93,10 +94,11 @@ public interface OnebotGroupMessageEventPreReplyEvent :
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface OnebotGroupMessageEventPostReplyEvent :
+public interface OneBotGroupMessageEventPostReplyEvent :
     OneBotGroupMessageEventInteractionEvent,
-    MessageEventPostReplyEvent {
+    OneBotMessageEventPostReplyEvent {
     override val content: OneBotGroupMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
 }
 
 // OneBotNormalGroupMessageEvent
@@ -118,7 +120,7 @@ public interface OneBotNormalGroupMessageEventInteractionEvent :
  */
 public interface OneBotNormalGroupMessageEventPreReplyEvent :
     OneBotNormalGroupMessageEventInteractionEvent,
-    OnebotGroupMessageEventPreReplyEvent {
+    OneBotGroupMessageEventPreReplyEvent {
     override val content: OneBotNormalGroupMessageEvent
 }
 
@@ -128,8 +130,9 @@ public interface OneBotNormalGroupMessageEventPreReplyEvent :
  */
 public interface OneBotNormalGroupMessageEventPostReplyEvent :
     OneBotNormalGroupMessageEventInteractionEvent,
-    OnebotGroupMessageEventPostReplyEvent {
+    OneBotGroupMessageEventPostReplyEvent {
     override val content: OneBotNormalGroupMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
 }
 
 // OneBotAnonymousGroupMessageEvent
@@ -151,7 +154,7 @@ public interface OneBotAnonymousGroupMessageEventInteractionEvent :
  */
 public interface OneBotAnonymousGroupMessageEventPreReplyEvent :
     OneBotAnonymousGroupMessageEventInteractionEvent,
-    OnebotGroupMessageEventPreReplyEvent {
+    OneBotGroupMessageEventPreReplyEvent {
     override val content: OneBotAnonymousGroupMessageEvent
 }
 
@@ -161,8 +164,9 @@ public interface OneBotAnonymousGroupMessageEventPreReplyEvent :
  */
 public interface OneBotAnonymousGroupMessageEventPostReplyEvent :
     OneBotAnonymousGroupMessageEventInteractionEvent,
-    OnebotGroupMessageEventPostReplyEvent {
+    OneBotGroupMessageEventPostReplyEvent {
     override val content: OneBotAnonymousGroupMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
 }
 
 // OneBotNoticeGroupMessageEvent
@@ -183,7 +187,7 @@ public interface OneBotNoticeGroupMessageEventInteractionEvent :
  */
 public interface OneBotNoticeGroupMessageEventPreReplyEvent :
     OneBotNoticeGroupMessageEventInteractionEvent,
-    OnebotGroupMessageEventPreReplyEvent {
+    OneBotGroupMessageEventPreReplyEvent {
     override val content: OneBotNoticeGroupMessageEvent
 }
 
@@ -193,8 +197,130 @@ public interface OneBotNoticeGroupMessageEventPreReplyEvent :
  */
 public interface OneBotNoticeGroupMessageEventPostReplyEvent :
     OneBotNoticeGroupMessageEventInteractionEvent,
-    OnebotGroupMessageEventPostReplyEvent {
+    OneBotGroupMessageEventPostReplyEvent {
     override val content: OneBotNoticeGroupMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
 }
 
+//endregion
+
+// Privates
+
+//region Private
+
+/**
+ * OneBot组件中针对 [OneBotPrivateMessageEvent] 的拦截或通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotPrivateMessageEventInteractionEvent :
+    OneBotMessageEventInteractionEvent {
+    override val content: OneBotPrivateMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotPrivateMessageEvent.reply] 的拦截事件。
+ * 可以对其中的参数进行修改。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotPrivateMessageEventPreReplyEvent :
+    OneBotPrivateMessageEventInteractionEvent,
+    OneBotMessageEventPreReplyEvent {
+    override val content: OneBotPrivateMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotPrivateMessageEvent.reply] 的通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotPrivateMessageEventPostReplyEvent :
+    OneBotPrivateMessageEventInteractionEvent,
+    OneBotMessageEventPostReplyEvent {
+    override val content: OneBotPrivateMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
+}
+//region Group Private
+
+/**
+ * OneBot组件中针对 [OneBotPrivateMessageEvent] 的拦截或通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotGroupPrivateMessageEventInteractionEvent :
+    OneBotPrivateMessageEventInteractionEvent {
+    override val content: OneBotGroupPrivateMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotPrivateMessageEvent.reply] 的拦截事件。
+ * 可以对其中的参数进行修改。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotGroupPrivateMessageEventPreReplyEvent :
+    OneBotGroupPrivateMessageEventInteractionEvent,
+    OneBotPrivateMessageEventPreReplyEvent {
+    override val content: OneBotGroupPrivateMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotPrivateMessageEvent.reply] 的通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotGroupPrivateMessageEventPostReplyEvent :
+    OneBotGroupPrivateMessageEventInteractionEvent,
+    OneBotPrivateMessageEventPostReplyEvent {
+    override val content: OneBotGroupPrivateMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
+}
+//endregion
+
+//region Friend Private
+
+/**
+ * OneBot组件中针对 [OneBotFriendMessageEvent] 的拦截或通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotFriendMessageEventInteractionEvent :
+    OneBotPrivateMessageEventInteractionEvent {
+    override val content: OneBotFriendMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotFriendMessageEvent.reply] 的拦截事件。
+ * 可以对其中的参数进行修改。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotFriendMessageEventPreReplyEvent :
+    OneBotFriendMessageEventInteractionEvent,
+    OneBotPrivateMessageEventPreReplyEvent {
+    override val content: OneBotFriendMessageEvent
+}
+
+/**
+ * OneBot组件中针对 [OneBotFriendMessageEvent.reply] 的通知事件。
+ *
+ * @since 1.6.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OneBotFriendMessageEventPostReplyEvent :
+    OneBotFriendMessageEventInteractionEvent,
+    OneBotPrivateMessageEventPostReplyEvent {
+    override val content: OneBotFriendMessageEvent
+    override val message: OneBotSegmentsInteractionMessage
+}
+//endregion
 //endregion

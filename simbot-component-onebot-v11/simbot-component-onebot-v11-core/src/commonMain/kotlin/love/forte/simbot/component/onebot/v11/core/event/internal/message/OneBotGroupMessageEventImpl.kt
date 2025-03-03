@@ -31,25 +31,21 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMess
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNoticeGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OnebotGroupMessageEventPostReplyEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.segmentsOrNull
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupMessageEventPostReplyEvent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
-import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
-import love.forte.simbot.component.onebot.v11.core.utils.*
+import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
+import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.PlainText
 
 internal abstract class OneBotGroupMessageEventImpl(
     sourceEvent: RawGroupMessageEvent,
     final override val bot: OneBotBotImpl
-) : OneBotGroupMessageEvent {
+) : AbstractReplySupportInteractionEvent(), OneBotGroupMessageEvent {
 
     override val id: ID
         get() = "${sourceEvent.groupId}-${sourceEvent.messageId}".ID
@@ -68,52 +64,13 @@ internal abstract class OneBotGroupMessageEventImpl(
             ?: error("Group with id $groupId is not found")
     }
 
-    override suspend fun reply(text: String): OneBotMessageReceipt {
-        val interactionMessage = OneBotSegmentsInteractionMessage(text = text)
-        return interceptionAndReply(interactionMessage)
-    }
-
-    override suspend fun reply(messageContent: MessageContent): OneBotMessageReceipt {
-        val interactionMessage = OneBotSegmentsInteractionMessage(content = messageContent)
-        return interceptionAndReply(interactionMessage)
-    }
-
-    override suspend fun reply(message: Message): OneBotMessageReceipt {
-        val interactionMessage = OneBotSegmentsInteractionMessage(message = message, bot = bot)
-        return interceptionAndReply(interactionMessage)
-    }
-
-    protected abstract fun preReplyEvent(interactionMessage: OneBotSegmentsInteractionMessage):
+    abstract override fun preReplyEvent(interactionMessage: OneBotSegmentsInteractionMessage):
         AbstractMessagePreSendEventImpl
 
-    private suspend fun interceptionAndReply(
-        interactionMessage: OneBotSegmentsInteractionMessage
-    ): OneBotMessageReceipt {
-        val event = preReplyEvent(interactionMessage)
+    abstract override fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
+        OneBotGroupMessageEventPostReplyEvent
 
-        val currentMessage = bot.emitMessagePreSendEventAndUseCurrentMessage(event)
-        val segments = currentMessage.segmentsOrNull
-        if (segments != null) {
-            return replySegments(segments).toReceipt(bot).alsoPostReply(currentMessage)
-        }
-
-        return replyByInteractionMessage(currentMessage).toReceipt(bot).alsoPostReply(currentMessage)
-    }
-
-    /**
-     * 解析一个 [InteractionMessage] 为一个 [OneBotMessageSegment] 的列表并发送。
-     * 始终认为 `segments` 为 `null`。
-     */
-    private suspend fun replyByInteractionMessage(interactionMessage: InteractionMessage): SendMsgResult {
-        return resolveInteractionMessage(
-            interactionMessage = interactionMessage,
-            onSegments = { replySegments(it) },
-            onMessage = { replyMessage(it) },
-            onText = { replyText(it) },
-        )
-    }
-
-    private suspend fun replyText(text: String): SendMsgResult {
+    override suspend fun replyText(text: String): SendMsgResult {
         return bot.executeData(
             sendGroupTextMsgApi(
                 target = sourceEvent.groupId,
@@ -123,14 +80,7 @@ internal abstract class OneBotGroupMessageEventImpl(
         )
     }
 
-    private suspend fun replyMessage(message: Message): SendMsgResult {
-        return when (message) {
-            is PlainText -> replyText(message.text)
-            else -> replySegments(message.resolveToOneBotSegmentList(bot))
-        }
-    }
-
-    private suspend fun replySegments(segments: List<OneBotMessageSegment>): SendMsgResult {
+    override suspend fun replySegments(segments: List<OneBotMessageSegment>): SendMsgResult {
         return bot.executeData(
             sendGroupMsgApi(
                 target = sourceEvent.groupId,
@@ -138,16 +88,6 @@ internal abstract class OneBotGroupMessageEventImpl(
                 reply = sourceEvent.messageId
             )
         )
-    }
-
-    protected abstract fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
-        OnebotGroupMessageEventPostReplyEvent
-
-    private fun OneBotMessageReceipt.alsoPostReply(
-        interactionMessage: InteractionMessage
-    ): OneBotMessageReceipt = apply {
-        val event = postReplyEvent(interactionMessage)
-        bot.pushEventAndLaunch(event)
     }
 }
 
@@ -170,7 +110,7 @@ internal class OneBotNormalGroupMessageEventImpl(
     }
 
     override fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
-        OnebotGroupMessageEventPostReplyEvent {
+        OneBotGroupMessageEventPostReplyEvent {
         return OneBotNormalGroupMessageEventPostReplyEventImpl(
             bot,
             content = this@OneBotNormalGroupMessageEventImpl,
@@ -202,7 +142,7 @@ internal class OneBotAnonymousGroupMessageEventImpl(
     }
 
     override fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
-        OnebotGroupMessageEventPostReplyEvent {
+        OneBotGroupMessageEventPostReplyEvent {
         return OneBotAnonymousGroupMessageEventPostReplyEventImpl(
             bot,
             content = this@OneBotAnonymousGroupMessageEventImpl,
@@ -229,7 +169,7 @@ internal class OneBotNoticeGroupMessageEventImpl(
     }
 
     override fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
-        OnebotGroupMessageEventPostReplyEvent {
+        OneBotGroupMessageEventPostReplyEvent {
         return OneBotNoticeGroupMessageEventPostReplyEventImpl(
             bot,
             content = this@OneBotNoticeGroupMessageEventImpl,
@@ -256,7 +196,7 @@ internal class OneBotDefaultGroupMessageEventImpl(
     }
 
     override fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
-        OnebotGroupMessageEventPostReplyEvent {
+        OneBotGroupMessageEventPostReplyEvent {
         return OneBotDefaultGroupMessageEventPostReplyEventImpl(
             bot,
             content = this@OneBotDefaultGroupMessageEventImpl,

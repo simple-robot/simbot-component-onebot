@@ -18,13 +18,17 @@ import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBotConfiguration
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotAnonymousGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNormalGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotNoticeGroupMessageEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.message.OneBotAnonymousGroupMessageEvent
-import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGroupMessageEvent
-import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNoticeGroupMessageEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.*
+import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotFriendMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotGroupPrivateMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
+import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupPrivateMessageEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotFriendMessageEventPostReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotFriendMessageEventPreReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupPrivateMessageEventPostReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupPrivateMessageEventPreReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotPrivateMessageEventPostReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotPrivateMessageEventPreReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.useOneBot11
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.event.*
@@ -39,7 +43,7 @@ import kotlin.test.assertNull
  *
  * @author ForteScarlet
  */
-class GroupMessageEventInteractionTests {
+class PrivateMessageEventInteractionTests {
     private fun spykBot(dispatcher: EventDispatcher): OneBotBotImpl {
         return spyk(
             OneBotBotImpl(
@@ -58,13 +62,13 @@ class GroupMessageEventInteractionTests {
     }
 
     @Test
-    fun testNormalGroupInteractionEvent() = runTest {
-        testInteractionTextReplacementEvent<
-            OneBotNormalGroupMessageEvent,
-            OneBotNormalGroupMessageEventPreReplyEvent,
-            OneBotNormalGroupMessageEventPostReplyEvent,
+    fun testFriendMessageEvent() = runTest {
+        testInteractionEvent<
+            OneBotFriendMessageEvent,
+            OneBotFriendMessageEventPreReplyEvent,
+            OneBotFriendMessageEventPostReplyEvent,
             > { bot ->
-            OneBotNormalGroupMessageEventImpl(
+            OneBotFriendMessageEventImpl(
                 null,
                 mockk(relaxed = true),
                 bot
@@ -73,42 +77,26 @@ class GroupMessageEventInteractionTests {
     }
 
     @Test
-    fun testAnonymousGroupMessageEvent() = runTest {
-        testInteractionTextReplacementEvent<
-            OneBotAnonymousGroupMessageEvent,
-            OneBotAnonymousGroupMessageEventPreReplyEvent,
-            OneBotAnonymousGroupMessageEventPostReplyEvent,
+    fun testGroupPrivateMessageEvent() = runTest {
+        testInteractionEvent<
+            OneBotGroupPrivateMessageEvent,
+            OneBotGroupPrivateMessageEventPreReplyEvent,
+            OneBotGroupPrivateMessageEventPostReplyEvent,
             > { bot ->
-            OneBotAnonymousGroupMessageEventImpl(
+            OneBotGroupPrivateMessageEventImpl(
                 null,
                 mockk(relaxed = true),
                 bot
             )
         }
     }
-
-    @Test
-    fun testNoticeGroupMessageEvent() = runTest {
-        testInteractionTextReplacementEvent<
-            OneBotNoticeGroupMessageEvent,
-            OneBotNoticeGroupMessageEventPreReplyEvent,
-            OneBotNoticeGroupMessageEventPostReplyEvent,
-            > { bot ->
-            OneBotNoticeGroupMessageEventImpl(
-                null,
-                mockk(relaxed = true),
-                bot
-            )
-        }
-    }
-
 
     @OptIn(ApiResultConstructor::class)
     private suspend inline fun <
         reified E,
-        reified PRE_E : OneBotGroupMessageEventPreReplyEvent,
-        reified POST_E : OneBotGroupMessageEventPostReplyEvent
-        > testInteractionTextReplacementEvent(
+        reified PRE_E : OneBotPrivateMessageEventPreReplyEvent,
+        reified POST_E : OneBotPrivateMessageEventPostReplyEvent
+        > testInteractionEvent(
         block: (b: OneBotBotImpl) -> E,
     ) where E : Event, E : ReplySupport {
         val app = launchSimpleApplication {

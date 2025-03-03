@@ -55,4 +55,6 @@ public interface OneBotInternalMessagePreSendEvent :
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotInternalMessagePostSendEvent :
     OneBotInternalMessageInteractionEvent,
-    InternalMessagePostSendEvent
+    InternalMessagePostSendEvent {
+    override val message: OneBotSegmentsInteractionMessage
+}

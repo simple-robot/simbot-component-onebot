@@ -27,3 +27,5 @@ package love.forte.simbot.component.onebot.common.annotations
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @MustBeDocumented
 public annotation class OneBotInternalImplementationsOnly
+
+// TODO be SubclassOptInRequired ?

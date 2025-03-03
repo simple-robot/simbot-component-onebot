@@ -62,7 +62,9 @@ public interface OneBotSendSupportPreSendEvent : SendSupportPreSendEvent, OneBot
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface OneBotSendSupportPostSendEvent : SendSupportPostSendEvent, OneBotSendSupportInteractionEvent
+public interface OneBotSendSupportPostSendEvent : SendSupportPostSendEvent, OneBotSendSupportInteractionEvent {
+    override val message: OneBotSegmentsInteractionMessage
+}
 
 //region OneBotGroup
 
@@ -112,6 +114,7 @@ public interface OneBotGroupPostSendEvent :
     OneBotGroupInteractionEvent,
     ChatGroupPostSendEvent {
     override val content: OneBotGroup
+    override val message: OneBotSegmentsInteractionMessage
 }
 //endregion
 
@@ -163,6 +166,7 @@ public interface OneBotFriendPostSendEvent :
     OneBotFriendInteractionEvent,
     ContactPostSendEvent {
     override val content: OneBotFriend
+    override val message: OneBotSegmentsInteractionMessage
 }
 //endregion
 
@@ -201,5 +205,6 @@ public interface OneBotMemberPostSendEvent :
     OneBotMemberInteractionEvent,
     MemberPostSendEvent {
     override val content: OneBotMember
+    override val message: OneBotSegmentsInteractionMessage
 }
 //endregion

@@ -18,21 +18,22 @@
 package love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction
 
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.event.internal.message.OneBotDefaultGroupMessageEventImpl
+import love.forte.simbot.component.onebot.v11.core.event.message.OneBotPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupMessageEventPostReplyEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotGroupMessageEventPreReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotPrivateMessageEventPostReplyEvent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotPrivateMessageEventPreReplyEvent
 import love.forte.simbot.message.MessageReceipt
 
-internal class OneBotDefaultGroupMessageEventPreReplyEventImpl(
-    override val bot: OneBotBot,
-    override val content: OneBotDefaultGroupMessageEventImpl,
-    message: OneBotSegmentsInteractionMessage,
-) : AbstractMessagePreSendEventImpl(message), OneBotGroupMessageEventPreReplyEvent
 
-internal class OneBotDefaultGroupMessageEventPostReplyEventImpl(
+internal class OneBotDefaultPrivateMessageEventPreReplyEventImpl(
     override val bot: OneBotBot,
-    override val content: OneBotDefaultGroupMessageEventImpl,
+    override val content: OneBotPrivateMessageEvent,
+    message: OneBotSegmentsInteractionMessage,
+) : AbstractMessagePreSendEventImpl(message), OneBotPrivateMessageEventPreReplyEvent
+
+internal class OneBotDefaultPrivateMessageEventPostReplyEventImpl(
+    override val bot: OneBotBot,
+    override val content: OneBotPrivateMessageEvent,
     override val receipt: MessageReceipt,
     override val message: OneBotSegmentsInteractionMessage,
-) : AbstractMessagePostSendEventImpl(), OneBotGroupMessageEventPostReplyEvent
+) : AbstractMessagePostSendEventImpl(), OneBotPrivateMessageEventPostReplyEvent

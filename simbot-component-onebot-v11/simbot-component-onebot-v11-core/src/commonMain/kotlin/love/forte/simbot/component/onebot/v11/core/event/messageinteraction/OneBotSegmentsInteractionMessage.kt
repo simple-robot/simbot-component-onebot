@@ -51,7 +51,7 @@ public class OneBotSegmentsInteractionMessage private constructor(
      *
      * ## 接收时
      *
-     * 当通过事件获取到 [OneBotSegmentsInteractionMessage] 时:
+     * 当通过 post send/reply 事件获取到 [OneBotSegmentsInteractionMessage] 时:
      * - 如果 [message] 为 [InteractionMessage.Text] 时，
      * 代表发送纯文本消息，不需要解析 `segments`, 此时 [segments] 为 `null`。
      *
