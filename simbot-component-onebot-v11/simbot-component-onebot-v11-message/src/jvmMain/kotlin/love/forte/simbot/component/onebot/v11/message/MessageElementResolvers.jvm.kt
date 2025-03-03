@@ -21,26 +21,14 @@ import kotlinx.coroutines.*
 import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.message.JvmOfflineImageValueResolver
 import love.forte.simbot.message.Message
-import love.forte.simbot.message.OfflineImage
-import love.forte.simbot.message.OfflineImageValueResolver
-import love.forte.simbot.resource.Resource
-import love.forte.simbot.resource.URIResource
-import love.forte.simbot.resource.toResource
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
-import java.io.File
-import java.net.URI
-import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.resume
 
 /**
  * 将 [Message] 解析为一用于API请求的 [OneBotMessageSegment] 列表。
@@ -110,70 +98,3 @@ public fun Message.Element.resolveToOneBotSegmentReserve(): SuspendReserve<OneBo
     ) { resolveToOneBotSegment() }
 
 
-internal actual fun offlineImageResolver(
-    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?,
-): OfflineImageValueResolver<Continuation<OneBotMessageSegment?>> =
-    object : JvmOfflineImageValueResolver<Continuation<OneBotMessageSegment?>>() {
-        override fun resolveUnknownInternal(image: OfflineImage, context: Continuation<OneBotMessageSegment?>) {
-            resolveUnknown0(context)
-        }
-
-        override fun resolveByteArray(byteArray: ByteArray, context: Continuation<OneBotMessageSegment?>) {
-            resolveByteArray0(defaultImageAdditionalParams, byteArray, context)
-        }
-
-        /**
-         * 文件类型，转为 Resource，[OneBotImage] 会进行处理，转为文件的路径地址。
-         * `file:xxx`
-         */
-        override fun resolveFile(file: File, context: Continuation<OneBotMessageSegment?>) {
-            val resource = file.toResource()
-            val additional = defaultImageAdditionalParams?.invoke(resource)
-            context.resume(
-                OneBotImage.create(
-                    resource,
-                    additional
-                )
-            )
-        }
-
-        /**
-         * 文件类型，转为 Resource，[OneBotImage] 会进行处理，转为文件的路径地址。
-         * `file:xxx`
-         */
-        override fun resolvePath(path: Path, context: Continuation<OneBotMessageSegment?>) {
-            val resource = path.toResource()
-            val additional = defaultImageAdditionalParams?.invoke(resource)
-            context.resume(
-                OneBotImage.create(
-                    resource,
-                    additional
-                )
-            )
-        }
-
-        override fun resolveString(string: String, context: Continuation<OneBotMessageSegment?>) {
-            resolveString0(defaultImageAdditionalParams, string, context)
-        }
-
-        /**
-         * 一个不是本地文件的 [URI],
-         * 则视其为一个网络链接。
-         * 直接提供 [URIResource], [OneBotImage]
-         * 会进行处理，直接使用它的链接地址。
-         */
-        override fun resolveURINotFileScheme(uri: URI, context: Continuation<OneBotMessageSegment?>) {
-            val resource = uri.toResource()
-            val additional = defaultImageAdditionalParams?.invoke(resource)
-            context.resume(
-                OneBotImage.create(
-                    resource,
-                    additional
-                )
-            )
-        }
-
-        override fun resolveUnknownInternal(resource: Resource, context: Continuation<OneBotMessageSegment?>) {
-            resolveByteArray(resource.data(), context)
-        }
-    }

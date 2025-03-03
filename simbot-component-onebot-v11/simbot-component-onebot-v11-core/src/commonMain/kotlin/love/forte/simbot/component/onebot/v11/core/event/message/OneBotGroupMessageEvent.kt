@@ -25,6 +25,7 @@ import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.ChatGroupMessageEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.suspendrunner.STP
 
 
@@ -40,6 +41,7 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
     override val sourceEvent: RawGroupMessageEvent
     override val messageContent: OneBotMessageContent
@@ -86,6 +88,7 @@ public interface OneBotGroupMessageEvent : OneBotMessageEvent, ChatGroupEvent {
  * 即 [subType] == `normal`
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup
@@ -97,6 +100,7 @@ public interface OneBotNormalGroupMessageEvent : OneBotGroupMessageEvent, ChatGr
  * 即 [subType] == `anonymous`
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotAnonymousGroupMessageEvent : OneBotGroupMessageEvent, ChatGroupMessageEvent {
     override val messageContent: OneBotMessageContent
     override suspend fun content(): OneBotGroup

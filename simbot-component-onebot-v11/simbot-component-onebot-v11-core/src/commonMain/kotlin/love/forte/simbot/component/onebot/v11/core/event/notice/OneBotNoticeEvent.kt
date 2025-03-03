@@ -19,6 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.notice
 
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
 import love.forte.simbot.component.onebot.v11.event.notice.RawNoticeEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 
 /**
@@ -28,6 +29,7 @@ import love.forte.simbot.component.onebot.v11.event.notice.RawNoticeEvent
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotNoticeEvent : OneBotBotEvent {
     override val sourceEvent: RawNoticeEvent
 }

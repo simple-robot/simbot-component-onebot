@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
-    `simbot-onebot-dokka-partial-configure`
+    id("org.jetbrains.dokka")
 }
 
 setup(P.ComponentOneBot)
@@ -51,9 +51,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
+            api(libs.simbot.common.annotations)
         }
-        libs
 
         commonTest.dependencies {
             api(libs.simbot.core)
@@ -62,6 +61,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.simbot.api)
             }
         }
 

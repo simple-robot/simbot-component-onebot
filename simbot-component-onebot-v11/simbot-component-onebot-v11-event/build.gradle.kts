@@ -24,8 +24,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    `simbot-onebot-dokka-partial-configure`
-
+    id("org.jetbrains.dokka")
     alias(libs.plugins.ksp)
 }
 
@@ -56,9 +55,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
+            api(libs.simbot.common.annotations)
+            api(project(":simbot-component-onebot-common"))
             implementation(libs.kotlinx.serialization.json)
-            implementation(project(":simbot-component-onebot-common"))
 
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-common"))
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-message"))
@@ -74,6 +73,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.simbot.api)
             }
         }
 

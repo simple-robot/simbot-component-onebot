@@ -21,6 +21,7 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.notice.RawGroupBanEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.MemberEvent
 import love.forte.simbot.suspendrunner.STP
 import kotlin.time.Duration
@@ -34,6 +35,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupBanEvent : OneBotNoticeEvent, MemberEvent {
     override val sourceEvent: RawGroupBanEvent
 

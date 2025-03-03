@@ -22,6 +22,7 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.event.notice.RawFriendRecallEvent
 import love.forte.simbot.event.ContactEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.suspendrunner.STP
 
 
@@ -30,6 +31,7 @@ import love.forte.simbot.suspendrunner.STP
  * @see RawFriendRecallEvent
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotFriendRecallEvent : OneBotNoticeEvent, ContactEvent {
     override val sourceEvent: RawFriendRecallEvent
 

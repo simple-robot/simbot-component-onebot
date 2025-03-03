@@ -25,6 +25,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.event.OneBotBotEvent
 import love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent
 import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.OrganizationJoinRequestEvent
 import love.forte.simbot.event.RequestEvent
 import love.forte.simbot.suspendrunner.STP
@@ -43,6 +44,7 @@ public typealias OBSourceRequestEvent = love.forte.simbot.component.onebot.v11.e
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotRequestEvent : OneBotBotEvent, RequestEvent {
     override val sourceEvent: OBSourceRequestEvent
 

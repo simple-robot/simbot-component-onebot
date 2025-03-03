@@ -21,6 +21,7 @@ import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 
 /**
  * 一个尚未被支持的事件类型。
@@ -61,6 +62,7 @@ import love.forte.simbot.component.onebot.v11.event.UnknownEvent
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 @FragileSimbotAPI
 public data class OneBotUnsupportedEvent(
     override val sourceEventRaw: String?,

@@ -21,6 +21,7 @@ import love.forte.simbot.common.id.LongID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.event.notice.RawNotifyEvent
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.MemberEvent
 import love.forte.simbot.suspendrunner.STP
 
@@ -34,6 +35,7 @@ import love.forte.simbot.suspendrunner.STP
  * @see OneBotPokeEvent
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotNotifyEvent : OneBotNoticeEvent {
     override val sourceEvent: RawNotifyEvent
 
@@ -66,6 +68,7 @@ public interface OneBotNotifyEvent : OneBotNoticeEvent {
  *
  * @since 1.4.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupNotifyEvent : OneBotNotifyEvent, MemberEvent {
     /**
      * 事件发送的群号
