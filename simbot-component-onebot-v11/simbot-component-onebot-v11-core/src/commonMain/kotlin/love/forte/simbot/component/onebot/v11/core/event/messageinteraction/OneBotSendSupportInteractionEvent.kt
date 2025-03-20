@@ -52,7 +52,10 @@ public interface OneBotSendSupportInteractionEvent :
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface OneBotSendSupportPreSendEvent : OneBotInternalMessagePreSendEvent, OneBotSendSupportInteractionEvent
+public interface OneBotSendSupportPreSendEvent :
+    SendSupportPreSendEvent,
+    OneBotInternalMessagePreSendEvent,
+    OneBotSendSupportInteractionEvent
 
 /**
  * OneBot组件中针对 [SendSupport.send] 的通知事件。
@@ -63,6 +66,7 @@ public interface OneBotSendSupportPreSendEvent : OneBotInternalMessagePreSendEve
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OneBotSendSupportPostSendEvent :
+    SendSupportPostSendEvent,
     OneBotInternalMessagePostSendEvent,
     OneBotSendSupportInteractionEvent {
     override val message: OneBotSegmentsInteractionMessage
