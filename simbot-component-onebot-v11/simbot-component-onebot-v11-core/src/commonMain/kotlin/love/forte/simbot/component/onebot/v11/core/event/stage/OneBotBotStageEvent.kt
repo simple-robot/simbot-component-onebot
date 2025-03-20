@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -19,7 +19,7 @@ package love.forte.simbot.component.onebot.v11.core.event.stage
 
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.core.event.OneBotCommonEvent
+import love.forte.simbot.component.onebot.v11.core.event.OneBotInternalEvent
 import love.forte.simbot.event.BotRegisteredEvent
 import love.forte.simbot.event.BotStageEvent
 import love.forte.simbot.event.BotStartedEvent
@@ -32,7 +32,7 @@ import love.forte.simbot.event.FuzzyEventTypeImplementation
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface OneBotBotStageEvent : BotStageEvent, OneBotCommonEvent {
+public interface OneBotBotStageEvent : BotStageEvent, OneBotInternalEvent {
     override val bot: OneBotBot
 }
 

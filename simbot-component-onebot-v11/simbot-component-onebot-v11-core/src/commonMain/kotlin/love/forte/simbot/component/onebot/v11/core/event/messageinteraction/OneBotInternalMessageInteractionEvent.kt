@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
+import love.forte.simbot.component.onebot.v11.core.event.OneBotInternalEvent
 import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.InternalMessageInteractionEvent
 import love.forte.simbot.event.InternalMessagePostSendEvent
@@ -31,7 +32,7 @@ import love.forte.simbot.message.Message
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface OneBotInternalMessageInteractionEvent : InternalMessageInteractionEvent
+public interface OneBotInternalMessageInteractionEvent : OneBotInternalEvent, InternalMessageInteractionEvent
 
 /**
  * OneBot 组件针对消息发送前的拦截事件。

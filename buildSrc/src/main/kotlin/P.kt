@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ * Copyright (c) 2023-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -37,7 +37,7 @@ object P {
         override val description: String get() = DESCRIPTION
         override val homepage: String get() = HOMEPAGE
 
-        const val VERSION = "1.6.0"
+        const val VERSION = "1.6.1"
         const val NEXT_VERSION = "1.6.1"
 
         override val snapshotVersion = "$NEXT_VERSION-SNAPSHOT"
