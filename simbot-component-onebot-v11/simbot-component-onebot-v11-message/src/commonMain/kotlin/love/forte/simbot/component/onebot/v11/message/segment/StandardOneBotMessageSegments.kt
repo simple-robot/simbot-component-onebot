@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -17,6 +17,8 @@
 
 package love.forte.simbot.component.onebot.v11.message.segment
 
+import love.forte.simbot.component.onebot.v11.message.Base64Encoder
+import love.forte.simbot.component.onebot.v11.message.base64
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.toResource
@@ -24,7 +26,8 @@ import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 
-internal fun resolveUrlOrFileToResource(url: String?, file: String): Resource {
+@OptIn(ExperimentalEncodingApi::class)
+internal fun resolveUrlOrFileToResource(url: String?, file: String, encoder: Base64Encoder): Resource {
     return if (url != null) {
         uriResource(url)
     } else {
@@ -34,7 +37,7 @@ internal fun resolveUrlOrFileToResource(url: String?, file: String): Resource {
             }
 
             file.startsWith("base64://") -> {
-                base64Resource(file.substring(9))
+                base64Resource(file.substring(9), encoder.base64)
             }
 
             else -> {
@@ -48,32 +51,35 @@ internal expect fun uriResource(uri: String): Resource
 internal expect fun pathResource(path: String): Resource
 
 @OptIn(ExperimentalEncodingApi::class)
-internal fun base64Resource(data: String): Resource {
-    return Base64.UrlSafe.decode(data).toResource()
+internal fun base64Resource(data: String, base64: Base64?): Resource {
+    // TODO 是否需要考虑为 decoder 也提供额外参数或注解？
+    return (base64 ?: Base64.Default).decode(data).toResource()
 }
 
 internal expect fun resolveResourceToFileValuePlatform(
     resource: Resource,
     localFileToBase64: Boolean,
+    encoder: Base64Encoder
 ): String?
 
 internal fun resolveResourceToFileValue(
     resource: Resource,
     localFileToBase64: Boolean,
+    encoder: Base64Encoder
 ): String {
     return when (resource) {
-        is ByteArrayResource -> computeBase64FileValue(resource.data())
+        is ByteArrayResource -> computeBase64FileValue(resource.data(), encoder)
         else -> {
-            resolveResourceToFileValuePlatform(resource, localFileToBase64)
-                ?: computeBase64FileValue(resource.data())
+            resolveResourceToFileValuePlatform(resource, localFileToBase64, encoder)
+                ?: computeBase64FileValue(resource.data(), encoder)
         }
     }
 }
 
 @OptIn(ExperimentalEncodingApi::class)
-internal fun computeBase64FileValue(data: ByteArray): String {
+internal fun computeBase64FileValue(data: ByteArray, encoder: Base64Encoder): String {
     return buildString {
         append("base64://")
-        Base64.UrlSafe.encodeToAppendable(data, this)
+        encoder.encodeToAppendable(data, this)
     }
 }

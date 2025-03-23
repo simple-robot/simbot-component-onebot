@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -17,13 +17,19 @@
 
 package love.forte.simbot.component.onebot.v11.message.segment
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import love.forte.simbot.component.onebot.v11.message.Base64Encoder
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.Factory.create
+import love.forte.simbot.component.onebot.v11.message.standardEncoderByName
+import love.forte.simbot.component.onebot.v11.message.standardName
 import love.forte.simbot.message.Image
 import love.forte.simbot.message.UrlAwareImage
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -33,14 +39,25 @@ import kotlin.jvm.JvmSynthetic
  *
  * 可用于发送。
  *
+ * ## 序列化
+ * ### Base64 encoder
+ * 在序列化并反序列化后，之前通过 [AdditionalParams.base64Encoder] 指定的 [Base64Encoder] **可能会丢失**。
+ * 如果丢失后再次需要使用 [Base64Encoder] 时，会选择使用 [Base64Encoder.Default]。
+ *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @SerialName(OneBotImage.TYPE)
 public class OneBotImage private constructor(
     override val data: Data,
     @Transient
     private val resource0: Resource? = null,
+    private val base64Encoder: String? = null,
+    @Transient
+    @OptIn(ExperimentalEncodingApi::class)
+    private val base64EncoderValue: Base64Encoder =
+        base64Encoder?.let { standardEncoderByName(it) } ?: Base64Encoder.Default
 ) : OneBotMessageSegment, OneBotMessageSegmentElementResolver {
     /**
      * 当前 [OneBotImage] 中的资源信息。
@@ -49,14 +66,14 @@ public class OneBotImage private constructor(
      * [Data.file] 的资源信息。
      */
     public val resource: Resource by lazy {
-        resource0 ?: data.resolveToResource()
+        resource0 ?: data.resolveToResource(base64EncoderValue)
     }
 
     public companion object Factory {
         public const val TYPE: String = "image"
 
-        private fun Data.resolveToResource(): Resource {
-            return resolveUrlOrFileToResource(url, file)
+        private fun Data.resolveToResource(encoder: Base64Encoder): Resource {
+            return resolveUrlOrFileToResource(url, file, encoder)
         }
 
         /**
@@ -66,6 +83,9 @@ public class OneBotImage private constructor(
          * - 如果 [Data.file] 是 base64 格式，解析为 [ByteArrayResource]。
          * - 如果 [Data.file] 是链接或者文件路径，
          * 解析为 `URIResource` 或 `PathResource` （仅支持 JVM 平台）
+         *
+         * 如果需要指定 [Base64Encoder] (since 1.6.1),
+         * 选择使用 [create] 的另一个可以提供 [AdditionalParams] 的重载。
          *
          * @throws UnsupportedOperationException 如果解析 [resource] 时平台不支持
          */
@@ -97,12 +117,16 @@ public class OneBotImage private constructor(
          *
          * @throws UnsupportedOperationException 如果解析 [resource] 时平台不支持
          */
+        @OptIn(ExperimentalEncodingApi::class)
         @JvmStatic
         @JvmOverloads
         public fun create(resource: Resource, additional: AdditionalParams? = null): OneBotImage {
+            val base64Encoder = additional.base64EncoderOrDefault
+
             val file = resolveResourceToFileValue(
                 resource,
-                additional?.localFileToBase64 == true
+                additional?.localFileToBase64 == true,
+                base64Encoder
             )
 
             val data = Data(
@@ -113,7 +137,12 @@ public class OneBotImage private constructor(
                 timeout = additional?.timeout,
             )
 
-            return OneBotImage(data, resource)
+            return OneBotImage(
+                data,
+                resource,
+                base64Encoder.standardName(),
+                base64Encoder
+            )
         }
     }
 
@@ -152,10 +181,18 @@ public class OneBotImage private constructor(
 
     /**
      * 用于 [OneBotImage] 提供的部分工厂函数中，
-     * 指定 [Data] 中部分属性。
+     * 指定 [Data] 中部分属性或一些有用的额外参数。
      */
     public class AdditionalParams {
         public var localFileToBase64: Boolean = false
+
+        /**
+         * 当需要对资源进行 base64 编码时使用的编码器。
+         * 如果未配置则默认为 [Base64Encoder.Default]。
+         * @since 1.6.1
+         */
+        public var base64Encoder: Base64Encoder? = null
+
         public var type: String? = null
         public var cache: Boolean? = null
         public var proxy: Boolean? = null
@@ -196,3 +233,7 @@ public inline fun OneBotImage.Factory.create(
 ): OneBotImage {
     return create(resource, OneBotImage.AdditionalParams().also(block))
 }
+
+@OptIn(ExperimentalEncodingApi::class)
+private inline val OneBotImage.AdditionalParams?.base64EncoderOrDefault: Base64Encoder
+    get() = this?.base64Encoder ?: Base64Encoder.Default
