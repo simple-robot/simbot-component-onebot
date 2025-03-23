@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -20,8 +20,13 @@ package love.forte.simbot.component.onebot.v11.message.segment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import love.forte.simbot.component.onebot.v11.message.Base64Encoder
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotVideo.Factory.create
+import love.forte.simbot.component.onebot.v11.message.standardEncoderByName
+import love.forte.simbot.component.onebot.v11.message.standardName
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -38,6 +43,11 @@ public class OneBotVideo private constructor(
     override val data: Data,
     @Transient
     private val resource0: Resource? = null,
+    private val base64Encoder: String? = null,
+    @Transient
+    @OptIn(ExperimentalEncodingApi::class)
+    private val base64EncoderValue: Base64Encoder =
+        base64Encoder?.let { standardEncoderByName(it) } ?: Base64Encoder.Default
 ) : OneBotMessageSegment {
     /**
      * 当前 [OneBotVideo] 中的资源信息。
@@ -46,14 +56,14 @@ public class OneBotVideo private constructor(
      * [Data.file] 的资源信息。
      */
     public val resource: Resource by lazy {
-        resource0 ?: data.resolveToResource()
+        resource0 ?: data.resolveToResource(base64EncoderValue)
     }
 
     public companion object Factory {
         public const val TYPE: String = "video"
 
-        private fun Data.resolveToResource(): Resource {
-            return resolveUrlOrFileToResource(url, file)
+        private fun Data.resolveToResource(encoder: Base64Encoder): Resource {
+            return resolveUrlOrFileToResource(url, file, encoder)
         }
 
         /**
@@ -63,6 +73,9 @@ public class OneBotVideo private constructor(
          * - 如果 [Data.file] 是 base64 格式，解析为 [ByteArrayResource]。
          * - 如果 [Data.file] 是链接或者文件路径，
          * 解析为 `URIResource` 或 `PathResource` （仅支持 JVM 平台）
+         *
+         * 如果需要指定 [Base64Encoder] (since 1.6.1),
+         * 选择使用 [create] 的另一个可以提供 [AdditionalParams] 的重载。
          *
          * @throws UnsupportedOperationException 如果解析 [resource] 时平台不支持
          */
@@ -97,9 +110,11 @@ public class OneBotVideo private constructor(
         @JvmStatic
         @JvmOverloads
         public fun create(resource: Resource, additional: AdditionalParams? = null): OneBotVideo {
+            val base64Encoder = additional.base64EncoderOrDefault
             val file = resolveResourceToFileValue(
                 resource,
-                additional?.localFileToBase64 == true
+                additional?.localFileToBase64 == true,
+                base64Encoder
             )
 
             val data = Data(
@@ -109,7 +124,7 @@ public class OneBotVideo private constructor(
                 timeout = additional?.timeout,
             )
 
-            return OneBotVideo(data, resource)
+            return OneBotVideo(data, resource, base64Encoder.standardName(), base64Encoder)
         }
     }
 
@@ -136,6 +151,14 @@ public class OneBotVideo private constructor(
      */
     public class AdditionalParams {
         public var localFileToBase64: Boolean = false
+
+        /**
+         * 当需要对资源进行 base64 编码时使用的编码器。
+         * 如果未配置则默认为 [Base64Encoder.Default]。
+         * @since 1.6.1
+         */
+        public var base64Encoder: Base64Encoder? = null
+
         public var cache: Boolean? = null
         public var proxy: Boolean? = null
         public var timeout: Int? = null
@@ -161,3 +184,7 @@ public class OneBotVideo private constructor(
         return "OneBotVideo(data=$data)"
     }
 }
+
+@OptIn(ExperimentalEncodingApi::class)
+private inline val OneBotVideo.AdditionalParams?.base64EncoderOrDefault: Base64Encoder
+    get() = this?.base64Encoder ?: Base64Encoder.Default

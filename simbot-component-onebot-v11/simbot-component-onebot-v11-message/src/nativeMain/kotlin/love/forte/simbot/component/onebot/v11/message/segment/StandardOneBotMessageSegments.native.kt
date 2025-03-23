@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -17,11 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.message.segment
 
+import love.forte.simbot.component.onebot.v11.message.Base64Encoder
 import love.forte.simbot.resource.Resource
 
 internal actual fun resolveResourceToFileValuePlatform(
     resource: Resource,
     localFileToBase64: Boolean,
+    encoder: Base64Encoder
 ): String? = null
 
 internal actual fun uriResource(uri: String): Resource {

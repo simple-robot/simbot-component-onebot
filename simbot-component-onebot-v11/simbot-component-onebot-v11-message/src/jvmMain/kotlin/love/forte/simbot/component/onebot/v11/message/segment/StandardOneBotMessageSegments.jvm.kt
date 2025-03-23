@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.message.segment
 
+import love.forte.simbot.component.onebot.v11.message.Base64Encoder
 import love.forte.simbot.resource.*
 import java.net.URI
 import java.nio.file.Path
@@ -28,10 +29,11 @@ import kotlin.io.path.toPath
 internal actual fun resolveResourceToFileValuePlatform(
     resource: Resource,
     localFileToBase64: Boolean,
+    encoder: Base64Encoder
 ): String? {
     fun Path.resolvePath(): String {
         return if (localFileToBase64) {
-            computeBase64FileValue(readBytes())
+            computeBase64FileValue(readBytes(), encoder)
         } else {
             absolutePathString()
         }
@@ -51,7 +53,7 @@ internal actual fun resolveResourceToFileValuePlatform(
         is FileResource -> {
             val file = resource.file
             if (localFileToBase64) {
-                computeBase64FileValue(file.readBytes())
+                computeBase64FileValue(file.readBytes(), encoder)
             } else {
                 file.absolutePath
             }
