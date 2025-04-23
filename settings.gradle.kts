@@ -14,10 +14,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        mavenLocal()
+    }
+}
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
 }
+
 rootProject.name = "simbot-component-onebot"
 
 include(":internal-processors:include-component-message-elements-processor")

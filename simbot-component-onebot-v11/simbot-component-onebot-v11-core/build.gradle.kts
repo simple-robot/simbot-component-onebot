@@ -27,7 +27,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
-    alias(libs.plugins.suspendTransform)
+    id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
 }
 
