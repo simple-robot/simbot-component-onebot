@@ -18,8 +18,8 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.core.repository.Repositories
-import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
-import love.forte.simbot.gradle.suspendtransforms.addSimbotJvmTransformers
+import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
+import love.forte.simbot.gradle.suspendtransforms.addSimbotJvmTransforms
 import util.isCi
 
 plugins {
@@ -29,19 +29,11 @@ plugins {
     `simbot-onebot-changelog-generator`
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
-    alias(libs.plugins.suspendTransform) apply false
+    id("love.forte.plugin.suspend-transform") apply false
+    // alias(libs.plugins.suspendTransform) apply false
 }
 
 setup(P.ComponentOneBot)
-
-buildscript {
-    dependencies {
-        // suspend-transform-gradle = { module = "love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle", version.ref = "suspendTransform" }
-        classpath(libs.simbot.gradle)
-        // classpath("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:4.9.0")
-    }
-}
-
 
 logger.info("=== Current version: {} ===", version)
 
@@ -62,11 +54,11 @@ allprojects {
 subprojects {
     afterEvaluate {
         if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
-            extensions.configure<SuspendTransformGradleExtension>("suspendTransform") {
+            extensions.configure<SuspendTransformPluginExtension>("suspendTransformPlugin") {
                 includeRuntime = false
                 includeAnnotation = false
 
-                addSimbotJvmTransformers()
+                addSimbotJvmTransforms()
             }
         }
     }

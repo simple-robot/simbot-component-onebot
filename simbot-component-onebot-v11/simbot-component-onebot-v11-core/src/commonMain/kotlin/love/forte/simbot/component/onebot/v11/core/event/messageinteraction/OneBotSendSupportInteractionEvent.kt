@@ -23,6 +23,7 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.event.*
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -81,6 +82,9 @@ public interface OneBotSendSupportPostSendEvent :
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotGroupInteractionEvent : OneBotSendSupportInteractionEvent, ChatGroupInteractionEvent {
     override val content: OneBotGroup
+
+    @STP
+    override suspend fun target(): OneBotGroup = content
 }
 
 /**
@@ -93,6 +97,9 @@ public interface OneBotGroupPreSendEvent :
     OneBotGroupInteractionEvent,
     ChatGroupPreSendEvent {
     override val content: OneBotGroup
+
+    @STP
+    override suspend fun target(): OneBotGroup = content
 
     /**
      * 拦截事件中的消息内容。
@@ -120,6 +127,9 @@ public interface OneBotGroupPostSendEvent :
     OneBotGroupInteractionEvent,
     ChatGroupPostSendEvent {
     override val content: OneBotGroup
+
+    @STP
+    override suspend fun target(): OneBotGroup = content
     override val message: OneBotSegmentsInteractionMessage
 }
 //endregion
@@ -133,6 +143,9 @@ public interface OneBotGroupPostSendEvent :
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotFriendInteractionEvent : OneBotSendSupportInteractionEvent, ContactInteractionEvent {
     override val content: OneBotFriend
+
+    @STP
+    override suspend fun target(): OneBotFriend = content
 }
 
 /**
@@ -145,6 +158,9 @@ public interface OneBotFriendPreSendEvent :
     OneBotFriendInteractionEvent,
     ContactPreSendEvent {
     override val content: OneBotFriend
+
+    @STP
+    override suspend fun target(): OneBotFriend = content
 
     /**
      * 拦截事件中的消息内容。
@@ -172,6 +188,9 @@ public interface OneBotFriendPostSendEvent :
     OneBotFriendInteractionEvent,
     ContactPostSendEvent {
     override val content: OneBotFriend
+
+    @STP
+    override suspend fun target(): OneBotFriend = content
     override val message: OneBotSegmentsInteractionMessage
 }
 //endregion
@@ -180,6 +199,9 @@ public interface OneBotFriendPostSendEvent :
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface OneBotMemberInteractionEvent : OneBotSendSupportInteractionEvent, MemberInteractionEvent {
     override val content: OneBotMember
+
+    @STP
+    override suspend fun target(): OneBotMember = content
 }
 
 @OptIn(FuzzyEventTypeImplementation::class)
@@ -188,6 +210,9 @@ public interface OneBotMemberPreSendEvent :
     OneBotMemberInteractionEvent,
     MemberPreSendEvent {
     override val content: OneBotMember
+
+    @STP
+    override suspend fun target(): OneBotMember = content
 
     /**
      * 拦截事件中的消息内容。
@@ -211,6 +236,9 @@ public interface OneBotMemberPostSendEvent :
     OneBotMemberInteractionEvent,
     MemberPostSendEvent {
     override val content: OneBotMember
+
+    @STP
+    override suspend fun target(): OneBotMember = content
     override val message: OneBotSegmentsInteractionMessage
 }
 //endregion

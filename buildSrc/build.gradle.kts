@@ -37,10 +37,10 @@ dependencies {
     implementation("io.github.gradle-nexus:publish-plugin:2.0.0")
 
     // simbot suspend transform gradle common
-    // compileOnly(libs.simbot.gradle)
+    implementation(libs.simbot.gradle)
 
     // suspend transform
-    // implementation(libs.suspend.transform.gradle)
+    implementation(libs.suspend.transform.gradle)
 
     // gradle common
     implementation(libs.bundles.gradle.common)
