@@ -17,9 +17,13 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.core.event.message.*
 import love.forte.simbot.event.*
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -73,6 +77,9 @@ public interface OneBotMessageEventPostReplyEvent : OneBotMessageEventInteractio
 public interface OneBotGroupMessageEventInteractionEvent :
     OneBotMessageEventInteractionEvent {
     override val content: OneBotGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -86,6 +93,9 @@ public interface OneBotGroupMessageEventPreReplyEvent :
     OneBotGroupMessageEventInteractionEvent,
     OneBotMessageEventPreReplyEvent {
     override val content: OneBotGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -98,6 +108,9 @@ public interface OneBotGroupMessageEventPostReplyEvent :
     OneBotGroupMessageEventInteractionEvent,
     OneBotMessageEventPostReplyEvent {
     override val content: OneBotGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
     override val message: OneBotSegmentsInteractionMessage
 }
 
@@ -111,6 +124,9 @@ public interface OneBotNormalGroupMessageEventInteractionEvent :
     OneBotGroupMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
     override val content: OneBotNormalGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -122,6 +138,9 @@ public interface OneBotNormalGroupMessageEventPreReplyEvent :
     OneBotNormalGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPreReplyEvent {
     override val content: OneBotNormalGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -132,6 +151,9 @@ public interface OneBotNormalGroupMessageEventPostReplyEvent :
     OneBotNormalGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPostReplyEvent {
     override val content: OneBotNormalGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
     override val message: OneBotSegmentsInteractionMessage
 }
 
@@ -145,6 +167,9 @@ public interface OneBotAnonymousGroupMessageEventInteractionEvent :
     OneBotGroupMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
     override val content: OneBotAnonymousGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -156,6 +181,9 @@ public interface OneBotAnonymousGroupMessageEventPreReplyEvent :
     OneBotAnonymousGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPreReplyEvent {
     override val content: OneBotAnonymousGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -166,6 +194,9 @@ public interface OneBotAnonymousGroupMessageEventPostReplyEvent :
     OneBotAnonymousGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPostReplyEvent {
     override val content: OneBotAnonymousGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
     override val message: OneBotSegmentsInteractionMessage
 }
 
@@ -178,6 +209,9 @@ public interface OneBotAnonymousGroupMessageEventPostReplyEvent :
 public interface OneBotNoticeGroupMessageEventInteractionEvent :
     OneBotGroupMessageEventInteractionEvent {
     override val content: OneBotNoticeGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -189,6 +223,9 @@ public interface OneBotNoticeGroupMessageEventPreReplyEvent :
     OneBotNoticeGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPreReplyEvent {
     override val content: OneBotNoticeGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
 }
 
 /**
@@ -199,6 +236,9 @@ public interface OneBotNoticeGroupMessageEventPostReplyEvent :
     OneBotNoticeGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPostReplyEvent {
     override val content: OneBotNoticeGroupMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotGroup = content.content()
     override val message: OneBotSegmentsInteractionMessage
 }
 
@@ -255,6 +295,9 @@ public interface OneBotPrivateMessageEventPostReplyEvent :
 public interface OneBotGroupPrivateMessageEventInteractionEvent :
     OneBotPrivateMessageEventInteractionEvent {
     override val content: OneBotGroupPrivateMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotMember = content.content()
 }
 
 /**
@@ -268,6 +311,9 @@ public interface OneBotGroupPrivateMessageEventPreReplyEvent :
     OneBotGroupPrivateMessageEventInteractionEvent,
     OneBotPrivateMessageEventPreReplyEvent {
     override val content: OneBotGroupPrivateMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotMember = content.content()
 }
 
 /**
@@ -280,6 +326,9 @@ public interface OneBotGroupPrivateMessageEventPostReplyEvent :
     OneBotGroupPrivateMessageEventInteractionEvent,
     OneBotPrivateMessageEventPostReplyEvent {
     override val content: OneBotGroupPrivateMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotMember = content.content()
     override val message: OneBotSegmentsInteractionMessage
 }
 //endregion
@@ -295,6 +344,9 @@ public interface OneBotGroupPrivateMessageEventPostReplyEvent :
 public interface OneBotFriendMessageEventInteractionEvent :
     OneBotPrivateMessageEventInteractionEvent {
     override val content: OneBotFriendMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotFriend = content.content()
 }
 
 /**
@@ -308,6 +360,9 @@ public interface OneBotFriendMessageEventPreReplyEvent :
     OneBotFriendMessageEventInteractionEvent,
     OneBotPrivateMessageEventPreReplyEvent {
     override val content: OneBotFriendMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotFriend = content.content()
 }
 
 /**
@@ -320,6 +375,9 @@ public interface OneBotFriendMessageEventPostReplyEvent :
     OneBotFriendMessageEventInteractionEvent,
     OneBotPrivateMessageEventPostReplyEvent {
     override val content: OneBotFriendMessageEvent
+
+    @STP
+    override suspend fun target(): OneBotFriend = content.content()
     override val message: OneBotSegmentsInteractionMessage
 }
 //endregion
