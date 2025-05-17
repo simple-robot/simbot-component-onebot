@@ -59,20 +59,9 @@ kotlin {
     applyTier3(supportKtorClient = true)
 
     sourceSets {
-        configureEach {
-            if (this.name == "jvmMain") {
-                dependencies {
-                    compileOnly(libs.simbot.api)
-                }
-            } else {
-                dependencies {
-                    implementation(libs.simbot.api)
-                }
-            }
-        }
         commonMain.dependencies {
             // JVM compileOnly
-            // implementation(libs.simbot.api)
+            implementation(libs.simbot.api)
             api(libs.jetbrains.annotations)
 
             api(libs.simbot.common.annotations)
@@ -103,11 +92,9 @@ kotlin {
 
         jvmMain {
             dependencies {
-                // api(libs.simbot.api)
-                // api(libs.jetbrains.annotations)
-                // compileOnly(libs.simbot.api)
-                // compileOnly(libs.ktor.client.contentNegotiation)
-                // compileOnly(libs.jetbrains.annotations)
+                compileOnly(libs.simbot.api)
+                compileOnly(libs.ktor.client.contentNegotiation)
+                compileOnly(libs.jetbrains.annotations)
             }
         }
 
