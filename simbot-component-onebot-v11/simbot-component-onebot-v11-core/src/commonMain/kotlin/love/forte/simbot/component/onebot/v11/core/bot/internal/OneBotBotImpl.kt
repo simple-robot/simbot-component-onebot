@@ -702,7 +702,7 @@ internal fun OneBotBotImpl.resolveEvent(text: String): Event {
         }
 
         if (errors.isNotEmpty()) {
-            val newError = CustomEventResolveException("There're some errors occurred when resolving custom event.")
+            val newError = CustomEventResolveException("Some errors occurred while resolving custom events.")
             errors.forEach { newError.addSuppressed(it) }
             error = error?.also {
                 it.addSuppressed(newError)
