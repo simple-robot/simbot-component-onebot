@@ -43,6 +43,7 @@ import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.event.EventResult
 import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
+import org.intellij.lang.annotations.Language
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmSynthetic
 
@@ -200,14 +201,14 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
      *
      * @throws IllegalArgumentException 如果事件解析失败
      */
-    public fun push(rawEvent: String): Flow<EventResult>
+    public fun push(@Language("json") rawEvent: String): Flow<EventResult>
 
     /**
      * 直接推送一个外部的原始事件字符串，并在异步任务中处理事件。
      *
      * @throws IllegalArgumentException 如果事件解析失败
      */
-    public fun pushAndLaunch(rawEvent: String): Job =
+    public fun pushAndLaunch(@Language("json") rawEvent: String): Job =
         push(rawEvent).launchIn(this)
 
     /**
