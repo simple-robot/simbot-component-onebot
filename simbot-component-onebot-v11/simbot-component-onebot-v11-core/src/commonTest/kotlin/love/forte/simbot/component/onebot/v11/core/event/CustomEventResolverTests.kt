@@ -77,6 +77,7 @@ class CustomEventResolverTests {
         }
     }
 
+    @OptIn(ExperimentalCustomEventResolverApi::class)
     @Test
     fun testCustomEventResolver() = runTest {
         val count = atomic(0)
@@ -115,6 +116,7 @@ class CustomEventResolverTests {
         assertEquals(1, count.value)
     }
 
+    @OptIn(ExperimentalCustomEventResolverApi::class)
     @Test
     fun testCustomEventResolverByKtxSerialization() = runTest {
         val count = atomic(0)
