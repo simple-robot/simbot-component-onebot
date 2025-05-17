@@ -113,6 +113,12 @@ kotlin {
         appleTest.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+        mingwTest.dependencies {
+            implementation(libs.ktor.client.winhttp)
+        }
+        linuxTest.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
     }
 }
 
