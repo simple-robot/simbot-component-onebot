@@ -282,7 +282,9 @@ public class OneBotBotConfiguration {
  * @since 1.8.0
  */
 @ExperimentalCustomEventResolverApi
-public fun OneBotBotConfiguration.addCustomKotlinSerializationEventResolver(resolver: CustomKotlinSerializationEventResolver) {
+public fun OneBotBotConfiguration.addCustomKotlinSerializationEventResolver(
+    resolver: CustomKotlinSerializationEventResolver
+) {
     addCustomEventResolver(resolver)
 }
 
