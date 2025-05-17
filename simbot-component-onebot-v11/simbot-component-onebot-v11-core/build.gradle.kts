@@ -62,7 +62,7 @@ kotlin {
         commonMain.dependencies {
             // JVM compileOnly
             implementation(libs.simbot.api)
-            api(libs.jetbrains.annotations)
+            implementation(libs.jetbrains.annotations)
 
             api(libs.simbot.common.annotations)
             implementation(libs.simbot.common.atomic)
