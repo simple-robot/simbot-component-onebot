@@ -2125,6 +2125,29 @@ public final class love/forte/simbot/component/onebot/v11/core/component/OneBot1
 	public static synthetic fun useOneBot11Component$default (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)V
 }
 
+public class love/forte/simbot/component/onebot/v11/core/event/CustomEventResolveException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/core/event/CustomEventResolver$Context {
+	public abstract fun getBot ()Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;
+	public abstract fun getJson ()Lkotlinx/serialization/json/Json;
+	public abstract fun getRawEventResolveResult ()Llove/forte/simbot/component/onebot/v11/core/event/RawEventResolveResult;
+}
+
+public class love/forte/simbot/component/onebot/v11/core/event/EventResolveException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface annotation class love/forte/simbot/component/onebot/v11/core/event/ExperimentalCustomEventResolverApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/component/onebot/v11/core/event/OneBotBotEvent : love/forte/simbot/component/onebot/v11/core/event/OneBotEvent, love/forte/simbot/event/BotEvent {
 	public abstract fun getBot ()Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;
 }
