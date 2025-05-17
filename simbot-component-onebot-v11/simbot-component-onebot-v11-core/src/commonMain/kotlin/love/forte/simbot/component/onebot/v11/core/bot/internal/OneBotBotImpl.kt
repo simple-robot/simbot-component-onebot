@@ -756,6 +756,7 @@ private data class CustomEventResolverContextImpl(
 /**
  * 解析数据包字符串为 [Event]。
  */
+@ExperimentalCustomEventResolverApi
 internal fun OneBotBotImpl.resolveRawEvent(text: String): RawEventResolveResult {
     val obj = OneBot11.DefaultJson.decodeFromString(JsonObject.serializer(), text)
 

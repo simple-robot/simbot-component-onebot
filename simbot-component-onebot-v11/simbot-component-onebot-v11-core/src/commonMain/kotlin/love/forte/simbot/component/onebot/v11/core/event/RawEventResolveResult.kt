@@ -10,6 +10,7 @@ import love.forte.simbot.component.onebot.v11.event.RawEvent
  * @since 1.8.0
  * @author ForteScarlet
  */
+@ExperimentalCustomEventResolverApi
 public interface RawEventResolveResult {
     /**
      * 原始的事件JSON字符串文本。

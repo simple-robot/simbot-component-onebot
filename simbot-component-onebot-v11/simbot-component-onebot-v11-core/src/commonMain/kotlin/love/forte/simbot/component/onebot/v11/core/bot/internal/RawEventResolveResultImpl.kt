@@ -2,6 +2,7 @@ package love.forte.simbot.component.onebot.v11.core.bot.internal
 
 import kotlinx.serialization.json.JsonObject
 import love.forte.simbot.common.id.LongID
+import love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi
 import love.forte.simbot.component.onebot.v11.core.event.RawEventResolveResult
 import love.forte.simbot.component.onebot.v11.event.RawEvent
 
@@ -10,6 +11,7 @@ import love.forte.simbot.component.onebot.v11.event.RawEvent
  *
  * @author ForteScarlet
  */
+@ExperimentalCustomEventResolverApi
 internal data class RawEventResolveResultImpl(
     override val text: String,
     override val json: JsonObject,
