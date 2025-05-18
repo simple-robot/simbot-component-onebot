@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.api
 
+import io.ktor.http.*
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -37,9 +38,47 @@ import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult.Companion
  */
 public interface OneBotApi<T : Any> {
     /**
-     * API 的 action（要进行的动作）
+     * 此 API 的请求方式。
+     * OneBot协议中的标准API通常均为 POST，
+     * 但是一些额外的扩展或自定义API可能是 GET 或其他方式。
+     * @since 1.8.0
+     */
+    public val method: HttpMethod
+        get() = HttpMethod.Post
+
+    /**
+     * API 的 action（要进行的动作），会通过 [resolveUrlAction] 附加在 url 中。
+     * 可以重写它来改变此逻辑。
      */
     public val action: String
+
+    /**
+     * 根据 [action] 和可能额外要求的 [actionSuffixes] 构建一个完整的请求地址。
+     *
+     * [urlBuilder] 中已经添加了基础的 `host` 等信息。
+     *
+     * @since 1.8.0
+     */
+    public fun resolveUrlAction(urlBuilder: URLBuilder, actionSuffixes: Collection<String>?) {
+        if (actionSuffixes?.isEmpty() != false) {
+            urlBuilder.appendPathSegments(action)
+        } else {
+            urlBuilder.appendPathSegments(
+                buildString(action.length) {
+                    append(action)
+                    actionSuffixes.forEach { sf -> append(sf) }
+                }
+            )
+        }
+    }
+
+    /**
+     * 对 [urlBuilder] 进行一些额外的处理，例如当method为GET时为其添加查询参数。
+     * 主要面向额外扩展的自定义实现来重写此方法。
+     * @since 1.8.0
+     */
+    public fun resolveUrlExtensions(urlBuilder: URLBuilder) {
+    }
 
     /**
      * API的参数。
@@ -74,6 +113,15 @@ public interface OneBotApi<T : Any> {
          */
         public const val RATE_LIMITED_SUFFIX: String = "_rate_limited"
     }
+}
+
+/**
+ * 使用 [OneBotApi.resolveUrlAction] 和 [OneBotApi.resolveUrlExtensions] 。
+ * @since 1.8.0
+ */
+public fun OneBotApi<*>.resolveUrl(urlBuilder: URLBuilder, actionSuffixes: Collection<String>?) {
+    resolveUrlAction(urlBuilder, actionSuffixes)
+    resolveUrlExtensions(urlBuilder)
 }
 
 /**

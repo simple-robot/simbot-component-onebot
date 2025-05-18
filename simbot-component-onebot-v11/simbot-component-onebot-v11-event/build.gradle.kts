@@ -57,7 +57,7 @@ kotlin {
             implementation(libs.simbot.api)
             api(libs.simbot.common.annotations)
             api(project(":simbot-component-onebot-common"))
-            implementation(libs.kotlinx.serialization.json)
+            api(libs.kotlinx.serialization.json)
 
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-common"))
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-message"))

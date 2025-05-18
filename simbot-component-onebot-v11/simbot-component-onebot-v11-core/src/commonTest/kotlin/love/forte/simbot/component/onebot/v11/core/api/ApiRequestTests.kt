@@ -2,8 +2,12 @@ package love.forte.simbot.component.onebot.v11.core.api
 
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
@@ -70,4 +74,34 @@ class ApiRequestTests {
         assertEquals("123", data.messageId.literal)
     }
 
+    @Test
+    fun customGetApiTest() = runTest {
+        @Serializable
+        data class CustomResult(val name: String)
+        class MyCustomApi : OneBotApi<CustomResult> {
+            override val method: HttpMethod = HttpMethod.Get
+            override val action: String = "custom_action"
+            override val body: Any? = null
+            override val resultDeserializer: DeserializationStrategy<CustomResult> = CustomResult.serializer()
+            override val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<CustomResult>> =
+                OneBotApiResult.serializer(CustomResult.serializer())
+
+            override fun resolveUrlExtensions(urlBuilder: URLBuilder) {
+                urlBuilder.parameters.append("name", "forte")
+            }
+        }
+
+        val client = createClient(
+            "custom_action",
+            respDataSer = { CustomResult.serializer() },
+            respData = { CustomResult("forte") }
+        )
+
+        val resp = MyCustomApi().request(client, "http://127.0.0.1:8080/")
+        assertEquals(HttpMethod.Get, resp.request.method)
+        assertEquals("forte", resp.request.url.parameters["name"])
+
+        val data = MyCustomApi().requestData(client, "http://127.0.0.1:8080/")
+        assertEquals("forte", data.name)
+    }
 }
