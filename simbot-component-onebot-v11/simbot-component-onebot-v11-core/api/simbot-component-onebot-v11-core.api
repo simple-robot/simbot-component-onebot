@@ -1104,7 +1104,10 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/api/
 	public abstract fun getAction ()Ljava/lang/String;
 	public abstract fun getApiResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
 	public abstract fun getBody ()Ljava/lang/Object;
+	public fun getMethod ()Lio/ktor/http/HttpMethod;
 	public abstract fun getResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
+	public fun resolveUrlAction (Lio/ktor/http/URLBuilder;Ljava/util/Collection;)V
+	public fun resolveUrlExtensions (Lio/ktor/http/URLBuilder;)V
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/OneBotApi$Actions {
@@ -1159,6 +1162,10 @@ public final class love/forte/simbot/component/onebot/v11/core/api/OneBotApiExec
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Llove/forte/simbot/component/onebot/v11/core/api/OneBotApiExecutable;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Llove/forte/simbot/component/onebot/v11/core/api/OneBotApiExecutable;
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/api/OneBotApiKt {
+	public static final fun resolveUrl (Llove/forte/simbot/component/onebot/v11/core/api/OneBotApi;Lio/ktor/http/URLBuilder;Ljava/util/Collection;)V
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/OneBotApiRequests {

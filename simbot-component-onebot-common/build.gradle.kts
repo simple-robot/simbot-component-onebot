@@ -59,12 +59,6 @@ kotlin {
             api(kotlin("test"))
         }
 
-        jvmMain {
-            dependencies {
-                compileOnly(libs.simbot.api)
-            }
-        }
-
         jvmTest.dependencies {
             implementation(libs.log4j.api)
             implementation(libs.log4j.core)

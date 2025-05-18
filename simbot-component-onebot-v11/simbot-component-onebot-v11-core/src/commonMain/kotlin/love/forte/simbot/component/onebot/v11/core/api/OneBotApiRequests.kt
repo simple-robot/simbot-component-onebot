@@ -102,19 +102,13 @@ public suspend fun OneBotApi<*>.request(
     accessToken: String? = null,
     actionSuffixes: Collection<String>? = null,
 ): HttpResponse {
-    return client.post {
+    val api = this
+
+    return client.request {
+        this.method = api.method
         url {
             takeFrom(host)
-            if (actionSuffixes?.isEmpty() != false) {
-                appendPathSegments(action)
-            } else {
-                appendPathSegments(
-                    buildString(action.length) {
-                        append(action)
-                        actionSuffixes.forEach { sf -> append(sf) }
-                    }
-                )
-            }
+            api.resolveUrl(this, actionSuffixes)
         }
 
         headers {
@@ -124,7 +118,7 @@ public suspend fun OneBotApi<*>.request(
 
         var jsonStr: String? = null
 
-        when (val b = this@request.body) {
+        when (val b = api.body) {
             null -> {
                 if (GlobalOneBotApiRequestConfiguration.emptyJsonStringIfBodyNull) {
                     setBody(EMPTY_JSON_STR)
@@ -163,7 +157,7 @@ public suspend fun OneBotApi<*>.request(
             "API [{}] REQ ===> {}, body: {}, json: {}",
             action,
             url,
-            this@request.body,
+            api.body,
             jsonStr
         )
     }.also { res ->
