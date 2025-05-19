@@ -51,8 +51,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":simbot-component-onebot-common"))
-            implementation(libs.simbot.common.annotations)
+            api(project(":simbot-component-onebot-common"))
+            api(libs.simbot.common.annotations)
             api(libs.kotlinx.serialization.core)
         }
 
@@ -60,10 +60,6 @@ kotlin {
             api(kotlin("test"))
             api(libs.kotlinx.serialization.json)
             api(libs.kotlinx.coroutines.test)
-        }
-
-        jvmMain.dependencies {
-            compileOnly(libs.simbot.common.annotations)
         }
 
         jvmTest.dependencies {

@@ -105,9 +105,19 @@ kotlin {
             implementation(libs.log4j.slf4j2)
             implementation(libs.kotlinPoet)
             implementation(libs.kotlinx.coroutines.reactor)
-            api(libs.ktor.client.java)
+            implementation(libs.ktor.client.java)
             implementation(libs.ktor.server.netty)
             implementation(libs.ktor.server.ws)
+        }
+
+        appleTest.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+        mingwTest.dependencies {
+            implementation(libs.ktor.client.winhttp)
+        }
+        linuxTest.dependencies {
+            implementation(libs.ktor.client.cio)
         }
     }
 }

@@ -21,12 +21,17 @@ import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
+import love.forte.simbot.component.onebot.v11.core.event.CustomEventResolver
+import love.forte.simbot.component.onebot.v11.core.event.CustomKotlinSerializationEventResolver
+import love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
+import love.forte.simbot.event.Event
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -251,5 +256,57 @@ public class OneBotBotConfiguration {
     @ExperimentalOneBotAPI
     public fun defaultImageAdditionalParams(params: OneBotImage.AdditionalParams?) {
         defaultImageAdditionalParamsProvider = { params }
+    }
+
+    /**
+     *
+     * @since 1.8.0
+     */
+    @ExperimentalCustomEventResolverApi
+    internal val customEventResolvers: MutableList<CustomEventResolver> = mutableListOf()
+
+    /**
+     * 注册一个 [CustomEventResolver]。
+     * @since 1.8.0
+     */
+    @ExperimentalCustomEventResolverApi
+    public fun addCustomEventResolver(customEventResolver: CustomEventResolver) {
+        customEventResolvers.add(customEventResolver)
+    }
+}
+
+/**
+ * 添加一个 [CustomKotlinSerializationEventResolver]。
+ *
+ * @see OneBotBotConfiguration.addCustomEventResolver
+ * @since 1.8.0
+ */
+@ExperimentalCustomEventResolverApi
+public fun OneBotBotConfiguration.addCustomKotlinSerializationEventResolver(
+    resolver: CustomKotlinSerializationEventResolver
+) {
+    addCustomEventResolver(resolver)
+}
+
+/**
+ * 添加一个 [CustomKotlinSerializationEventResolver]。
+ * 原则上通过 `postType` 和 `subType` 可以定位唯一一个事件类型。
+ *
+ * @see OneBotBotConfiguration.addCustomEventResolver
+ * @since 1.8.0
+ */
+@ExperimentalCustomEventResolverApi
+public inline fun OneBotBotConfiguration.addCustomKotlinSerializationEventResolver(
+    postType: String,
+    subType: String,
+    crossinline deserializationStrategy: () -> DeserializationStrategy<Event>
+) {
+    addCustomKotlinSerializationEventResolver { context ->
+        val rawEventResolveResult = context.rawEventResolveResult
+        if (rawEventResolveResult.postType == postType && rawEventResolveResult.subType == subType) {
+            deserializationStrategy()
+        } else {
+            null
+        }
     }
 }

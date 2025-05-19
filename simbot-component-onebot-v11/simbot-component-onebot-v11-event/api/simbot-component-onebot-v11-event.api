@@ -4,6 +4,13 @@ public abstract interface class love/forte/simbot/component/onebot/v11/event/Raw
 	public abstract fun getTime ()J
 }
 
+public class love/forte/simbot/component/onebot/v11/event/RawEventDeserializationException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
 public final class love/forte/simbot/component/onebot/v11/event/UnknownEvent : love/forte/simbot/component/onebot/v11/event/RawEvent {
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getPostType ()Ljava/lang/String;
