@@ -16,7 +16,7 @@
  */
 
 
-tasks.create("createChangelog") {
+tasks.register("createChangelog") {
     group = "documentation"
     doFirst {
         val realVersion = P.ComponentOneBot.version.toString()
