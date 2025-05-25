@@ -73,6 +73,8 @@ class CustomEventResolverTests {
             return register {
                 botUniqueId = UUID.random().toString()
                 config()
+            }.also {
+                it.initConfiguration()
             }
         }
     }

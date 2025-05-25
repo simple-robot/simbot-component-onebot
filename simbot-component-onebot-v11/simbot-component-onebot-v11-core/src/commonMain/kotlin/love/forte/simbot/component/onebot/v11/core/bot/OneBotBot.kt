@@ -72,14 +72,84 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
     override val coroutineContext: CoroutineContext
 
     /**
-     * [OneBotBot] 会使用的 [Json]
+     * [OneBotBot] 会使用的 [Json]。
+     * 需要在
      */
     public val decoderJson: Json
 
     /**
      * 当前Bot的配置类。
+     *
+     * 配置信息在 [initConfiguration] 或 [start] 调用后的修改无效。
      */
     public val configuration: OneBotBotConfiguration
+
+    /**
+     * 根据 [configuration] 初始化部分配置信息。
+     *
+     * 在一些特殊情况下(例如测试或仅需要一些序列器等)，
+     * 如果希望在不 [启动][start] bot 就初始化配置信息则使用此函数。
+     *
+     * 初始化配置只能执行一次。如果 [isConfigurationInitialized] 为 `true` 则会返回 `false`。
+     * 同一时间只会有一个 [initConfiguration] 被执行。如果出现竞争则会挂起，
+     * 直到其他竞争者完成初始化或出现异常。
+     * 如果其他竞争者完成初始化，则会直接返回 `false`，不会重复初始化。
+     *
+     * [start] 中也会使用此函数。
+     *
+     * NOTE: 未来标准库 [Bot] 中添加了 `init` 相关函数和属性后会被废弃。
+     * 参考 [#1071](https://github.com/simple-robot/simpler-robot/issues/1071)
+     *
+     * ### status
+     *
+     * 初始化状态有三个阶段：未初始化、正在初始化和完成初始化。
+     * 根据三个状态的不同，会影响 [isConfigurationInitialized]
+     * 和 [isConfigurationInitializing] 的值。
+     *
+     * | status | [isConfigurationInitializing] | [isConfigurationInitialized] |
+     * | --- | --- | --- |
+     * | 未初始化 | `false` | `false` |
+     * | 初始化中 | `true` | `false` |
+     * | 已初始化 | `false` | `true` |
+     *
+     * @throws RuntimeException 初始化过程中出现的任何非预期异常。
+     * @return 如果已经初始化过了，则不会重复初始化，直接返回 `false`。
+     * 否则在成功初始化后返回 `true`。
+     *
+     * @since 1.8.1
+     */
+    @ExperimentalOneBotAPI
+    public suspend fun initConfiguration(): Boolean
+
+    /**
+     * 获取是否已经执行过 [initConfiguration]。
+     * 如果 [initConfiguration] 尚在执行，会返回 `false`,
+     * 如果 [initConfiguration] 已经成功，会得到 `true`。
+     *
+     * NOTE: 未来标准库 [Bot] 中添加了 `init` 相关函数和属性后会被废弃。
+     * 参考 [#1071](https://github.com/simple-robot/simpler-robot/issues/1071)
+     *
+     * @see initConfiguration
+     *
+     * @since 1.8.1
+     */
+    @ExperimentalOneBotAPI
+    public val isConfigurationInitialized: Boolean
+
+    /**
+     * 获取 [initConfiguration] 是否正在处于初始化过程中。
+     * 如果 [initConfiguration] 已经成功或尚未开始，会得到 `false`，
+     * 如果 [initConfiguration] 尚在执行，会返回 `true`。
+     *
+     * NOTE: 未来标准库 [Bot] 中添加了 `init` 相关函数和属性后会被废弃。
+     * 参考 [#1071](https://github.com/simple-robot/simpler-robot/issues/1071)
+     *
+     * @see initConfiguration
+     *
+     * @since 1.8.1
+     */
+    @ExperimentalOneBotAPI
+    public val isConfigurationInitializing: Boolean
 
     /**
      * 由 [OneBotBot] 衍生出的 actor 使用的 [CoroutineContext]。
