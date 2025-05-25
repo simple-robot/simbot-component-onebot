@@ -37,7 +37,7 @@ object P {
         override val description: String get() = DESCRIPTION
         override val homepage: String get() = HOMEPAGE
 
-        const val VERSION = "1.8.0"
+        const val VERSION = "1.8.1"
         const val NEXT_VERSION = "1.8.1"
 
         override val snapshotVersion = "$NEXT_VERSION-SNAPSHOT"
