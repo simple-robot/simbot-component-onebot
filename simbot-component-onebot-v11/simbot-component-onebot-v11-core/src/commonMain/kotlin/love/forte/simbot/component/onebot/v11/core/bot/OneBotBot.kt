@@ -90,7 +90,7 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
      * 在一些特殊情况下(例如测试或仅需要一些序列器等)，
      * 如果希望在不 [启动][start] bot 就初始化配置信息则使用此函数。
      *
-     * 初始化配置只能执行一次。如果 [isConfigurationInitialized] 为 `true` 则会抛出异常。
+     * 初始化配置只能执行一次。如果 [isConfigurationInitialized] 为 `true` 则会返回 `false`。
      * 同一时间只会有一个 [initConfiguration] 被执行。如果出现竞争则会挂起，
      * 直到其他竞争者完成初始化或出现异常。
      * 如果其他竞争者完成初始化，则会直接返回 `false`，不会重复初始化。
