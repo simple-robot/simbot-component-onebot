@@ -36,6 +36,7 @@ import kotlinx.serialization.json.long
 import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.JobBasedBot
+import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.flowCollectable
 import love.forte.simbot.common.coroutines.IOOrDefault
@@ -86,6 +87,8 @@ import love.forte.simbot.logger.isDebugEnabled
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
+import kotlin.properties.Delegates
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import love.forte.simbot.component.onebot.v11.event.RawEvent as OBRawEvent
@@ -102,7 +105,7 @@ internal class OneBotBotImpl(
     override val configuration: OneBotBotConfiguration,
     override val component: OneBot11Component,
     private val eventProcessor: EventProcessor,
-    baseDecoderJson: Json,
+    private val baseDecoderJson: Json,
 ) : OneBotBot, JobBasedBot() {
     companion object {
         private const val BASE_LOGGER_NAME =
@@ -110,36 +113,97 @@ internal class OneBotBotImpl(
     }
 
     override val subContext = coroutineContext.minusKey(Job)
-    override val decoderJson: Json = Json(baseDecoderJson) {
-        configuration.serializersModule?.also { confMd ->
-            serializersModule = serializersModule overwriteWith confMd
-        }
-    }
 
     internal val logger = LoggerFactory.getLogger("$BASE_LOGGER_NAME.$uniqueId")
 
-    private val eventServerHost = configuration.eventServerHost
-    private val connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
-    private val connectRetryDelay = max(configuration.wsConnectRetryDelayMillis, 0L).milliseconds
+    override lateinit var decoderJson: Json
+        private set
 
-    override val apiClient: HttpClient
-    private val wsClient: HttpClient?
+    private var eventServerHost: Url? = null
+    private var connectMaxRetryTimes by Delegates.notNull<Int>()
+    private var connectRetryDelay by Delegates.notNull<Duration>()
+
+    override lateinit var apiHost: Url
+    override var apiAccessToken: String? = null
+    override var eventAccessToken: String? = null
+
+
+    override lateinit var apiClient: HttpClient
+        private set
+
+    private var wsClient: HttpClient? = null
 
     @ExperimentalCustomEventResolverApi
-    internal val customEventResolvers = configuration.customEventResolvers.toList()
+    internal lateinit var customEventResolvers: List<CustomEventResolver>
 
-    init {
-        apiClient = resolveHttpClient()
-        wsClient = if (eventServerHost != null) {
+    private val initLock = Mutex()
+    private val initialized = atomic(false)
+
+    override suspend fun initConfiguration(): Boolean {
+        if (initialized.value) {
+            return false
+        }
+
+        initLock.withLock {
+            if (initialized.value) {
+                return false
+            }
+
+            initDecoderJson()
+            initHostAndConnectAndToken()
+            initClients()
+            initJobCompletion()
+            initCustomEventResolvers()
+
+            initialized.value = true
+        }
+
+        return true
+    }
+
+    override val isConfigurationInitialized: Boolean
+        get() = initialized.value
+
+    override val isConfigurationInitializing: Boolean
+        get() = !isConfigurationInitialized && initLock.isLocked
+
+    private fun initDecoderJson() {
+        decoderJson = Json(baseDecoderJson) {
+            configuration.serializersModule?.also { confMd ->
+                serializersModule = serializersModule overwriteWith confMd
+            }
+        }
+    }
+
+    private fun initHostAndConnectAndToken() {
+        this.eventServerHost = configuration.eventServerHost
+        this.connectMaxRetryTimes = configuration.wsConnectMaxRetryTimes
+        this.connectRetryDelay = max(configuration.wsConnectRetryDelayMillis, 0L).milliseconds
+        this.apiHost = configuration.apiServerHost
+        this.apiAccessToken = configuration.apiAccessToken
+        this.eventAccessToken = configuration.eventAccessToken
+
+    }
+
+    private fun initClients() {
+        this.apiClient = resolveHttpClient()
+        this.wsClient = if (eventServerHost != null) {
             resolveWsClient()
         } else {
             null
         }
+    }
 
+    private fun initJobCompletion() {
         job.invokeOnCompletion {
             apiClient.close()
             wsClient?.close()
         }
+    }
+
+    @OptIn(ExperimentalCustomEventResolverApi::class)
+    private fun initCustomEventResolvers() {
+        this.customEventResolvers = configuration.customEventResolvers.toList()
     }
 
     private val wsEnabled: Boolean
@@ -214,10 +278,6 @@ internal class OneBotBotImpl(
         }
     }
 
-    override val apiHost: Url = configuration.apiServerHost
-
-    override val apiAccessToken: String? = configuration.apiAccessToken
-    override val eventAccessToken: String? = configuration.eventAccessToken
 
     override val id: ID = uniqueId.ID
 
@@ -260,6 +320,7 @@ internal class OneBotBotImpl(
 
     override suspend fun start(): Unit = startLock.withLock {
         job.ensureActive()
+        initConfiguration()
 
         // 更新个人信息
         val info = queryLoginInfo()
