@@ -60,7 +60,7 @@ class BotDecoderFromCustomComponentTests {
         assertEquals("test", testSeg.data!!.jsonPrimitive.content)
     }
 
-    private fun doTest(app: Application): OneBotMessageSegment {
+    private suspend fun doTest(app: Application): OneBotMessageSegment {
         app.oneBot11Bots {
             val bot = register(
                 OneBotBotConfiguration().apply {
@@ -73,6 +73,7 @@ class BotDecoderFromCustomComponentTests {
                     }
                 }
             )
+            bot.initConfiguration()
 
             val segments = doSerial(bot)
             assertEquals(3, segments.size)
