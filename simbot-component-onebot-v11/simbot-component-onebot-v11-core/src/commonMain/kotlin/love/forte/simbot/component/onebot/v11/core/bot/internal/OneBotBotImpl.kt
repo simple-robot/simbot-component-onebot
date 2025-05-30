@@ -641,7 +641,7 @@ internal class OneBotBotImpl(
         override suspend fun member(groupId: ID, memberId: ID): OneBotMember {
             // TODO 如何检测不存在？
             return this@OneBotBotImpl.executeData(
-                GetGroupMemberInfoApi.create(groupId, userId)
+                GetGroupMemberInfoApi.create(groupId, memberId)
             ).toMember(this@OneBotBotImpl)
         }
     }
