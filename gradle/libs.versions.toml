@@ -3,13 +3,13 @@ kotlin = "2.1.20"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
 # kotlinx-io = "0.7.0"
-kotlinx-io = { prefer = "0.6.0" }
+kotlinx-io = "0.6.0"
 dokka = "2.0.0"
 ktor = "2.3.12"
 openjdk-jmh = "1.37"
 log4j = "2.24.3"
 # simbot
-simbot = { prefer = "4.12.0" }
+simbot = "4.12.0"
 suspendTransform = "2.1.20-0.12.0"
 gradleCommon = "0.6.0"
 # ksp
