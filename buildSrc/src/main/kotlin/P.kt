@@ -15,6 +15,9 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import P.ComponentOneBot.developers
+import P.ComponentOneBot.licenses
+import P.ComponentOneBot.scm
 import love.forte.gradle.common.core.project.ProjectDetail
 import love.forte.gradle.common.core.property.systemProp
 
@@ -37,8 +40,8 @@ object P {
         override val description: String get() = DESCRIPTION
         override val homepage: String get() = HOMEPAGE
 
-        const val VERSION = "1.8.1"
-        const val NEXT_VERSION = "1.8.2"
+        const val VERSION = "1.8.2"
+        const val NEXT_VERSION = "1.8.3"
 
         override val snapshotVersion = "$NEXT_VERSION-SNAPSHOT"
         override val version = if (isSnapshot()) snapshotVersion else VERSION

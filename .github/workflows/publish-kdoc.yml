@@ -6,13 +6,8 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.5
+  GRADLE_VERSION: 8.10.2
   IS_CI: true
-  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
-  GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
   GRADLE_OPTS: "-XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
 
 jobs:
@@ -31,17 +26,17 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Generate documentation
-        uses: gradle/actions/setup-gradle@v3
+      # setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
-          arguments: |
-            dokkaGenerate 
-            --info 
-            --warning-mode all 
-            -x test 
-            --build-cache 
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+
+      - name: Generate documentation
+        run: gradle dokkaGenerate -i --warning-mode all -x test --build-cache
+        env:
+          ORG_GRADLE_PROJECT_org.gradle.daemon: false
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
 
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3
@@ -52,4 +47,3 @@ jobs:
           publish_dir: ./build/dokka/html
           # deploy to sub dir
           destination_dir: components/onebot
-

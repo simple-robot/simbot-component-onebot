@@ -3,13 +3,13 @@ kotlin = "2.1.20"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
 # kotlinx-io = "0.7.0"
-kotlinx-io = { prefer = "0.6.0" }
+kotlinx-io = "0.6.0"
 dokka = "2.0.0"
 ktor = "2.3.12"
 openjdk-jmh = "1.37"
 log4j = "2.24.3"
 # simbot
-simbot = { prefer = "4.12.0" }
+simbot = "4.12.0"
 suspendTransform = "2.1.20-0.12.0"
 gradleCommon = "0.6.0"
 # ksp
@@ -17,11 +17,15 @@ ksp = "2.1.20-1.0.32"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "2.1.0"
 # https://mockk.io/
-mockk = "1.14.0"
+mockk = "1.14.2"
 # https://detekt.dev/docs/intro
 detekt = "1.23.8"
+# see https://github.com/vanniktech/gradle-maven-publish-plugin
+maven-publish = "0.33.0"
 
 [libraries]
+maven-publish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "maven-publish" }
+
 # simbot
 simbot-api = { group = "love.forte.simbot", name = "simbot-api", version.ref = "simbot" }
 simbot-core = { group = "love.forte.simbot", name = "simbot-core", version.ref = "simbot" }

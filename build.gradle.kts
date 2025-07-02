@@ -25,7 +25,6 @@ import util.isCi
 plugins {
     idea
     id("org.jetbrains.dokka")
-    `simbot-onebot-nexus-publish`
     `simbot-onebot-changelog-generator`
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
