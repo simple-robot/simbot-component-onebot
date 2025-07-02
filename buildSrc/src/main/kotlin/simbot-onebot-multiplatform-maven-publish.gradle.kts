@@ -31,7 +31,7 @@ setup(P.ComponentOneBot)
 val p = project
 
 mavenPublishing {
-    publishToMavenCentral()
+    publishToMavenCentral(automaticRelease = true)
     if (!isSimbotLocal()) {
         signAllPublications()
     }
