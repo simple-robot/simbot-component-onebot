@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="simbot-component-onebot [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="publishToMavenLocal" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="env">
         <map>
