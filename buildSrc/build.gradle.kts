@@ -33,9 +33,6 @@ dependencies {
     implementation(kotlin("serialization", kotlinVersion))
     implementation(libs.dokka.plugin)
 
-    // see https://github.com/gradle-nexus/publish-plugin
-    implementation("io.github.gradle-nexus:publish-plugin:2.0.0")
-
     // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
     // see https://github.com/vanniktech/gradle-maven-publish-plugin
     // see https://plugins.gradle.org/plugin/com.vanniktech.maven.publish

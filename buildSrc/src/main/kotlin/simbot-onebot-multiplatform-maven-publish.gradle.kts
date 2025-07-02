@@ -15,107 +15,92 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.project.setup
-import love.forte.gradle.common.core.property.systemProp
-import love.forte.gradle.common.publication.configure.configPublishMaven
-import love.forte.gradle.common.publication.configure.publishingExtension
-import love.forte.gradle.common.publication.configure.setupPom
+import love.forte.gradle.common.core.property.ofIf
+import org.gradle.internal.impldep.org.bouncycastle.asn1.x509.X509ObjectIdentifiers.organization
 
 plugins {
-    id("org.jetbrains.dokka")
     signing
-    `maven-publish`
+    // https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
+    id("com.vanniktech.maven.publish")
+    id("org.jetbrains.dokka")
 }
 
 setup(P.ComponentOneBot)
 
-val isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+val p = project
 
-val jarJavadoc by tasks.registering(Jar::class) {
-    group = "documentation"
-    archiveClassifier.set("javadoc")
-    if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-        dependsOn(tasks.dokkaGeneratePublicationHtml)
-        from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
-    }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
-        if (isSnapshot) {
-            configPublishMaven(SnapshotRepository)
-        } else {
-            configPublishMaven(ReleaseRepository)
-        }
+mavenPublishing {
+    publishToMavenCentral()
+    if (!isSimbotLocal()) {
+        signAllPublications()
     }
 
-    publications {
-        withType<MavenPublication> {
-            artifacts {
-                artifact(jarJavadoc)
+    pom {
+        name = p.name
+        description = p.description
+        url = P.ComponentOneBot.HOMEPAGE
+        licenses {
+            P.ComponentOneBot.licenses.forEach { license ->
+                license {
+                    name ofIf license.name
+                    url ofIf license.url
+                    distribution ofIf license.distribution
+                    comments ofIf license.comments
+                }
             }
+        }
 
-            setupPom(project.name, P.ComponentOneBot)
+        val scm = P.ComponentOneBot.scm
+        scm {
+            url ofIf scm.url
+            connection ofIf scm.connection
+            developerConnection ofIf scm.developerConnection
+            tag ofIf scm.tag
+        }
+
+        developers {
+            P.ComponentOneBot.developers.forEach { developer ->
+                developer {
+                    id ofIf developer.id
+                    name ofIf developer.name
+                    email ofIf developer.email
+                    url ofIf developer.url
+                    organization ofIf developer.organization
+                    organizationUrl ofIf developer.organizationUrl
+                    timezone ofIf developer.timezone
+                    roles.addAll(developer.roles)
+                    properties.putAll(developer.properties)
+                }
+            }
         }
     }
-}
-
-signing {
-    val gpg = Gpg.ofSystemPropOrNull() ?: return@signing
-    val (keyId, secretKey, password) = gpg
-    useInMemoryPgpKeys(keyId, secretKey, password)
-    sign(publishingExtension.publications)
 }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
-val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
-tasks.withType<PublishToMavenRepository>().configureEach {
-    mustRunAfter(signingTasks)
-}
+// val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
+// tasks.withType<PublishToMavenRepository>().configureEach {
+//     mustRunAfter(signingTasks)
+// }
 // TODO see https://github.com/gradle/gradle/issues/26132
 // Resolves issues with .asc task output of the sign task of native targets.
 // See: https://github.com/gradle/gradle/issues/26132
 // And: https://youtrack.jetbrains.com/issue/KT-46466
-tasks.withType<Sign>().configureEach {
-    val pubName = name.removePrefix("sign").removeSuffix("Publication")
-    logger.info("config Sign with pubName {}", pubName)
-
-    // These tasks only exist for native targets, hence findByName() to avoid trying to find them for other targets
-
-    // Task ':linkDebugTest<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
-    tasks.findByName("linkDebugTest$pubName")?.let {
-        mustRunAfter(it)
-    }
-    // Task ':compileTestKotlin<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
-    tasks.findByName("compileTestKotlin$pubName")?.let {
-        mustRunAfter(it)
-    }
-
-    logger.info("linkDebugTest{}", pubName)
-    logger.info("compileTestKotlin{}", pubName)
-}
-
-show()
-
-fun show() {
-    // // show project info
-    logger.info(
-        """
-        |=======================================================
-        |= project.group:       {}
-        |= project.name:        {}
-        |= project.version:     {}
-        |= project.description: {}
-        |= os.name:             {}
-        |=======================================================
-        """.trimIndent(),
-        group,
-        name,
-        version,
-        description,
-        systemProp("os.name")
-    )
-}
+// tasks.withType<Sign>().configureEach {
+//     val pubName = name.removePrefix("sign").removeSuffix("Publication")
+//     logger.info("config Sign with pubName {}", pubName)
+//
+//     // These tasks only exist for native targets, hence findByName() to avoid trying to find them for other targets
+//
+//     // Task ':linkDebugTest<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
+//     tasks.findByName("linkDebugTest$pubName")?.let {
+//         mustRunAfter(it)
+//     }
+//     // Task ':compileTestKotlin<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
+//     tasks.findByName("compileTestKotlin$pubName")?.let {
+//         mustRunAfter(it)
+//     }
+//
+//     logger.info("linkDebugTest{}", pubName)
+//     logger.info("compileTestKotlin{}", pubName)
+// }
