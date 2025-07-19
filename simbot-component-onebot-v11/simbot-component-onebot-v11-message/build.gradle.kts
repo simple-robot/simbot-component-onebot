@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -64,7 +64,7 @@ kotlin {
 
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.serialization.json)
-            implementation(libs.kotlinx.io.core)
+            api(libs.kotlinx.io.core)
             implementation(libs.jetbrains.annotations)
         }
 

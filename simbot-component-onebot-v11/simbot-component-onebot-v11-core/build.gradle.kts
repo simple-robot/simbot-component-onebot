@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -65,7 +65,7 @@ kotlin {
             implementation(libs.jetbrains.annotations)
 
             api(libs.simbot.common.annotations)
-            implementation(libs.simbot.common.atomic)
+            api(libs.simbot.common.atomic)
 
             api(project(":simbot-component-onebot-common"))
             api(project(":simbot-component-onebot-v11:simbot-component-onebot-v11-common"))
