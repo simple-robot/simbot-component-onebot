@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -30,6 +30,11 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -133,7 +138,7 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
             addFileComment(
                 """
                 ****************************
-                此文件内容是 **自动生成** 的
+                此文件内容自动生成自 ${nowString()}
                 ****************************
                 """.trimIndent()
             )
@@ -193,4 +198,16 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
             }
         }.build()
     }
+}
+
+private val formatter = DateTimeFormatter
+    .ofLocalizedDateTime(
+        FormatStyle.FULL,
+        FormatStyle.FULL
+    )
+    .localizedBy(Locale.CHINA)
+
+private fun nowString(): String {
+    val now = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
+    return formatter.format(now)
 }
