@@ -11,6 +11,7 @@
 <a href="https://github.com/simple-robot/simbot-component-onebot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/simple-robot/simbot-component-onebot" /></a>
 <a href="https://repo1.maven.org/maven2/love/forte/simbot/component/simbot-component-onebot-common/" target="_blank">
   <img alt="release" src="https://img.shields.io/maven-central/v/love.forte.simbot.component/simbot-component-onebot-common" /></a>
+<a href="https://deepwiki.com/simple-robot/simbot-component-onebot"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
    <hr>
 <p>
    <img alt="stars" src="https://img.shields.io/github/stars/simple-robot/simbot-component-onebot" />
