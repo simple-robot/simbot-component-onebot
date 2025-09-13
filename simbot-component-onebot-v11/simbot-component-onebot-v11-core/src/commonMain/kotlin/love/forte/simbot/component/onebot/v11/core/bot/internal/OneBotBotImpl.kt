@@ -68,6 +68,7 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
+import love.forte.simbot.component.onebot.v11.core.model.OneBotBrand
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.RawEvent
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
@@ -317,6 +318,11 @@ internal class OneBotBotImpl(
     private var wsSession: WsEventSession? = null
     private val startLock = Mutex()
 
+    /**
+     * 当前协议端实现 e.g. LLOneBot, Lagrange
+     */
+    var onebotImpl: OneBotBrand = OneBotBrand.UNKNOWN
+        private set
 
     override suspend fun start(): Unit = startLock.withLock {
         job.ensureActive()
@@ -340,6 +346,21 @@ internal class OneBotBotImpl(
         } else {
             logger.debug("WebSocket connection is disabled because of the `eventServerHost` is null")
         }
+
+        onebotImpl = try {
+            val versionInfo = executeData(GetVersionInfoApi.create())
+            val name = versionInfo.appName.lowercase()
+            when {
+                name.contains("llonebot") -> OneBotBrand.LLONEBOT
+                name.contains("lagrange") -> OneBotBrand.LAGRANGE
+                else -> OneBotBrand.UNKNOWN
+            }
+        } catch (e: Exception) {
+            logger.debug("Failed to get OneBot implementation info via `/get_version_info`, using UNKNOWN instead.", e)
+            OneBotBrand.UNKNOWN
+        }
+
+        logger.debug("Current OneBot implementation: {}", onebotImpl)
 
         if (!isStarted) {
             isStarted = true
