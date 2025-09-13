@@ -68,7 +68,6 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBot
 import love.forte.simbot.component.onebot.v11.core.event.internal.request.OneBotGroupRequestEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotStartedEventImpl
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
-import love.forte.simbot.component.onebot.v11.core.model.OneBotBrand
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.component.onebot.v11.event.RawEvent
 import love.forte.simbot.component.onebot.v11.event.UnknownEvent
@@ -317,6 +316,14 @@ internal class OneBotBotImpl(
     @Volatile
     private var wsSession: WsEventSession? = null
     private val startLock = Mutex()
+
+    enum class OneBotBrand(val displayName: String) {
+        LLONEBOT("LLOneBot"),
+        LAGRANGE("Lagrange"),
+        UNKNOWN("Unknown");
+
+        override fun toString(): String = displayName
+    }
 
     /**
      * 当前协议端实现 e.g. LLOneBot, Lagrange

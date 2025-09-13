@@ -22,8 +22,10 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotStranger
 import love.forte.simbot.component.onebot.v11.core.api.GetFriendListResult
 import love.forte.simbot.component.onebot.v11.core.api.GetStrangerInfoApi
+import love.forte.simbot.component.onebot.v11.core.api.OneBotMessageOutgoing
 import love.forte.simbot.component.onebot.v11.core.api.SendLikeApi
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
+import love.forte.simbot.component.onebot.v11.core.api.SendPrivateForwardMsgApi
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractMessagePreSendEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotFriendPostSendEventImpl
@@ -35,8 +37,10 @@ import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
+import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.message.Messages
 import kotlin.coroutines.CoroutineContext
 
 internal abstract class OneBotFriendImpl : AbstractSendSupport(), OneBotFriend {
@@ -64,6 +68,17 @@ internal abstract class OneBotFriendImpl : AbstractSendSupport(), OneBotFriend {
             sendPrivateMsgApi(
                 target = id,
                 message = segments,
+            )
+        )
+    }
+
+    override suspend fun sendForward(messages: Messages): SendMsgResult {
+        return bot.executeData(
+            SendPrivateForwardMsgApi.create(
+                userId = id,
+                messages = OneBotMessageOutgoing.create(
+                    messages.resolveToOneBotSegmentList()
+                )
             )
         )
     }
