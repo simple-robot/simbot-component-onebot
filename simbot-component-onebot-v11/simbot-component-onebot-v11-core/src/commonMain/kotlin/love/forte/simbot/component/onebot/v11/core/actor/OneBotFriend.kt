@@ -21,11 +21,13 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.common.utils.qqAvatar640
+import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.Contact
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.Messages
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
 
@@ -82,4 +84,11 @@ public interface OneBotFriend : Contact, SendLikeSupport, OneBotStrangerAware {
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
 
+    /**
+     * 向好友发送合并转发消息。
+     *
+     * @throws Throwable 任何可能在请求API时产生的异常
+     */
+    @ST
+    public suspend fun sendForward(messages: Messages): SendMsgResult
 }

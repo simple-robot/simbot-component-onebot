@@ -22,16 +22,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
-import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
-
 /**
- * [`send_private_msg`-发送私聊消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_private_msg-发送私聊消息)
+ * [`send_private_forward_msg`-发送私聊合并转发消息 - 非标准接口](https://llonebot.apifox.cn/api-226189040)
  *
- * @author ForteScarlet
+ * @author Aliorpse
  */
-public class SendPrivateMsgApi private constructor(
+public class SendPrivateForwardMsgApi private constructor(
     override val body: Any
 ) : OneBotApi<SendMsgResult> {
 
@@ -45,54 +43,29 @@ public class SendPrivateMsgApi private constructor(
         get() = RES_SER
 
     public companion object Factory {
-        private const val ACTION = "send_private_msg"
+        private const val ACTION = "send_private_forward_msg"
         private val RES_SER = OneBotApiResult.serializer(SendMsgResult.serializer())
 
         /**
-         * 构建一个 [SendPrivateMsgApi].
+         * 构建一个 [SendPrivateForwardMsgApi].
          * @param userId 对方 QQ 号
-         * @param message 要发送的内容
-         * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
+         * @param messages 要发送的内容
          */
         @JvmStatic
-        @JvmOverloads
         public fun create(
             userId: ID,
-            message: OneBotMessageOutgoing,
-            autoEscape: Boolean = false,
-        ): SendPrivateMsgApi = SendPrivateMsgApi(
-            Body(userId.literal, message, autoEscape)
-        )
+            messages: OneBotMessageOutgoing,
+        ): SendPrivateForwardMsgApi = SendPrivateForwardMsgApi(Body(userId.literal, messages))
     }
 
     /**
      * @property userId 对方 QQ 号
-     * @property message 要发送的内容
-     * @property autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
+     * @property messages 要发送的内容
      */
     @Serializable
     internal data class Body(
         @SerialName("user_id")
         val userId: String,
-        val message: OneBotMessageOutgoing,
-        @SerialName("auto_escape")
-        val autoEscape: Boolean = false,
+        val messages: OneBotMessageOutgoing,
     )
 }
-
-
-/*
-user_id	number	-	对方 QQ 号
-message	message	-	要发送的内容
-auto_escape	boolean	false	消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
- */
-
-// /**
-//  * [SendPrivateMsgApi] 的响应体。
-//  */
-// @Serializable
-// public data class SendPrivateMsgResult
-// @ApiResultConstructor constructor(
-//     @SerialName("message_id")
-//     val messageId: ID
-// )
