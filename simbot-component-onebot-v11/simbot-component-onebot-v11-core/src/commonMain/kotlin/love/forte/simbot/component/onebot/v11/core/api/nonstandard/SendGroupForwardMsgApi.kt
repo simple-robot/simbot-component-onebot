@@ -67,7 +67,7 @@ public class SendGroupForwardMsgApi private constructor(
     }
 
     /**
-     * @property groupId 群聊 QQ 号
+     * @property groupId 群号
      * @property messages 要发送的内容
      */
     @Serializable
