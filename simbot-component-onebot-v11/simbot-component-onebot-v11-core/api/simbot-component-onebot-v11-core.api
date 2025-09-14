@@ -1800,31 +1800,11 @@ public final class love/forte/simbot/component/onebot/v11/core/api/SetRestartApi
 	public static synthetic fun create$default (Llove/forte/simbot/component/onebot/v11/core/api/SetRestartApi$Factory;Ljava/lang/Long;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/SetRestartApi;
 }
 
-public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi : love/forte/simbot/component/onebot/v11/core/api/OneBotApi {
-	public static final field Factory Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun create (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi;
-	public fun getAction ()Ljava/lang/String;
-	public fun getApiResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
-	public fun getBody ()Ljava/lang/Object;
-	public fun getResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
+public abstract interface annotation class love/forte/simbot/component/onebot/v11/core/api/nonstandard/OneBotNonStandardApi : java/lang/annotation/Annotation {
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi$Factory {
-	public final fun create (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi;
-}
-
-public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult {
-	public static final field Companion Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult$Companion;
-	public final fun component1 ()Llove/forte/simbot/common/id/IntID;
-	public final fun component2 ()Llove/forte/simbot/common/id/StringID;
-	public final fun copy (Llove/forte/simbot/common/id/IntID;Llove/forte/simbot/common/id/StringID;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult;
-	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult;Llove/forte/simbot/common/id/IntID;Llove/forte/simbot/common/id/StringID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getForwardId ()Llove/forte/simbot/common/id/StringID;
-	public final fun getMessageId ()Llove/forte/simbot/common/id/IntID;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+	public final fun create (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi;
 }
 
 public synthetic class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1842,18 +1822,8 @@ public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/S
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi : love/forte/simbot/component/onebot/v11/core/api/OneBotApi {
-	public static final field Factory Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun create (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi;
-	public fun getAction ()Ljava/lang/String;
-	public fun getApiResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
-	public fun getBody ()Ljava/lang/Object;
-	public fun getResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
-}
-
 public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi$Factory {
-	public final fun create (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi;
+	public final fun create (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi;
 }
 
 public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/OneBotBot : love/forte/simbot/bot/Bot, love/forte/simbot/component/onebot/v11/core/api/OneBotApiExecutable {

@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.onebot.v11.core.api
@@ -26,10 +32,16 @@ import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.annotations.FragileSimbotAPI
+import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
+import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
+import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElement
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageElementSerializer
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegmentSerializer
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.Messages
+import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
 
@@ -60,16 +72,31 @@ public sealed class OneBotMessageOutgoing {
 
     @Serializable
     public data class SegmentsValue(
-
         public val segments: List<OneBotMessageSegment>
     ) : OneBotMessageOutgoing()
 
     public companion object {
+        /**
+         * 通过字符串值构建 [StringValue]。
+         */
         @JvmStatic
         public fun create(value: String): StringValue = StringValue(value)
 
+        /**
+         * 通过消息段列表构建 [SegmentsValue]。
+         */
         @JvmStatic
         public fun create(segments: List<OneBotMessageSegment>): SegmentsValue = SegmentsValue(segments)
+
+        /**
+         * 通过 [Messages] 构建 [SegmentsValue]。
+         * @since 1.9.0
+         */
+        @JvmStatic
+        @ExperimentalOneBotAPI
+        @JvmOverloads
+        public fun create(message: Message, bot: OneBotBot? = null): SegmentsValue =
+            create(message.resolveToOneBotSegmentList(bot))
     }
 }
 

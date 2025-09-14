@@ -148,7 +148,10 @@ apiValidation {
             "love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi",
 
             // CustomOneBotApi
-            "love.forte.simbot.component.onebot.v11.core.api.ExperimentalCustomOneBotApi"
+            "love.forte.simbot.component.onebot.v11.core.api.ExperimentalCustomOneBotApi",
+
+            // OneBotNonStandardApi
+            "love.forte.simbot.component.onebot.v11.core.api.nonstandard.OneBotNonStandardApi"
         ),
     )
 
