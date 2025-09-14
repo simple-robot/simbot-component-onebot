@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 @file:JvmName("OneBotBotRequests")
@@ -31,16 +37,16 @@ import kotlin.jvm.JvmSynthetic
  * 使用 [bot] 对 [this] 发起一次请求，
  * 并得到相应的 [HttpResponse] 响应。
  *
- * 更多描述参考 [OneBotApi.request]
+ * 更多描述参考 [BasicOneBotApi.request]
  *
- * @see OneBotApi.request
+ * @see BasicOneBotApi.request
  */
 @Deprecated(
     "Use OneBotBot.execute",
     ReplaceWith("bot.execute(this)")
 )
 @JvmSynthetic
-public suspend fun OneBotApi<*>.requestBy(
+public suspend fun BasicOneBotApi<*>.requestBy(
     bot: OneBotBot,
 ): HttpResponse = bot.execute(this)
 
@@ -48,17 +54,17 @@ public suspend fun OneBotApi<*>.requestBy(
  * 使用 [bot] 对 [this] 发起一次请求，
  * 并得到相应的 [String] 响应。
  *
- * 更多描述参考 [OneBotApi.requestRaw]
+ * 更多描述参考 [BasicOneBotApi.requestRaw]
  *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
- * @see OneBotApi.requestRaw
+ * @see BasicOneBotApi.requestRaw
  */
 @Deprecated(
     "Use OneBotBot.executeRaw",
     ReplaceWith("bot.executeRaw(this)")
 )
 @JvmSynthetic
-public suspend fun OneBotApi<*>.requestRawBy(
+public suspend fun BasicOneBotApi<*>.requestRawBy(
     bot: OneBotBot,
 ): String = bot.executeRaw(this)
 
@@ -66,17 +72,17 @@ public suspend fun OneBotApi<*>.requestRawBy(
  * 使用 [bot] 对 [this] 发起一次请求，
  * 并得到相应的 [OneBotApiResult] 响应。
  *
- * 更多描述参考 [OneBotApi.requestResult]
+ * 更多描述参考 [BasicOneBotApi.requestResult]
  *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
- * @see OneBotApi.requestResult
+ * @see BasicOneBotApi.requestResult
  */
 @Deprecated(
     "Use OneBotBot.executeResult",
     ReplaceWith("bot.executeResult(this)")
 )
 @JvmSynthetic
-public suspend fun <T : Any> OneBotApi<T>.requestResultBy(
+public suspend fun <T : Any> BasicOneBotApi<T>.requestResultBy(
     bot: OneBotBot,
 ): OneBotApiResult<T> = bot.executeResult(this)
 
@@ -84,7 +90,7 @@ public suspend fun <T : Any> OneBotApi<T>.requestResultBy(
  * 使用 [bot] 对 [this] 发起一次请求，
  * 并得到相应的 [T] 响应。
  *
- * 更多描述参考 [OneBotApi.requestResult]
+ * 更多描述参考 [BasicOneBotApi.requestResult]
  *
  * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
  * @throws IllegalStateException 如果响应结果体的状态 [OneBotApiResult.retcode]
@@ -97,6 +103,6 @@ public suspend fun <T : Any> OneBotApi<T>.requestResultBy(
     ReplaceWith("bot.executeData(this)")
 )
 @JvmSynthetic
-public suspend fun <T : Any> OneBotApi<T>.requestDataBy(
+public suspend fun <T : Any> BasicOneBotApi<T>.requestDataBy(
     bot: OneBotBot,
 ): T = bot.executeData(this)

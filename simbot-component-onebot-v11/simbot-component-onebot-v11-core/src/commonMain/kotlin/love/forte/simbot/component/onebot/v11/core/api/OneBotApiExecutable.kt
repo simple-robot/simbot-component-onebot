@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.onebot.v11.core.api
@@ -27,7 +33,7 @@ import kotlin.jvm.JvmInline
 
 
 /**
- * 可以用于执行 [OneBotApi] 的执行器接口描述。
+ * 可以用于执行 [BasicOneBotApi] 的执行器接口描述。
  *
  * _应仅由内部实现，第三方实现不保证稳定。_
  *
@@ -39,55 +45,55 @@ public interface OneBotApiExecutable {
     /**
      * 使用当前 [OneBotApiExecutable] 执行 [api] 并得到原始的 [HttpResponse] 结果。
      *
-     * 更多描述参考 [OneBotApi.request]
+     * 更多描述参考 [BasicOneBotApi.request]
      *
      * @since 1.1.0
      *
-     * @see OneBotApi.request
+     * @see BasicOneBotApi.request
      */
     @ST
-    public suspend fun execute(api: OneBotApi<*>): HttpResponse
+    public suspend fun execute(api: BasicOneBotApi<*>): HttpResponse
 
     /**
      * 使用当前 [OneBotApiExecutable] 执行 [api] 并得到原始的 [String] 结果。
      *
-     * 更多描述参考 [OneBotApi.requestRaw]
+     * 更多描述参考 [BasicOneBotApi.requestRaw]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
-     * @see OneBotApi.requestRaw
+     * @see BasicOneBotApi.requestRaw
      */
     @ST
-    public suspend fun executeRaw(api: OneBotApi<*>): String
+    public suspend fun executeRaw(api: BasicOneBotApi<*>): String
 
     /**
      * 使用当前 [OneBotApiExecutable] 执行 [api] 并得到 [OneBotApiResult] 结果。
      *
-     * 更多描述参考 [OneBotApi.requestResult]
+     * 更多描述参考 [BasicOneBotApi.requestResult]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
-     * @see OneBotApi.requestResult
+     * @see BasicOneBotApi.requestResult
      */
     @ST
-    public suspend fun <T : Any> executeResult(api: OneBotApi<T>): OneBotApiResult<T>
+    public suspend fun <T : Any> executeResult(api: BasicOneBotApi<T>): OneBotApiResult<T>
 
     /**
      * 使用当前 [OneBotApiExecutable] 执行 [api] 并得到 [T] 结果。
      *
-     * 更多描述参考 [OneBotApi.requestData]
+     * 更多描述参考 [BasicOneBotApi.requestData]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
      * @throws IllegalStateException 如果响应结果体的状态 [OneBotApiResult.retcode]
      * 不是成功或 [OneBotApiResult.data] 为 `null`
-     * @see OneBotApi.requestData
+     * @see BasicOneBotApi.requestData
      */
     @ST
-    public suspend fun <T : Any> executeData(api: OneBotApi<T>): T
+    public suspend fun <T : Any> executeData(api: BasicOneBotApi<T>): T
 }
 
 /**
@@ -103,57 +109,57 @@ public interface OneBotApiExecutable {
 @JvmInline
 public value class OneBotApiExecutableScope(private val executable: OneBotApiExecutable) {
     /**
-     * 使用当前 [OneBotApiExecutable] 执行 [OneBotApi] 并得到原始的 [HttpResponse] 结果。
+     * 使用当前 [OneBotApiExecutable] 执行 [BasicOneBotApi] 并得到原始的 [HttpResponse] 结果。
      *
-     * 更多描述参考 [OneBotApi.request]
+     * 更多描述参考 [BasicOneBotApi.request]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
-     * @see OneBotApi.request
+     * @see BasicOneBotApi.request
      */
-    public suspend fun OneBotApi<*>.execute(): HttpResponse =
+    public suspend fun BasicOneBotApi<*>.execute(): HttpResponse =
         executable.execute(this)
 
     /**
-     * 使用当前 [OneBotApiExecutable] 执行 [OneBotApi] 并得到原始的 [String] 结果。
+     * 使用当前 [OneBotApiExecutable] 执行 [BasicOneBotApi] 并得到原始的 [String] 结果。
      *
-     * 更多描述参考 [OneBotApi.requestRaw]
+     * 更多描述参考 [BasicOneBotApi.requestRaw]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
-     * @see OneBotApi.requestRaw
+     * @see BasicOneBotApi.requestRaw
      */
-    public suspend fun OneBotApi<*>.executeRaw(): String =
+    public suspend fun BasicOneBotApi<*>.executeRaw(): String =
         executable.executeRaw(this)
 
     /**
-     * 使用当前 [OneBotApiExecutable] 执行 [OneBotApi] 并得到 [OneBotApiResult] 结果。
+     * 使用当前 [OneBotApiExecutable] 执行 [BasicOneBotApi] 并得到 [OneBotApiResult] 结果。
      *
-     * 更多描述参考 [OneBotApi.requestResult]
+     * 更多描述参考 [BasicOneBotApi.requestResult]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
-     * @see OneBotApi.requestResult
+     * @see BasicOneBotApi.requestResult
      */
-    public suspend fun <T : Any> OneBotApi<T>.executeResult(): OneBotApiResult<T> =
+    public suspend fun <T : Any> BasicOneBotApi<T>.executeResult(): OneBotApiResult<T> =
         executable.executeResult(this)
 
     /**
-     * 使用当前 [OneBotApiExecutable] 执行 [OneBotApi] 并得到 [T] 结果。
+     * 使用当前 [OneBotApiExecutable] 执行 [BasicOneBotApi] 并得到 [T] 结果。
      *
-     * 更多描述参考 [OneBotApi.requestData]
+     * 更多描述参考 [BasicOneBotApi.requestData]
      *
      * @since 1.1.0
      *
      * @throws OneBotApiResponseNotSuccessException 如果响应状态码不是 2xx (参考 [HttpStatusCode.isSuccess])
      * @throws IllegalStateException 如果响应结果体的状态 [OneBotApiResult.retcode]
      * 不是成功或 [OneBotApiResult.data] 为 `null`
-     * @see OneBotApi.requestData
+     * @see BasicOneBotApi.requestData
      */
-    public suspend fun <T : Any> OneBotApi<T>.executeData(): T =
+    public suspend fun <T : Any> BasicOneBotApi<T>.executeData(): T =
         executable.executeData(this)
 }
 
