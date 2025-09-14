@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -33,6 +33,7 @@ import kotlin.jvm.JvmStatic
 /**
  * [`send_group_forward_msg`-发送群合并转发消息 - 非标准接口](https://llonebot.apifox.cn/api-226189162)
  *
+ * @since 1.9.0
  * @author Aliorpse
  */
 public class SendGroupForwardMsgApi private constructor(
