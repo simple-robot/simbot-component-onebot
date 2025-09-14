@@ -221,11 +221,13 @@ public suspend inline fun OneBotApiExecutable.execute(
     body: Any? = null,
     block: CustomOneBotApiBuilder<*>.() -> Unit = {}
 ): HttpResponse {
-    return execute(CustomOneBotApi(action, method) {
-        body(body)
-        deserializer(OneBotApiResult.emptySerializer())
-        block()
-    })
+    return execute(
+        CustomOneBotApi(action, method) {
+            body(body)
+            deserializer(OneBotApiResult.emptySerializer())
+            block()
+        }
+    )
 }
 
 /**
@@ -242,10 +244,12 @@ public suspend inline fun <T : Any> OneBotApiExecutable.executeResult(
     body: Any? = null,
     block: CustomOneBotApiBuilder<T>.() -> Unit
 ): OneBotApiResult<T> {
-    return executeResult(CustomOneBotApi(action, method) {
-        body(body)
-        block()
-    })
+    return executeResult(
+        CustomOneBotApi(action, method) {
+            body(body)
+            block()
+        }
+    )
 }
 
 /**
@@ -262,10 +266,12 @@ public suspend inline fun <T : Any> OneBotApiExecutable.executeData(
     body: Any? = null,
     block: CustomOneBotApiBuilder<T>.() -> Unit
 ): T {
-    return executeData(CustomOneBotApi(action, method) {
-        body(body)
-        block()
-    })
+    return executeData(
+        CustomOneBotApi(action, method) {
+            body(body)
+            block()
+        }
+    )
 }
 
 /**
@@ -281,9 +287,11 @@ public suspend inline fun <T : Any> OneBotApiExecutable.executeData(
     body: Any? = null,
     block: CustomOneBotApiBuilder<T>.() -> Unit = {}
 ): T {
-    return executeData(CustomOneBotApi(action, method) {
-        body(body)
-        dataDeserializer(dataSerializer)
-        block()
-    })
+    return executeData(
+        CustomOneBotApi(action, method) {
+            body(body)
+            dataDeserializer(dataSerializer)
+            block()
+        }
+    )
 }

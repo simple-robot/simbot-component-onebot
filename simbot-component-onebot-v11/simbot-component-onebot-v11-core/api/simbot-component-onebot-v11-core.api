@@ -343,36 +343,10 @@ public final class love/forte/simbot/component/onebot/v11/core/api/CleanCacheApi
 	public final fun create ()Llove/forte/simbot/component/onebot/v11/core/api/CleanCacheApi;
 }
 
-public abstract interface class love/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi : love/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi {
-	public static final field Companion Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi$Companion;
-	public static fun builder (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
-	public static fun builder (Ljava/lang/String;Lio/ktor/http/HttpMethod;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
-	public abstract fun getApiResultDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
-}
-
 public final class love/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi$Companion {
 	public final fun builder (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
 	public final fun builder (Ljava/lang/String;Lio/ktor/http/HttpMethod;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
 	public static synthetic fun builder$default (Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi$Companion;Ljava/lang/String;Lio/ktor/http/HttpMethod;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
-}
-
-public abstract interface class love/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder {
-	public fun body (Ljava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
-	public abstract fun build ()Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi;
-	public abstract fun deserializer (Lkotlinx/serialization/DeserializationStrategy;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
-	public fun deserializer (Llove/forte/simbot/component/onebot/v11/core/api/DynamicOneBotApiDeserializer;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
-	public abstract fun getAction ()Ljava/lang/String;
-	public abstract fun getBody ()Ljava/lang/Object;
-	public abstract fun getDeserializer ()Llove/forte/simbot/component/onebot/v11/core/api/DynamicOneBotApiDeserializer;
-	public abstract fun getMethod ()Lio/ktor/http/HttpMethod;
-	public abstract fun setBody (Ljava/lang/Object;)V
-	public abstract fun setDeserializer (Llove/forte/simbot/component/onebot/v11/core/api/DynamicOneBotApiDeserializer;)V
-}
-
-public final class love/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiKt {
-	public static final fun CustomOneBotApi (Ljava/lang/String;Lio/ktor/http/HttpMethod;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi;
-	public static synthetic fun CustomOneBotApi$default (Ljava/lang/String;Lio/ktor/http/HttpMethod;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApi;
-	public static final fun dataDeserializer (Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;Lkotlinx/serialization/KSerializer;)Llove/forte/simbot/component/onebot/v11/core/api/CustomOneBotApiBuilder;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/DeleteMsgApi : love/forte/simbot/component/onebot/v11/core/api/OneBotApi {
@@ -387,10 +361,6 @@ public final class love/forte/simbot/component/onebot/v11/core/api/DeleteMsgApi 
 
 public final class love/forte/simbot/component/onebot/v11/core/api/DeleteMsgApi$Factory {
 	public final fun create (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/onebot/v11/core/api/DeleteMsgApi;
-}
-
-public abstract interface class love/forte/simbot/component/onebot/v11/core/api/DynamicOneBotApiDeserializer {
-	public abstract fun deserialize (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/api/OneBotApiResult;
 }
 
 public abstract interface annotation class love/forte/simbot/component/onebot/v11/core/api/ExperimentalCustomOneBotApi : java/lang/annotation/Annotation {
