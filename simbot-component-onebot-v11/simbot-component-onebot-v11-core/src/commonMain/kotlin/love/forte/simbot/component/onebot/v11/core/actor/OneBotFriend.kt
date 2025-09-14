@@ -81,5 +81,4 @@ public interface OneBotFriend : Contact, SendLikeSupport, OneBotStrangerAware {
      */
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
-
 }
