@@ -25,6 +25,7 @@ package love.forte.simbot.component.onebot.v11.core.api
 
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.serialization.KSerializer
 import love.forte.simbot.suspendrunner.ST
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -204,4 +205,85 @@ public inline fun <T> OneBotApiExecutable.inExecutableScope(
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     return withExecutableScope(this, action)
+}
+
+/**
+ * 基于 [CustomOneBotApi] 直接构建一个 Api 并发起请求。
+ *
+ * 没有到达需要反序列化的步骤，直接默认使用 [OneBotApiResult.emptySerializer] 作为反序列化器。
+ *
+ * @since 1.9.0
+ */
+@ExperimentalCustomOneBotApi
+public suspend inline fun OneBotApiExecutable.execute(
+    action: String,
+    method: HttpMethod = HttpMethod.Post,
+    body: Any? = null,
+    block: CustomOneBotApiBuilder<*>.() -> Unit = {}
+): HttpResponse {
+    return execute(CustomOneBotApi(action, method) {
+        body(body)
+        deserializer(OneBotApiResult.emptySerializer())
+        block()
+    })
+}
+
+/**
+ * 基于 [CustomOneBotApi] 直接构建一个 Api 并发起请求，得到对应的 [OneBotApiResult]。
+ *
+ * 需要配置 [CustomOneBotApiBuilder.deserializer] 指定反序列化器。
+ *
+ * @since 1.9.0
+ */
+@ExperimentalCustomOneBotApi
+public suspend inline fun <T : Any> OneBotApiExecutable.executeResult(
+    action: String,
+    method: HttpMethod = HttpMethod.Post,
+    body: Any? = null,
+    block: CustomOneBotApiBuilder<T>.() -> Unit
+): OneBotApiResult<T> {
+    return executeResult(CustomOneBotApi(action, method) {
+        body(body)
+        block()
+    })
+}
+
+/**
+ * 基于 [CustomOneBotApi] 直接构建一个 Api 并发起请求，得到对应的 [OneBotApiResult]。
+ *
+ * 需要配置 [CustomOneBotApiBuilder.deserializer] 指定反序列化器。
+ *
+ * @since 1.9.0
+ */
+@ExperimentalCustomOneBotApi
+public suspend inline fun <T : Any> OneBotApiExecutable.executeData(
+    action: String,
+    method: HttpMethod = HttpMethod.Post,
+    body: Any? = null,
+    block: CustomOneBotApiBuilder<T>.() -> Unit
+): T {
+    return executeData(CustomOneBotApi(action, method) {
+        body(body)
+        block()
+    })
+}
+
+/**
+ * 基于 [CustomOneBotApi] 直接构建一个 Api 并发起请求，得到对应的 [OneBotApiResult]。
+ *
+ * @since 1.9.0
+ */
+@ExperimentalCustomOneBotApi
+public suspend inline fun <T : Any> OneBotApiExecutable.executeData(
+    action: String,
+    dataSerializer: KSerializer<T>,
+    method: HttpMethod = HttpMethod.Post,
+    body: Any? = null,
+    block: CustomOneBotApiBuilder<T>.() -> Unit
+): T {
+    return executeData(CustomOneBotApi(action, method) {
+        body(body)
+        dataDeserializer(dataSerializer)
+        block()
+    })
 }

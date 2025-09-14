@@ -51,7 +51,7 @@ import kotlin.jvm.JvmStatic
  *     .body(RequestBody(value1, value2))
  *     // ⚠️注意: deserializer 是必须的！
  *     .deserializer(raw -> deserialize(raw))
- *     .build()
+ *     .build();
  * ```
  *
  * @author ForteScarlet
@@ -173,9 +173,9 @@ public fun interface DynamicOneBotApiDeserializer<T : Any> {
  */
 @ExperimentalCustomOneBotApi
 public fun <T : Any> CustomOneBotApiBuilder<T>.dataDeserializer(
-    dataDeserializationStrategy: KSerializer<T>
+    dataDeserializer: KSerializer<T>
 ): CustomOneBotApiBuilder<T> =
-    deserializer(OneBotApiResult.serializer(dataDeserializationStrategy))
+    deserializer(OneBotApiResult.serializer(dataDeserializer))
 
 
 /**
