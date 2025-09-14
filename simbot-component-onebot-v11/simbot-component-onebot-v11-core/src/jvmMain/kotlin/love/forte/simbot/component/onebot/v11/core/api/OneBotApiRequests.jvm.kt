@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 @file:JvmName("OneBotApiRequests")
 @file:JvmMultifileClass
@@ -51,12 +57,12 @@ private const val CONTENT_NEGOTIATION_CLASS = "io.ktor.client.plugins.contentneg
 //region blocking
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see request
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestBlocking(
+public fun BasicOneBotApi<*>.requestBlocking(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -64,12 +70,12 @@ public fun OneBotApi<*>.requestBlocking(
 ): HttpResponse = runInNoScopeBlocking { request(client, host, accessToken, actionSuffixes) }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see request
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestBlocking(
+public fun BasicOneBotApi<*>.requestBlocking(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -77,12 +83,12 @@ public fun OneBotApi<*>.requestBlocking(
 ): HttpResponse = runInNoScopeBlocking { request(client, host, accessToken, actionSuffixes) }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see requestRaw
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestRawBlocking(
+public fun BasicOneBotApi<*>.requestRawBlocking(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -91,12 +97,12 @@ public fun OneBotApi<*>.requestRawBlocking(
 ): String = runInNoScopeBlocking { requestRaw(client, host, accessToken, actionSuffixes, charset) }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see requestRaw
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestRawBlocking(
+public fun BasicOneBotApi<*>.requestRawBlocking(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -105,12 +111,12 @@ public fun OneBotApi<*>.requestRawBlocking(
 ): String = runInNoScopeBlocking { requestRaw(client, host, accessToken, actionSuffixes, charset) }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see requestResult
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestResultBlocking(
+public fun <T : Any> BasicOneBotApi<T>.requestResultBlocking(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -129,12 +135,12 @@ public fun <T : Any> OneBotApi<T>.requestResultBlocking(
 }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see requestResult
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestResultBlocking(
+public fun <T : Any> BasicOneBotApi<T>.requestResultBlocking(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -153,12 +159,12 @@ public fun <T : Any> OneBotApi<T>.requestResultBlocking(
 }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see requestData
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestDataBlocking(
+public fun <T : Any> BasicOneBotApi<T>.requestDataBlocking(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -177,12 +183,12 @@ public fun <T : Any> OneBotApi<T>.requestDataBlocking(
 }
 
 /**
- * 阻塞地请求 [OneBotApi].
+ * 阻塞地请求 [BasicOneBotApi].
  * @see requestData
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestDataBlocking(
+public fun <T : Any> BasicOneBotApi<T>.requestDataBlocking(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -204,12 +210,12 @@ public fun <T : Any> OneBotApi<T>.requestDataBlocking(
 //region async
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see request
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestAsync(
+public fun BasicOneBotApi<*>.requestAsync(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -219,12 +225,12 @@ public fun OneBotApi<*>.requestAsync(
     runInAsync(scope ?: client) { request(client, host, accessToken, actionSuffixes) }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see request
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestAsync(
+public fun BasicOneBotApi<*>.requestAsync(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -234,12 +240,12 @@ public fun OneBotApi<*>.requestAsync(
     runInAsync(scope ?: client) { request(client, host, accessToken, actionSuffixes) }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestRaw
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestRawAsync(
+public fun BasicOneBotApi<*>.requestRawAsync(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -250,12 +256,12 @@ public fun OneBotApi<*>.requestRawAsync(
     runInAsync(scope ?: client) { requestRaw(client, host, accessToken, actionSuffixes, charset) }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestRaw
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestRawAsync(
+public fun BasicOneBotApi<*>.requestRawAsync(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -266,12 +272,12 @@ public fun OneBotApi<*>.requestRawAsync(
     runInAsync(scope ?: client) { requestRaw(client, host, accessToken, actionSuffixes, charset) }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestResult
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestResultAsync(
+public fun <T : Any> BasicOneBotApi<T>.requestResultAsync(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -292,12 +298,12 @@ public fun <T : Any> OneBotApi<T>.requestResultAsync(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestResult
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestResultAsync(
+public fun <T : Any> BasicOneBotApi<T>.requestResultAsync(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -318,12 +324,12 @@ public fun <T : Any> OneBotApi<T>.requestResultAsync(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestData
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestDataAsync(
+public fun <T : Any> BasicOneBotApi<T>.requestDataAsync(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -344,12 +350,12 @@ public fun <T : Any> OneBotApi<T>.requestDataAsync(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestData
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestDataAsync(
+public fun <T : Any> BasicOneBotApi<T>.requestDataAsync(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -373,12 +379,12 @@ public fun <T : Any> OneBotApi<T>.requestDataAsync(
 //region suspend reserve
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see request
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestReserve(
+public fun BasicOneBotApi<*>.requestReserve(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -388,12 +394,12 @@ public fun OneBotApi<*>.requestReserve(
     suspendReserve(scope ?: client, EmptyCoroutineContext) { request(client, host, accessToken, actionSuffixes) }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see request
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestReserve(
+public fun BasicOneBotApi<*>.requestReserve(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -403,12 +409,12 @@ public fun OneBotApi<*>.requestReserve(
     suspendReserve(scope ?: client, EmptyCoroutineContext) { request(client, host, accessToken, actionSuffixes) }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestRaw
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestRawReserve(
+public fun BasicOneBotApi<*>.requestRawReserve(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -427,12 +433,12 @@ public fun OneBotApi<*>.requestRawReserve(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestRaw
  */
 @Api4J
 @JvmOverloads
-public fun OneBotApi<*>.requestRawReserve(
+public fun BasicOneBotApi<*>.requestRawReserve(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -451,12 +457,12 @@ public fun OneBotApi<*>.requestRawReserve(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestResult
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestResultReserve(
+public fun <T : Any> BasicOneBotApi<T>.requestResultReserve(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -477,12 +483,12 @@ public fun <T : Any> OneBotApi<T>.requestResultReserve(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestResult
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestResultReserve(
+public fun <T : Any> BasicOneBotApi<T>.requestResultReserve(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
@@ -503,12 +509,12 @@ public fun <T : Any> OneBotApi<T>.requestResultReserve(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestData
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestDataReserve(
+public fun <T : Any> BasicOneBotApi<T>.requestDataReserve(
     client: HttpClient,
     host: Url,
     accessToken: String? = null,
@@ -529,12 +535,12 @@ public fun <T : Any> OneBotApi<T>.requestDataReserve(
     }
 
 /**
- * 异步地请求 [OneBotApi].
+ * 异步地请求 [BasicOneBotApi].
  * @see requestData
  */
 @Api4J
 @JvmOverloads
-public fun <T : Any> OneBotApi<T>.requestDataReserve(
+public fun <T : Any> BasicOneBotApi<T>.requestDataReserve(
     client: HttpClient,
     host: String,
     accessToken: String? = null,
