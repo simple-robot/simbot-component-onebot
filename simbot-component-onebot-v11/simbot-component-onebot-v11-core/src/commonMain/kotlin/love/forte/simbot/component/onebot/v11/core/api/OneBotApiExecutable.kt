@@ -279,7 +279,7 @@ public suspend inline fun <T : Any> OneBotApiExecutable.executeData(
     dataSerializer: KSerializer<T>,
     method: HttpMethod = HttpMethod.Post,
     body: Any? = null,
-    block: CustomOneBotApiBuilder<T>.() -> Unit
+    block: CustomOneBotApiBuilder<T>.() -> Unit = {}
 ): T {
     return executeData(CustomOneBotApi(action, method) {
         body(body)
