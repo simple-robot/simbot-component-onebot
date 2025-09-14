@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.onebot.v11.core.api.nonstandard
@@ -24,8 +30,8 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult
-import love.forte.simbot.component.onebot.v11.core.api.OneBotMessageOutgoing
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode
 import kotlin.jvm.JvmStatic
 
 /**
@@ -34,6 +40,7 @@ import kotlin.jvm.JvmStatic
  * @since 1.9.0
  * @author Aliorpse
  */
+@OneBotNonStandardApi
 public class SendPrivateForwardMsgApi private constructor(
     override val body: Any
 ) : OneBotApi<SendMsgResult> {
@@ -59,7 +66,7 @@ public class SendPrivateForwardMsgApi private constructor(
         @JvmStatic
         public fun create(
             userId: ID,
-            messages: OneBotMessageOutgoing,
+            messages: List<OneBotForwardNode>,
         ): SendPrivateForwardMsgApi = SendPrivateForwardMsgApi(Body(userId.literal, messages))
     }
 
@@ -71,6 +78,6 @@ public class SendPrivateForwardMsgApi private constructor(
     internal data class Body(
         @SerialName("user_id")
         val userId: String,
-        val messages: OneBotMessageOutgoing,
+        val messages: List<OneBotForwardNode>,
     )
 }

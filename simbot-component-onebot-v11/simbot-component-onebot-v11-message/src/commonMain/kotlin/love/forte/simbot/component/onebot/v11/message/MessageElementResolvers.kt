@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 @file:JvmName("MessageElementResolvers")
@@ -49,6 +55,12 @@ public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
 }
 
 /**
+ * @since 1.9.0
+ */
+@InternalOneBotAPI
+public typealias DefaultImageAdditionalParams = ((Resource) -> OneBotImage.AdditionalParams?)
+
+/**
  * 将 [Message] 解析为一用于API请求的 [OneBotMessageSegment] 列表。
  *
  * @see resolveToOneBotSegment
@@ -57,7 +69,7 @@ public fun OneBotMessageSegment.resolveToMessageElement(): Message.Element {
 @ApiStatus.Internal // since 1.6.0
 // @JvmSynthetic // since 1.6.0 不再向Java隐藏，且不再挂起
 public fun Message.resolveToOneBotSegmentList(
-    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)? = null,
+    defaultImageAdditionalParams: DefaultImageAdditionalParams? = null,
 ): List<OneBotMessageSegment> {
     return when (this) {
         is Message.Element -> resolveToOneBotSegment(defaultImageAdditionalParams)
@@ -75,7 +87,7 @@ public fun Message.resolveToOneBotSegmentList(
 @ApiStatus.Internal // since 1.6.0
 // @JvmSynthetic // since 1.6.0 不再向Java隐藏，且不再挂起
 public fun Message.Element.resolveToOneBotSegment(
-    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)? = null,
+    defaultImageAdditionalParams: DefaultImageAdditionalParams? = null,
 ): OneBotMessageSegment? {
     return when (this) {
         // OB组件的 segment 类型，直接使用
@@ -107,7 +119,7 @@ public fun Message.Element.resolveToOneBotSegment(
 
 private fun resolveOfflineImage(
     image: OfflineImage,
-    defaultImageAdditionalParams: ((Resource) -> OneBotImage.AdditionalParams?)?
+    defaultImageAdditionalParams: DefaultImageAdditionalParams?
 ): OneBotMessageSegment? {
     val resource = when (image) {
         is OfflineByteArrayImage -> image.data().toResource()
