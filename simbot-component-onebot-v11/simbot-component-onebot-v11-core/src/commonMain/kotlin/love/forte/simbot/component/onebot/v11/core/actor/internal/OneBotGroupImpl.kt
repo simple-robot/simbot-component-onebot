@@ -36,10 +36,8 @@ import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOn
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
-import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.message.Messages
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
@@ -113,17 +111,6 @@ internal abstract class OneBotGroupImpl(
             sendGroupMsgApi(
                 target = id,
                 message = segments,
-            )
-        )
-    }
-
-    override suspend fun sendForward(messages: Messages): SendGroupForwardMsgResult {
-        return bot.executeData(
-            SendGroupForwardMsgApi.create(
-                groupId = id,
-                messages = OneBotMessageOutgoing.create(
-                    messages.resolveToOneBotSegmentList()
-                )
             )
         )
     }

@@ -15,7 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.onebot.v11.core.api
+package love.forte.simbot.component.onebot.v11.core.api.nonstandard
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
@@ -25,6 +25,9 @@ import love.forte.simbot.common.id.IntID
 import love.forte.simbot.common.id.StringID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
+import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
+import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult
+import love.forte.simbot.component.onebot.v11.core.api.OneBotMessageOutgoing
 import kotlin.jvm.JvmStatic
 
 /**
@@ -47,10 +50,10 @@ public class SendGroupForwardMsgApi private constructor(
     public companion object Factory {
         private const val ACTION: String = "send_group_forward_msg"
 
-        private val RES_SER = OneBotApiResult.serializer(SendGroupForwardMsgResult.serializer())
+        private val RES_SER = OneBotApiResult.Companion.serializer(SendGroupForwardMsgResult.serializer())
 
         /**
-         * 构建一个 [SendGroupMsgApi].
+         * 构建一个 [SendGroupForwardMsgApi].
          *
          * @param groupId 群号
          * @param messages 要发送的内容

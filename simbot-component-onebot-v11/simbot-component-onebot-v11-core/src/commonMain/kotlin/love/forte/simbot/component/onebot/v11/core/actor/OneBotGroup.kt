@@ -30,7 +30,6 @@ import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.Messages
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import kotlin.coroutines.CoroutineContext
@@ -166,14 +165,6 @@ public interface OneBotGroup : ChatGroup, DeleteSupport {
      */
     @ST
     override suspend fun send(text: String): OneBotMessageReceipt
-
-    /**
-     * 向此群内发送合并转发消息。
-     *
-     * @throws Throwable 任何可能在请求API时产生的异常
-     */
-    @ST
-    public suspend fun sendForward(messages: Messages): SendGroupForwardMsgResult
 
     /**
      * 让当前bot退出/离开此群。
