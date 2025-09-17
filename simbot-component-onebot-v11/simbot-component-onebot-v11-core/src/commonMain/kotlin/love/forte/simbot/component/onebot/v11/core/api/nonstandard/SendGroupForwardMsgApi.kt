@@ -33,6 +33,7 @@ import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructo
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import kotlin.jvm.JvmStatic
 
 /**
@@ -69,7 +70,12 @@ public class SendGroupForwardMsgApi private constructor(
         public fun create(
             groupId: ID,
             messages: List<OneBotForwardNode>,
-        ): SendGroupForwardMsgApi = SendGroupForwardMsgApi(Body(groupId.literal, messages))
+        ): SendGroupForwardMsgApi = SendGroupForwardMsgApi(
+            Body(
+                groupId.literal,
+                messages
+            )
+        )
     }
 
     /**
@@ -80,7 +86,10 @@ public class SendGroupForwardMsgApi private constructor(
     internal data class Body(
         @SerialName("group_id")
         val groupId: String,
-        val messages: List<OneBotForwardNode>,
+        /**
+         * node 元素列表。使用 [OneBotMessageSegment] 为了确保序列化使用多态。
+         */
+        val messages: List<OneBotMessageSegment>,
     )
 }
 

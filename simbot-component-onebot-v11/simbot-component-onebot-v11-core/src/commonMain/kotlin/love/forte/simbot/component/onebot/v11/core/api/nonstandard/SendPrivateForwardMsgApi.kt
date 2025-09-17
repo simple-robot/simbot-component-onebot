@@ -32,6 +32,7 @@ import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import kotlin.jvm.JvmStatic
 
 /**
@@ -67,7 +68,12 @@ public class SendPrivateForwardMsgApi private constructor(
         public fun create(
             userId: ID,
             messages: List<OneBotForwardNode>,
-        ): SendPrivateForwardMsgApi = SendPrivateForwardMsgApi(Body(userId.literal, messages))
+        ): SendPrivateForwardMsgApi = SendPrivateForwardMsgApi(
+            Body(
+                userId.literal,
+                messages
+            )
+        )
     }
 
     /**
@@ -78,6 +84,9 @@ public class SendPrivateForwardMsgApi private constructor(
     internal data class Body(
         @SerialName("user_id")
         val userId: String,
-        val messages: List<OneBotForwardNode>,
+        /**
+         * node 元素列表。使用 [OneBotMessageSegment] 为了确保序列化使用多态。
+         */
+        val messages: List<OneBotMessageSegment>,
     )
 }
