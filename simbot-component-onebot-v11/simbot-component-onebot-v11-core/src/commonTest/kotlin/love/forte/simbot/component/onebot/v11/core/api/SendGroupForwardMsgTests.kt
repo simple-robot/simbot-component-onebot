@@ -125,7 +125,7 @@ class SendGroupForwardMsgTests {
         // 执行请求并验证结果
         val result = api.requestData(client, "http://127.0.0.1:8080/")
 
-        assertEquals(2026505362, result.messageId.value)
+        assertEquals(2026505362L, result.messageId.toLong())
         assertEquals("zUfJpEhzJgXxJID2cIwUoiRk7dMLSgnbhwb8yPrPz8iK6IsBn2uUQArcosp4WrNH", result.forwardId.literal)
     }
 
@@ -211,7 +211,7 @@ class SendGroupForwardMsgTests {
         // 执行请求并验证结果
         val result = api.requestData(client, "http://127.0.0.1:8080/")
 
-        assertEquals(1234567890, result.messageId.value)
+        assertEquals(1234567890L, result.messageId.toLong())
         assertEquals("abcdefghijklmnopqrstuvwxyz", result.forwardId.literal)
     }
 }
