@@ -27,12 +27,14 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.IntID
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.common.id.NumericalID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApi
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import kotlin.jvm.JvmStatic
 
 /**
@@ -69,7 +71,12 @@ public class SendGroupForwardMsgApi private constructor(
         public fun create(
             groupId: ID,
             messages: List<OneBotForwardNode>,
-        ): SendGroupForwardMsgApi = SendGroupForwardMsgApi(Body(groupId.literal, messages))
+        ): SendGroupForwardMsgApi = SendGroupForwardMsgApi(
+            Body(
+                groupId.literal,
+                messages
+            )
+        )
     }
 
     /**
@@ -80,7 +87,10 @@ public class SendGroupForwardMsgApi private constructor(
     internal data class Body(
         @SerialName("group_id")
         val groupId: String,
-        val messages: List<OneBotForwardNode>,
+        /**
+         * node 元素列表。使用 [OneBotMessageSegment] 为了确保序列化使用多态。
+         */
+        val messages: List<OneBotMessageSegment>,
     )
 }
 
@@ -94,7 +104,10 @@ public class SendGroupForwardMsgApi private constructor(
 @OneBotNonStandardApi
 public data class SendGroupForwardMsgResult @ApiResultConstructor constructor(
     @SerialName("message_id")
-    public val messageId: IntID,
+    private val longMessageId: LongID,
     @SerialName("forward_id")
     public val forwardId: ID
-)
+) {
+    public val messageId: NumericalID
+        get() = longMessageId
+}
