@@ -27,7 +27,7 @@ import kotlin.jvm.JvmStatic
 
 
 /**
- * [send_private_msg 发送私聊消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_private_msg-发送私聊消息)
+ * [`send_private_msg`-发送私聊消息](https://github.com/botuniverse/onebot-11/blob/master/api/public.md#send_private_msg-发送私聊消息)
  *
  * @author ForteScarlet
  */

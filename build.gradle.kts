@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 import io.gitlab.arturbosch.detekt.Detekt
@@ -139,7 +145,13 @@ apiValidation {
             "love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor",
 
             // CustomEventResolver
-            "love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi"
+            "love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi",
+
+            // CustomOneBotApi
+            "love.forte.simbot.component.onebot.v11.core.api.ExperimentalCustomOneBotApi",
+
+            // OneBotNonStandardApi
+            "love.forte.simbot.component.onebot.v11.core.api.nonstandard.OneBotNonStandardApi"
         ),
     )
 

@@ -30,6 +30,7 @@ module simbot.component.onebot11v.core {
     exports love.forte.simbot.component.onebot.v11.core;
     exports love.forte.simbot.component.onebot.v11.core.actor;
     exports love.forte.simbot.component.onebot.v11.core.api;
+    exports love.forte.simbot.component.onebot.v11.core.api.nonstandard;
     exports love.forte.simbot.component.onebot.v11.core.bot;
     exports love.forte.simbot.component.onebot.v11.core.component;
     exports love.forte.simbot.component.onebot.v11.core.event;

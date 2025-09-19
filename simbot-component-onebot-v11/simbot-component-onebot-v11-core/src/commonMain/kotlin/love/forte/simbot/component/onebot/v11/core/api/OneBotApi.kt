@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
- * This file is part of simbot-component-onebot.
+ *     Project    https://github.com/simple-robot/simbot-component-onebot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-onebot is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This project and this file are part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-onebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-onebot.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.onebot.v11.core.api
@@ -26,64 +32,21 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
+import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.api.OneBotApiResult.Companion.RETCODE_SUCCESS
 
 
 /**
- * 一个 OneBot 的 [API](https://github.com/botuniverse/onebot-11/tree/master/api)。
+ * 针对一个 [OneBot API](https://github.com/botuniverse/onebot-11/tree/master/api) 的定义实现，
+ * 在 [BasicOneBotApi] 的基础上，使用基于 kotlinx-serialization 的反序列化器来实现 [deserialize]。
  *
- * API调用需要指定 [action] 和 [参数][body].
+ * API调用需要指定 [action] 和 [body].
  *
  * @author ForteScarlet
  */
-public interface OneBotApi<T : Any> {
-    /**
-     * 此 API 的请求方式。
-     * OneBot协议中的标准API通常均为 POST，
-     * 但是一些额外的扩展或自定义API可能是 GET 或其他方式。
-     * @since 1.8.0
-     */
-    public val method: HttpMethod
+public interface OneBotApi<T : Any> : BasicOneBotApi<T> {
+    override val method: HttpMethod
         get() = HttpMethod.Post
-
-    /**
-     * API 的 action（要进行的动作），会通过 [resolveUrlAction] 附加在 url 中。
-     * 可以重写它来改变此逻辑。
-     */
-    public val action: String
-
-    /**
-     * 根据 [action] 和可能额外要求的 [actionSuffixes] 构建一个完整的请求地址。
-     *
-     * [urlBuilder] 中已经添加了基础的 `host` 等信息。
-     *
-     * @since 1.8.0
-     */
-    public fun resolveUrlAction(urlBuilder: URLBuilder, actionSuffixes: Collection<String>?) {
-        if (actionSuffixes?.isEmpty() != false) {
-            urlBuilder.appendPathSegments(action)
-        } else {
-            urlBuilder.appendPathSegments(
-                buildString(action.length) {
-                    append(action)
-                    actionSuffixes.forEach { sf -> append(sf) }
-                }
-            )
-        }
-    }
-
-    /**
-     * 对 [urlBuilder] 进行一些额外的处理，例如当method为GET时为其添加查询参数。
-     * 主要面向额外扩展的自定义实现来重写此方法。
-     * @since 1.8.0
-     */
-    public fun resolveUrlExtensions(urlBuilder: URLBuilder) {
-    }
-
-    /**
-     * API的参数。
-     */
-    public val body: Any?
 
     /**
      * 预期结果的反序列化器。
@@ -95,23 +58,24 @@ public interface OneBotApi<T : Any> {
      */
     public val apiResultDeserializer: DeserializationStrategy<OneBotApiResult<T>>
 
+    override fun deserialize(responseBody: String): OneBotApiResult<T> {
+        val decoder = OneBot11.DefaultJson
+        return decoder.decodeFromString(apiResultDeserializer, responseBody)
+    }
+
     /**
-     * 与 `action` 相关的公共、常量信息。
+     * @see BasicOneBotApi.Actions
      */
     public object Actions {
         /**
-         * [异步调用](https://github.com/botuniverse/onebot-11/blob/master/api/README.md#异步调用).
-         *
-         * 所有 API 都可以通过给 `action` 附加后缀 `_async` 来进行异步调用
+         * @see BasicOneBotApi.Actions.ASYNC_SUFFIX
          */
-        public const val ASYNC_SUFFIX: String = "_async"
+        public const val ASYNC_SUFFIX: String = BasicOneBotApi.Actions.ASYNC_SUFFIX
 
         /**
-         * [限速调用](https://github.com/botuniverse/onebot-11/blob/master/api/README.md#限速调用)
-         *
-         * 所有 API 都可以通过给 `action` 附加后缀 `_rate_limited` 来进行限速调用。
+         * @see BasicOneBotApi.Actions.RATE_LIMITED_SUFFIX
          */
-        public const val RATE_LIMITED_SUFFIX: String = "_rate_limited"
+        public const val RATE_LIMITED_SUFFIX: String = BasicOneBotApi.Actions.RATE_LIMITED_SUFFIX
     }
 }
 
@@ -119,7 +83,7 @@ public interface OneBotApi<T : Any> {
  * 使用 [OneBotApi.resolveUrlAction] 和 [OneBotApi.resolveUrlExtensions] 。
  * @since 1.8.0
  */
-public fun OneBotApi<*>.resolveUrl(urlBuilder: URLBuilder, actionSuffixes: Collection<String>?) {
+public fun BasicOneBotApi<*>.resolveUrl(urlBuilder: URLBuilder, actionSuffixes: Collection<String>?) {
     resolveUrlAction(urlBuilder, actionSuffixes)
     resolveUrlExtensions(urlBuilder)
 }

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simbot-component-onebot
  *     Email      ForteScarlet@163.com
@@ -21,15 +21,16 @@
  *
  */
 
-package love.forte.simbot.component.onebot.v11.core.utils
+package love.forte.simbot.component.onebot.v11.core.api.nonstandard
 
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.message.Message
-
-internal fun Message.resolveToOneBotSegmentList(
-    bot: OneBotBot?,
-): List<OneBotMessageSegment> = resolveToOneBotSegmentList(
-    defaultImageAdditionalParams = bot?.configuration?.defaultImageAdditionalParamsProvider
-)
+/**
+ * 与非标准API相关的内容。
+ * 非标准API的实现目前尚处于实验阶段。它们不保证兼容性，并且可能在未来发生变更或被移除。
+ *
+ * @since 1.9.0
+ * @author ForteScarlet
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@RequiresOptIn("This api is not part of the onebot protocol standard, and may not be available in the future.")
+public annotation class OneBotNonStandardApi

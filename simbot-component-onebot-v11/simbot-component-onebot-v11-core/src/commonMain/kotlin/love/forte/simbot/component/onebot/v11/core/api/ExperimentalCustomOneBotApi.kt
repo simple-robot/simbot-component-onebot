@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simbot-component-onebot
  *     Email      ForteScarlet@163.com
@@ -21,15 +21,15 @@
  *
  */
 
-package love.forte.simbot.component.onebot.v11.core.utils
+package love.forte.simbot.component.onebot.v11.core.api
 
-import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
-import love.forte.simbot.component.onebot.v11.message.resolveToOneBotSegmentList
-import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.message.Message
-
-internal fun Message.resolveToOneBotSegmentList(
-    bot: OneBotBot?,
-): List<OneBotMessageSegment> = resolveToOneBotSegmentList(
-    defaultImageAdditionalParams = bot?.configuration?.defaultImageAdditionalParamsProvider
-)
+/**
+ * [CustomOneBotApi] 相关的 API 尚在实验阶段，不保证稳定性，可能会在未来随时发生变更或被移除。
+ *
+ * @since 1.9.0
+ * @author ForteScarlet
+ */
+@RequiresOptIn("This api is experimental and may be changed in the future.")
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+public annotation class ExperimentalCustomOneBotApi

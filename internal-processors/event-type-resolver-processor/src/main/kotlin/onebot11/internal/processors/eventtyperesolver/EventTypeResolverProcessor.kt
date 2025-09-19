@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ * Copyright (c) 2024-2025. ForteScarlet.
  *
  * This file is part of simbot-component-onebot.
  *
@@ -27,20 +27,17 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.squareup.kotlinpoet.AnnotationSpec
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.STRING
-import com.squareup.kotlinpoet.WildcardTypeName
-import com.squareup.kotlinpoet.asTypeName
-import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.jvm.jvmMultifileClass
 import com.squareup.kotlinpoet.jvm.jvmName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KClass
 
@@ -157,7 +154,7 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
             addFileComment(
                 """
                 ****************************
-                此文件内容是 **自动生成** 的
+                文件内容自动生成自 ${nowString()}
                 ****************************
                 """.trimIndent()
             )
@@ -486,4 +483,16 @@ private class EventTypeResolverProcessor(val environment: SymbolProcessorEnviron
         }.build()
     }
 
+}
+
+private val formatter = DateTimeFormatter
+    .ofLocalizedDateTime(
+        FormatStyle.FULL,
+        FormatStyle.FULL
+    )
+    .localizedBy(Locale.CHINA)
+
+private fun nowString(): String {
+    val now = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
+    return formatter.format(now)
 }
